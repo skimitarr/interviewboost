@@ -913,11 +913,11 @@ body {
   margin-right: 6px;
 }
 
-input[type=checkbox] {
+.checkbox {
   display: none;
 }
 
-input[type=checkbox] ~ label::before input[type=checkbox] {
+.checkbox ~ label::before .checkbox {
   display: none;
 }
 

@@ -221,7 +221,7 @@ export default function PageForm__rightSide() {
                   })
                     .map((item, index) => {
                       return <div key={item.id} className='questions__technology-questions-wrapper'>
-                        <input id={item.id} type="checkbox" onChange={() => selectQuestions(item.id, category)} checked={checkedIdQuestions.includes(item.id)} />
+                        <input id={item.id} className="checkbox" type="checkbox" onChange={() => selectQuestions(item.id, category)} checked={checkedIdQuestions.includes(item.id)} />
                         <label htmlFor={item.id} className={`questions__technology-questions ${checkedIdQuestions.includes(item.id) ? '' : 'isSelected'}`}>{index + 1}. {item.text}</label>
                       </div >
                     })
