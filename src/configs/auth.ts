@@ -63,3 +63,4 @@ export const authConfig: AuthOptions = {
     signIn: '/signin',
   }
 }
+// http://localhost:3000/api/auth/callback/google
