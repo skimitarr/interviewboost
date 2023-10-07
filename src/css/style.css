@@ -914,11 +914,11 @@ body {
 }
 
 input[type=checkbox] {
-  opacity: 0;
+  display: none;
 }
 
 input[type=checkbox] ~ label::before input[type=checkbox] {
-  opacity: 0;
+  display: none;
 }
 
 input[type=checkbox] ~ label::before {
