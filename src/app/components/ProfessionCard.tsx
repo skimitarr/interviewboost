@@ -48,12 +48,12 @@ export default function ProfessionCard({ profession }: { profession: IProffesion
   };
 
 
-  function handleClick(profession: IProffesion) {
+  async function handleClick(profession: IProffesion) {
     dispatch(getProfession(profession));
-    fetchGrades();
-    fetchCategories();
-    fetchQuestions();
-    fetchAnswers();
+    await fetchGrades();
+    await fetchCategories();
+    await fetchQuestions();
+    await fetchAnswers();
   }
 
   return (

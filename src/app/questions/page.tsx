@@ -197,10 +197,11 @@ export default function MyQuestions() {
       temperature: 0.7,
     };
     // const OPENAI_API_KEY = process.env.NEXT_PUBLIC_OPENAI_API_KEY;
-    const OPENAI_API_KEY = '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';
+    // const OPENAI_API_KEY = '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';
     const headers = {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${OPENAI_API_KEY}`,
+      // 'Authorization': `Bearer ${OPENAI_API_KEY}`,
+      'Authorization': `Bearer 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`,
     };
     setLoading(!loading);
     await fetch(apiUrl, {
