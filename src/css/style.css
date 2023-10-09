@@ -917,10 +917,6 @@ body {
   display: none;
 }
 
-.checkbox ~ label::before .checkbox {
-  display: none;
-}
-
 input[type=checkbox] ~ label::before {
   content: " ";
   text-align: center;

@@ -1050,11 +1050,11 @@ body {
 .checkbox {
   display: none;
 }
-.checkbox  ~ label::before {
-  .checkbox  {
-    display: none;
-  }
-}
+// .checkbox  ~ label::before {
+//   .checkbox  {
+//     display: none;
+//   }
+// }
 input[type="checkbox"] ~ label::before {
 content: "\00a0"; //символ неразрывного пробела, на экране не видно
 text-align: center;
