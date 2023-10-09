@@ -197,7 +197,7 @@ export default function MyQuestions() {
       temperature: 0.7,
     };
     // const OPENAI_API_KEY = process.env.NEXT_PUBLIC_OPENAI_API_KEY;
-    const OPENAI_API_KEY = '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';
+    const OPENAI_API_KEY = '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';
     const headers = {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${OPENAI_API_KEY}`,
