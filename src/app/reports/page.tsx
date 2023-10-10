@@ -190,7 +190,7 @@ export default function Reports() {
     const elementsToCapture = [rightSideElement]; // Создайте массив элементов для захвата скриншотов
     // const pageWidth = 810; // Ширина страницы в пикселях
     // const pageHeight = 1200; // Высота страницы в пикселях
-    const pageWidth = window.innerWidth; // Ширина страницы в пикселях, равная ширине окна браузера
+    const pageWidth = window.innerWidth * 2 / 3; // Ширина страницы в пикселях
     const pageHeight = window.innerHeight; // Высота страницы в пикселях, равная высоте окна браузера
     const pdfContent: any[] = [];
 
