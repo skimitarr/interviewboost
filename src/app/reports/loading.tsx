@@ -1,5 +1,7 @@
-export default function LoadingPosts() {
+import LoadingSvg from "../components/LoadingSvg"
+
+export default function Loading() {
   return (
-    <h1>Loading...</h1>
+    <LoadingSvg />
   )
 }
