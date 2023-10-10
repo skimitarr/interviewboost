@@ -192,8 +192,14 @@ export default function Reports() {
     // const pageHeight = 1200; // Высота страницы в пикселях
     // const pageWidth = window.innerWidth * 2 / 3; // Ширина страницы в пикселях
     // const pageHeight = window.innerHeight; // Высота страницы в пикселях, равная высоте окна браузера
-    const pageWidth = rightSideElement.offsetWidth; // Добавьте небольшой запас
-    const pageHeight = rightSideElement.offsetHeight; // Добавьте небольшой запас
+    // const pageWidth = rightSideElement.offsetWidth; // Добавьте небольшой запас
+    // const pageHeight = rightSideElement.offsetHeight; // Добавьте небольшой запас
+
+    // Получите плотность пикселей устройства
+    const devicePixelRatio = window.devicePixelRatio || 1;
+    // Определите размеры страницы динамически на основе размеров rightSideElement и плотности пикселей
+    const pageWidth = (rightSideElement.offsetWidth) * devicePixelRatio;
+    const pageHeight = (rightSideElement.offsetHeight) * devicePixelRatio;
     const pdfContent: any[] = [];
 
     // Функция для создания и добавления скриншотов в PDF
