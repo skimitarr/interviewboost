@@ -190,8 +190,10 @@ export default function Reports() {
     const elementsToCapture = [rightSideElement]; // Создайте массив элементов для захвата скриншотов
     // const pageWidth = 810; // Ширина страницы в пикселях
     // const pageHeight = 1200; // Высота страницы в пикселях
-    const pageWidth = window.innerWidth * 2 / 3; // Ширина страницы в пикселях
-    const pageHeight = window.innerHeight; // Высота страницы в пикселях, равная высоте окна браузера
+    // const pageWidth = window.innerWidth * 2 / 3; // Ширина страницы в пикселях
+    // const pageHeight = window.innerHeight; // Высота страницы в пикселях, равная высоте окна браузера
+    const pageWidth = rightSideElement.offsetWidth + 20; // Добавьте небольшой запас
+    const pageHeight = rightSideElement.offsetHeight + 20; // Добавьте небольшой запас
     const pdfContent: any[] = [];
 
     // Функция для создания и добавления скриншотов в PDF
