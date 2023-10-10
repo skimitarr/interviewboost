@@ -188,8 +188,10 @@ export default function Reports() {
     // // pdfDoc.open({}, window); // открываем тут же PDF-файл (для тестирования)
 
     const elementsToCapture = [rightSideElement]; // Создайте массив элементов для захвата скриншотов
-    const pageWidth = 810; // Ширина страницы в пикселях
-    const pageHeight = 1200; // Высота страницы в пикселях
+    // const pageWidth = 810; // Ширина страницы в пикселях
+    // const pageHeight = 1200; // Высота страницы в пикселях
+    const pageWidth = window.innerWidth; // Ширина страницы в пикселях, равная ширине окна браузера
+    const pageHeight = window.innerHeight; // Высота страницы в пикселях, равная высоте окна браузера
     const pdfContent: any[] = [];
 
     // Функция для создания и добавления скриншотов в PDF

@@ -13,11 +13,11 @@ export default function LoadingSvg() {
         <defs>
           <linearGradient id="paint0_linear_842_2" x1="38" y1="0" x2="38" y2="76" gradientUnits="userSpaceOnUse">
             <stop stopColor="#DA87FF" />
-            <stop offset="1" stop-color="#DA87FF" stop-opacity="0" />
+            <stop offset="1" stopColor="#DA87FF" stopOpacity="0" />
           </linearGradient>
           <linearGradient id="paint1_linear_842_2" x1="38" y1="0" x2="38" y2="76" gradientUnits="userSpaceOnUse">
             <stop stopColor="#DA87FF" />
-            <stop offset="1" stop-color="#DA87FF" stopOpacity="0" />
+            <stop offset="1" stopColor="#DA87FF" stopOpacity="0" />
           </linearGradient>
         </defs>
       </svg>

@@ -471,12 +471,13 @@ body {
 }
 .search__result {
   margin-bottom: 10px;
-  font-size: 18px;
   color: #FFF;
   cursor: pointer;
 }
 .search__highlighted-text {
-  color: linear-gradient(180deg, rgba(218, 135, 255, 0) 0%, #DA87FF 100%);
+  color: #DA87FF;
+  letter-spacing: 0.5px;
+  line-height: 1.5;
 }
 
 .answers {
@@ -876,20 +877,17 @@ body {
   height: calc(100vh - 80px);
   background-color: #202123;
 }
-
 .signIn__container {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 }
-
 .signIn__title {
   margin-bottom: 50px;
   font-size: 48px;
   color: #FFF;
 }
-
 .signIn__btn {
   margin-bottom: 10px;
   padding: 0;
@@ -902,13 +900,11 @@ body {
   color: #FFF;
   cursor: pointer;
 }
-
 .signIn__text {
   display: flex;
   align-items: center;
   justify-content: center;
 }
-
 .signIn__img {
   margin-right: 6px;
 }
