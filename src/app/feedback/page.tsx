@@ -69,7 +69,7 @@ export default function Feedback() {
       <form className='feedback__form' onSubmit={handleSubmit}>
         <h1 className='feedback__title'>Send feedback or Report an error</h1>
         <textarea name="message" value={message} onChange={(e) => setMessage(e.target.value)} ref={inputRef} className="feedback__textarea" ></textarea>
-        <button className='feedback__btn' type="submit"> Отправить</button>
+        <button className='feedback__btn btn' type="submit"> Отправить</button>
       </form>
     </div>
   )

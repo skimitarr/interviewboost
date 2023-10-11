@@ -21,6 +21,16 @@ a {
   text-decoration: none;
 }
 
+.btn {
+  height: 30px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.cursor {
+  cursor: pointer;
+}
+
 body {
   min-width: 320px;
   font-family: 'Lato', 'Roboto';
@@ -46,11 +56,19 @@ body {
   &__wrapper-2 {
     position: relative;
     margin-right: 20px;
+    display: flex;
+    align-items: center;
 
     & img {
       width: 40px;
       height: 40px;
+      cursor: pointer;
     }
+  }
+
+  &__email {
+    margin-right: 23px;
+    color: $colorWhite1;
   }
 
   &__link {
@@ -74,8 +92,8 @@ body {
     }
 
     &-signin {
-      height: inherit;
-      padding: 10px 35px;
+      height: 30px;
+      padding: 0 39px;
       border-radius: 10px;
       color: $colorWhite1;
       background: $colorYellow1;
@@ -84,13 +102,13 @@ body {
     &-signout {
       position: absolute;
       top: 50px;
-      left: -64px;
+      right: 0;
       width: 100px;
-      height: 40px;
-      padding: 9px 22px;
-      border-radius: 5px;
+      height: 30px;
+      padding: 4px 22px;
       color: $colorWhite1;
       background-color: $colorBlack4;
+      box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
       z-index: 1;
     }
   }
@@ -119,7 +137,7 @@ body {
   padding: 25px 38px 14px;
   background: $colorBlack3;
   border-radius: 5px;
-  opacity: 0.3;
+  // opacity: 0.3;
   cursor: pointer;
   transition: all 0.3s ease-in-out;
 
@@ -185,6 +203,17 @@ body {
     height: calc(100vh - 160px);
     overflow-y: auto;
     padding-bottom: 20px;
+    scrollbar-width: thin;          /* "auto" или "thin" */
+    scrollbar-color: $colorPurple1 transparent;   /* цвет бегунка и зоны отслеживания */
+
+    &::-webkit-scrollbar {
+      width: 4px;               /* ширина всей полосы прокрутки */
+      &-thumb {
+        background-color: $colorPurple1;    /* цвет бегунка */
+        border-radius: 10px;       /* округлось бегунка */
+        height: 300px;
+      }
+    }
 
     &-wrapper {
       margin-bottom: 5px;
@@ -281,9 +310,21 @@ body {
 
   &__rightSide {
     position: relative;
-    background-color: $colorBlack3;
     height: calc(100vh - 160px);
+    padding: 0 20px 0 25px;
+    background-color: $colorBlack3;
     overflow-y: auto;
+    scrollbar-width: thin;          /* "auto" или "thin" */
+    scrollbar-color: $colorPurple1 transparent;   /* цвет бегунка и зоны отслеживания */
+
+    &::-webkit-scrollbar {
+      width: 4px;               /* ширина всей полосы прокрутки */
+      &-thumb {
+        background-color: $colorPurple1;    /* цвет бегунка */
+        border-radius: 10px;       /* округлось бегунка */
+        height: 300px;
+      }
+    }
   }
 
   &__chooseGrade {
@@ -314,10 +355,10 @@ body {
   }
 
   &__technology {
-    padding: 0 20px 0 25px;
-    &.active {
-      padding: 0 2px 0 25px;
-    }
+    // padding: 0 20px 0 25px;
+    // &.active {
+    //   padding: 0 2px 0 25px;
+    // }
     &-wrapper1 {
       display: flex;
     }
@@ -330,13 +371,10 @@ body {
     }
     &-btn {
       min-width: 125px;
-      height: 30px;
       padding: 0;
       border: 1px solid $colorWhite1;
-      border-radius: 5px;
       background-color: transparent;
       color: $colorWhite1;
-      cursor: pointer;
 
       &.isChoosen {
         background: $colorYellow2;
@@ -451,13 +489,10 @@ body {
 
     &-btn {
       width: 100%;
-      height: 40px;
       padding: 0;
       border: none;
-      border-radius: 10px;
       background: $colorYellow1;
       color: $colorWhite1;
-      cursor: pointer;
 
       &:disabled {
         opacity: 0.3;
@@ -483,14 +518,10 @@ body {
       justify-content: center;
       align-items: center;
       min-width: 585px;
-      height: 40px;
       padding: 0;
       border: none;
-      border-radius: 10px;
       background: $colorYellow1;
-      font-size: 18px;
       color: $colorWhite1;
-      cursor: pointer;
     }
   }
 }
@@ -560,7 +591,20 @@ body {
 }
 
 .answers {
+  height: calc(100vh - 280px);
   background-color: $colorBlack4;
+  overflow-y: auto;
+  scrollbar-width: thin;          /* "auto" или "thin" */
+  scrollbar-color: $colorPurple1 transparent;   /* цвет бегунка и зоны отслеживания */
+
+  &::-webkit-scrollbar {
+    width: 4px;               /* ширина всей полосы прокрутки */
+    &-thumb {
+      background-color: $colorPurple1;    /* цвет бегунка */
+      border-radius: 10px;       /* округлось бегунка */
+      height: 300px;
+    }
+  }
 
   &__container {
     position: relative;
@@ -808,9 +852,20 @@ body {
 }
 
 .report {
-  background-color: $colorBlack3;
   height: calc(100vh - 160px);
+  background-color: $colorBlack3;
   overflow-y: auto;
+  scrollbar-width: thin;          /* "auto" или "thin" */
+  scrollbar-color: $colorPurple1 transparent;   /* цвет бегунка и зоны отслеживания */
+
+  &::-webkit-scrollbar {
+    width: 4px;               /* ширина всей полосы прокрутки */
+    &-thumb {
+      background-color: $colorPurple1;    /* цвет бегунка */
+      border-radius: 10px;       /* округлось бегунка */
+      height: 300px;
+    }
+  }
 
   &__container {
     position: relative;
@@ -983,13 +1038,10 @@ body {
 
   &__btn {
     width: 100%;
-    height: 40px;
     padding: 0;
     border: none;
-    border-radius: 5px;
     background: $colorYellow1;
     color: $colorWhite1;
-    cursor: pointer;
   }
 }
 
@@ -1014,13 +1066,10 @@ body {
     margin-bottom: 10px;
     padding: 0;
     width: 400px;
-    height: 40px;
-    border-radius: 5px;
     border: 1px solid $colorWhite1;
     background: $colorBlack2;
     box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
     color: $colorWhite1;
-    cursor: pointer;
   }
   &__text {
     display: flex;

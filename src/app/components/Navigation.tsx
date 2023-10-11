@@ -22,7 +22,7 @@ const Navigation = ({ navLinks }: Props) => {
   // useSession использует реакт.контекст, чотбы заработал его нужно обернуть в SessionProvider. Это сделано в файле Providers.tsx
   // есть другой вариант вместо useSession - через сервер получать сессию и передавать сюда
   const session = useSession();
-  // console.log(session)
+  console.log(session)
 
   return (
     <>
@@ -42,11 +42,12 @@ const Navigation = ({ navLinks }: Props) => {
         {session?.data
           // callbackUrl специальное свойство которое перенаправляет нас на страницу
           ? <>
+            <p className="header__email">{session.data.user?.email}</p>
             <img onClick={() => setWantSignOut(!wantSignOut)} src="../../../signIn.svg" alt="profile's logo" />
-            {wantSignOut && <Link className="header__link header__link-signout" href='#' onClick={() => signOut({ callbackUrl: '/' })}>Log&nbsp;out</Link>}
+            {wantSignOut && <Link className="header__link header__link-signout btn" href='#' onClick={() => signOut({ callbackUrl: '/' })}>Log&nbsp;out</Link>}
           </>
           : <Link className="header__link header__link-signin" href='/signin'>
-            <p className="header__link-text">Sign In</p>
+            <p className="header__link-text btn">Sign In</p>
           </Link>
           // : <Link href='/api/auth/signin'>Sign In</Link>
         }

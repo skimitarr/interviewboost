@@ -25,9 +25,17 @@ export default function PageForm__leftSide({ getQuestionText, getCategoryTitle, 
     dispatch(getCurrentIdQuestion(initialIdQuestion));
   }, [initialIdQuestion]);
 
+
+  useEffect(() => {
+    if (pageName === 'interview') {
+      const choosenCategory = storeCategories.find(item => item.title === activeCategoriesName[0])
+      dispatch(getCurrentIdQuestion(choosenCategory?.questions[0]));
+    }
+  }, [activeCategoriesName]);
+
   useEffect(() => { // получаем сurrentIdQuestion
     if (storeCurrentIdQuestion && сurrentIdQuestion && initialIdQuestion) {
-      if (pageName !== 'questions' && storeCurrentIdQuestion !== сurrentIdQuestion && storeCurrentIdQuestion !== initialIdQuestion) { // showHighliting true если проводим поиск в вопросах
+      if (pageName !== 'interview' && storeCurrentIdQuestion !== сurrentIdQuestion && storeCurrentIdQuestion !== initialIdQuestion) { // showHighliting true если проводим поиск в вопросах
         setShowHighliting(true);
       }
     }
@@ -35,7 +43,7 @@ export default function PageForm__leftSide({ getQuestionText, getCategoryTitle, 
   }, [storeCurrentIdQuestion])
 
   useEffect(() => { // получаем категории из categoriesFromStore или из localStorage
-    if (pageName === "questions") { // pageName нужен, чтобы получать категории из localStorage только на этой странице
+    if (pageName === "interview") { // pageName нужен, чтобы получать категории из localStorage только на этой странице
       if (categoriesFromStore.length > 0) {
         setStoreCategories(categoriesFromStore)
       } else {
@@ -47,28 +55,6 @@ export default function PageForm__leftSide({ getQuestionText, getCategoryTitle, 
     }
   }, [categoriesFromStore]);
 
-  // useEffect(() => { // сохраняем в store только те вопросы, которые есть там в категориях
-  //   if (storeCategories.length > 0) {
-  //     let set = new Set();
-  //     storeCategories.forEach((category: ICategory) => {
-  //       category.questions.forEach(item => { set.add(item) })
-  //     });
-  //     const arrayOfIds = Array.from(set); // получаем все id вопросов со всех тем
-
-  //     const fetchQuestions = async () => {
-  //       try {
-  //         const questionsData = await getDbQuestions(arrayOfIds as string[]);
-  //         console.log(questionsData)
-  //         dispatch(getQuestions(questionsData))
-  //       } catch (error) {
-  //         console.error('Error getting documents:', error);
-  //       }
-  //     };
-  //     fetchQuestions();
-  //   }
-  // }, [storeCategories])
-
-
   useEffect(() => { // открываем список вопросов, когда изменяется сurrentIdQuestion
     function getCategoryTitleFromCurrentIdAnswer(currentIdAnswer: string) {
       const category = storeCategories.find(item => item.questions.includes(currentIdAnswer))
@@ -78,8 +64,17 @@ export default function PageForm__leftSide({ getQuestionText, getCategoryTitle, 
       }
     }
     const categoryTitle = getCategoryTitleFromCurrentIdAnswer(сurrentIdQuestion);
+    // if (categoryTitle) {
+    //   setActiveCategoriesName([...activeCategoriesName, categoryTitle]) // добавляем categoryTitle в массив открытых категорий
+    // }
     if (categoryTitle) {
-      setActiveCategoriesName([...activeCategoriesName, categoryTitle]) // добавляем categoryTitle в массив открытых категорий
+      if (pageName !== 'interview') {
+        setActiveCategoriesName([...activeCategoriesName, categoryTitle]) // добавляем categoryTitle в массив открытых категорий для страницы questions
+      } else {
+        if (activeCategoriesName.length <= 1 && categoryTitle !== activeCategoriesName[0]) { // заменяем categoryTitle в массиве открытых категорий для страницы interview
+          setActiveCategoriesName([categoryTitle])
+        } return // если уже есть, ничего не делаем
+      }
     }
   }, [сurrentIdQuestion]);
 
@@ -92,7 +87,11 @@ export default function PageForm__leftSide({ getQuestionText, getCategoryTitle, 
       let result = activeCategoriesName.filter(item => item !== categoryTitle)
       setActiveCategoriesName(result)
     } else {
-      setActiveCategoriesName([...activeCategoriesName, categoryTitle]) //если вопросы закрыты, откываем их
+      if (pageName !== 'interview') {
+        setActiveCategoriesName([...activeCategoriesName, categoryTitle]) //если вопросы закрыты, откываем их
+      } else {
+        setActiveCategoriesName([categoryTitle]) //если вопросы закрыты, откываем их
+      }
     }
   }
 
@@ -102,7 +101,11 @@ export default function PageForm__leftSide({ getQuestionText, getCategoryTitle, 
         if (activeCategoriesName.includes(category.title)) { //если вопросы открыты, ничего не делаем
           return
         } else {
-          setActiveCategoriesName([...activeCategoriesName, category.title]) //если вопросы закрыты, откываем их
+          if (pageName !== 'interview') {
+            setActiveCategoriesName([...activeCategoriesName, category.title]) //если вопросы закрыты, откываем их
+          } else {
+            setActiveCategoriesName([category.title]) //если вопросы закрыты, откываем их
+          }
         }
     })
   }
@@ -132,17 +135,17 @@ export default function PageForm__leftSide({ getQuestionText, getCategoryTitle, 
                 });
               })
                 .map((question: IQuestion, index: number) => {
-                  return pageName !== 'questions'
+                  return pageName !== 'interview'
                     ?
                     <p key={question.id}
-                      className={`questions__technology-questions questions__leftQustions ${question.id === сurrentIdQuestion && showHighliting ? 'highlited' : ''}`}
+                      className={`questions__technology-questions questions__leftQustions ${question.id === сurrentIdQuestion && showHighliting ? 'highlited' : ''} ${pageName === 'interview' ? 'cursor' : ''}`}
                       onClick={() => handleQuestion(question.text, question.id)}
                     >
                       {index + 1}. {question.text}
                     </p>
                     :
                     <p key={question.id}
-                      className={`questions__technology-questions questions__leftQustions ${question.id === сurrentIdQuestion ? 'highlited' : ''}`}
+                      className={`questions__technology-questions questions__leftQustions ${question.id === сurrentIdQuestion ? 'highlited' : ''} ${pageName === 'interview' ? 'cursor' : ''}`}
                       onClick={() => handleQuestion(question.text, question.id)}
                     >
                       {index + 1}. {question.text}
@@ -169,6 +172,6 @@ export default function PageForm__leftSide({ getQuestionText, getCategoryTitle, 
 // <Link
 //   key={question.id}
 //   onClick={() => handleQuestion(question.text, question.id)}
-//   href={`/questions/${question.id}`}
+//   href={`/interview/${question.id}`}
 //   className={`questions__technology-questions questions__leftQustions ${question.id === сurrentIdQuestion ? 'highlited' : ''}`}
 // >{index + 1}. {question.text}</Link>

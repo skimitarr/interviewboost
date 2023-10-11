@@ -4,9 +4,9 @@
 import { Navigation } from "./Navigation"
 
 const navItems = [
-  { label: 'Specialization', href: '/' },
-  { label: 'Form', href: '/form' },
-  { label: 'My questions', href: '/questions' },
+  { label: 'Home', href: '/' },
+  { label: 'Questions', href: '/questions' },
+  { label: 'Interview', href: '/interview' },
   { label: 'Reports', href: '/reports' },
   { label: 'Feedback', href: '/feedback' },
 ]

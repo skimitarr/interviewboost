@@ -123,7 +123,7 @@ export default function PageForm__rightSide() {
       const selectedQuestions = categories.flatMap((category) => category.questions); // если в сторе ничего нет
       setCheckedIdQuestions(selectedQuestions);
     }
-  }, [storeCategories, categories])
+  }, [categories])
 
   const showQuestions = (categoryTitle: string) => {
     if (activeCategoriesName.includes(categoryTitle)) { //если вопросы открыты, скрываем их
@@ -145,7 +145,7 @@ export default function PageForm__rightSide() {
 
   const saveQuestions = () => {
     localStorage.setItem('choosenCategories', JSON.stringify(storeCategories));
-    router.push('/questions');
+    router.push('/interview');
   }
 
   const selectQuestions = (questionId: string, questionCategory: ICategory) => { // добавляем/убираем вопросы
@@ -204,42 +204,69 @@ export default function PageForm__rightSide() {
               <div key={category.id} className={`questions__technology ${activeCategoriesName.length > 0 ? 'active' : ''}`}>
                 <div className='questions__technology-wrapper1'>
 
-                  {storeCategories.find(item => item.id === category.id)
-                    ? <div className='questions__technology-wrapper2'><button className={`questions__technology-name ${activeCategoriesName.includes(category.title) ? 'active' : ''} isChoosen`} onClick={() => showQuestions(category.title)}>{category.title}</button><p className="questions__technology-name-shadow"></p></div>
-                    : <div className='questions__technology-wrapper2'><button className={`questions__technology-name ${activeCategoriesName.includes(category.title) ? 'active' : ''}`} onClick={() => showQuestions(category.title)}>{category.title}</button><p className="questions__technology-name-shadow"></p></div>}
+
+                  {storeCategories.find(item => item.id === category.id) ?
+                    <div className='questions__technology-wrapper2'>
+                      <button
+                        className={`questions__technology-name ${activeCategoriesName.includes(category.title) ? 'active' : ''} isChoosen`}
+                        onClick={() => showQuestions(category.title)}
+                      >
+                        {category.title}
+                      </button>
+                      <p className="questions__technology-name-shadow"></p>
+                    </div>
+
+                    : <div className='questions__technology-wrapper2'>
+                      <button
+                        className={`questions__technology-name ${activeCategoriesName.includes(category.title) ? 'active' : ''}`}
+                        onClick={() => showQuestions(category.title)}
+                      >
+                        {category.title}
+                      </button>
+                      <p className="questions__technology-name-shadow"></p>
+                    </div>}
 
                   {storeCategories.find(item => item.id === category.id)
-                    ? <button className='questions__technology-btn questions__technology' onClick={() => removeStoreCategory(category)}>Отменить</button>
-                    : <button className='questions__technology-btn isChoosen' onClick={() => addStoreCategory(category)}>Добавить</button>}
+                    ? <button className='questions__technology-btn questions__technology btn' onClick={() => removeStoreCategory(category)}>Отменить</button>
+                    : <button className='questions__technology-btn isChoosen btn' onClick={() => addStoreCategory(category)}>Добавить</button>}
                 </div>
 
-                {activeCategoriesName.includes(category.title)
-                  ? questions.filter((item) => {
-                    return category.questions.some((el) => { // фильтруем questions, берем только те что есть в category
-                      return item.id === el;
-                    });
-                  })
-                    .map((item, index) => {
-                      return <div key={item.id} className='questions__technology-questions-wrapper'>
-                        <input id={item.id} className="checkbox" type="checkbox" onChange={() => selectQuestions(item.id, category)} checked={checkedIdQuestions.includes(item.id)} />
-                        <label htmlFor={item.id} className={`questions__technology-questions ${checkedIdQuestions.includes(item.id) ? '' : 'isSelected'}`}>{index + 1}. {item.text}</label>
-                      </div >
-                    })
-                  : ''}
+                {activeCategoriesName.includes(category.title) ? (
+                  <>
+                    <div className='questions__technology-questions-wrapper'>
+                      <input id={category.id} type="checkbox" className="checkbox" checked />
+                      <label htmlFor={category.id}>Выбрать все</label>
+                    </div>
+                    {questions
+                      .filter((item) => {
+                        return category.questions.some((el) => {
+                          return item.id === el;
+                        });
+                      })
+                      .map((item, index) => (
+                        <div key={item.id} className='questions__technology-questions-wrapper'>
+                          <input id={item.id} className="checkbox" type="checkbox" onChange={() => selectQuestions(item.id, category)} checked={checkedIdQuestions.includes(item.id)} />
+                          <label htmlFor={item.id} className={`questions__technology-questions ${checkedIdQuestions.includes(item.id) ? '' : 'isSelected'}`}>{index + 1}. {item.text}</label>
+                        </div>
+                      ))
+                    }
+                  </>
+                ) : null}
+
 
               </div>)
           })}
         </div>
 
         <div className='questions__nextPage-wrapper'>
-          <button className='questions__nextPage-btn' onClick={saveQuestions}>Сохранить</button>
+          <button className='questions__nextPage-btn btn' onClick={saveQuestions}>Сохранить</button>
         </div>
 
       </div>
       : <div className='questions__rightSide'>
         <div className='questions__noData'>
           <p className='questions__noData-desc'>Для начала Вам необходимо выбрать специализацию</p>
-          <Link className='questions__noData-btn' href='/'><p>Начнем</p></Link>
+          <Link className='questions__noData-btn btn' href='/'><p>Начнем</p></Link>
         </div>
       </div>
   )

@@ -59,7 +59,7 @@ export default function ProfessionCard({ profession }: { profession: IProffesion
   return (
     profession.id === '1'
       ? <Link href={{
-        pathname: '/form',
+        pathname: '/questions',
         query: { ProfeesionId: profession.id },
       }}
         onClick={() => handleClick(profession)} className='card' >

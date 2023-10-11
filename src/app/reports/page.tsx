@@ -352,13 +352,13 @@ export default function Reports() {
           </div>
 
           <div className='questions__nextPage-wrapper'>
-            <button className='questions__nextPage-btn' onClick={downloadFile}>Скачать отчет</button>
+            <button className='questions__nextPage-btn btn' onClick={downloadFile}>Скачать отчет</button>
           </div>
         </div>
 
         : <div className='questions__rightSide'>
           <div className='questions__noData'>
-            <Link className='questions__noData-btn' href='/'><p>Начнем</p></Link>
+            <Link className='questions__noData-btn btn' href='/'><p>Начнем</p></Link>
           </div>
         </div>}
 
