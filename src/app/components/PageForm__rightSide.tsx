@@ -8,6 +8,8 @@ import Link from "next/link"
 import { addCategory, getCategories, removeCategory } from '../store/DataSlice';
 import { IGrade, ICategory, IQuestion } from "../components/Types";
 
+type CheckedStates = Record<string, boolean>;
+
 export default function PageForm__rightSide() {
   const [grades, setGrades] = useState<IGrade[]>([]); // массив (junior middle) с базы данных
   const [activeGradeName, setActiveGradeName] = useState<string>('Junior'); // определяем активую кнопку (junior middle) для стилизации
@@ -16,6 +18,7 @@ export default function PageForm__rightSide() {
   const [activeCategoriesName, setActiveCategoriesName] = useState<string[]>([]); // определяем активные(раскрытые) категории (html css)
   const [questions, setQuestions] = useState<IQuestion[]>([]); // массив всех вопросов с базы данных
   const [checkedIdQuestions, setCheckedIdQuestions] = useState<string[]>([]); // массив id вопросов которые checked
+  const [checkedStates, setCheckedStates] = useState<CheckedStates>({});
 
   const router = useRouter();
   const dispatch = useAppDispatch()
@@ -183,6 +186,82 @@ export default function PageForm__rightSide() {
     }
   }
 
+  const selectAllQuestions = (questionCategory: ICategory, itemId: string) => { // добавляем/убираем вопросы
+    let currentCategoriesForStore = storeAllCategories.find(item => item.id === questionCategory.id); // нужная категория
+    const restCategoriesForStore = categoriesForStore.filter(item => item.id !== questionCategory.id); // остальные категории
+    // if (currentCategoriesForStore) {
+    // setCheckedStates((prev) => ({ ...prev, [itemId]: !prev[itemId] }));
+    // if (checkedStates[itemId]) {
+    //   currentCategoriesForStore.questions.forEach(item => {
+    //     if (!checkedIdQuestions.includes(item)) {
+    //       setCheckedIdQuestions(prev => [...prev, item])
+    //     }
+    //   })
+    // } else {
+    //   let copy = checkedIdQuestions
+    //   currentCategoriesForStore.questions.forEach(item => {
+    //     const index = copy.findIndex((i) => i === item);
+    //     if (index !== -1) { // Если объект найден, удаляем его из массива
+    //       copy.splice(index, 1);
+    //     }
+    //   })
+    //   setCheckedIdQuestions(copy)
+    //   const temp = JSON.parse(JSON.stringify(currentCategoriesForStore.questions)) //удаляем вопросы для передачи в стор
+    //   temp.length = 0
+    //   currentCategoriesForStore = { ...currentCategoriesForStore, questions: temp }
+    // }
+
+    // setCategoriesForStore([...restCategoriesForStore, currentCategoriesForStore]);
+    // if (storeCategories.length > 0) { // если есть категории в сторе
+    //   const isCategory = storeCategories.find(item => item.id === questionCategory.id);
+    //   if (isCategory) { // если есть искомая категория в сторе
+    //     dispatch(addCategory(currentCategoriesForStore));
+    //   }
+    // }
+    // }
+
+    setCheckedStates((prev) => {
+      const updatedState = { ...prev, [itemId]: !prev[itemId] };
+      if (currentCategoriesForStore) {
+        if (updatedState[itemId]) {
+          console.log(updatedState[itemId])
+          currentCategoriesForStore.questions.forEach(item => {
+            if (!checkedIdQuestions.includes(item)) {
+              setCheckedIdQuestions(prev => [...prev, item])
+            }
+          })
+        } else {
+          console.log(updatedState[itemId])
+          let copy = checkedIdQuestions
+          currentCategoriesForStore.questions.forEach(item => {
+            const index = copy.findIndex((i) => i === item);
+            if (index !== -1) { // Если объект найден, удаляем его из массива
+              copy.splice(index, 1);
+            }
+          })
+          setCheckedIdQuestions(copy)
+          const temp = JSON.parse(JSON.stringify(currentCategoriesForStore.questions)) //удаляем вопросы для передачи в стор
+          temp.length = 0
+          currentCategoriesForStore = { ...currentCategoriesForStore, questions: temp }
+        }
+
+        setCategoriesForStore([...restCategoriesForStore, currentCategoriesForStore]);
+        if (storeCategories.length > 0) { // если есть категории в сторе
+          const isCategory = storeCategories.find(item => item.id === questionCategory.id);
+          if (isCategory) { // если есть искомая категория в сторе
+            dispatch(addCategory(currentCategoriesForStore));
+          }
+        }
+      }
+      return updatedState;
+    });
+
+
+    if (checkedIdQuestions.length === 0) { // чтобы не возникало ошибки при обращении к firestore
+      return;
+    }
+  }
+
   return (
     storeProfession
       ? <div className='questions__rightSide'>
@@ -234,7 +313,9 @@ export default function PageForm__rightSide() {
                 {activeCategoriesName.includes(category.title) ? (
                   <>
                     <div className='questions__technology-questions-wrapper'>
-                      <input id={category.id} type="checkbox" className="checkbox" checked />
+                      <input id={category.id} type="checkbox" className="checkbox"
+                        onChange={() => selectAllQuestions(category, category.id)}
+                        checked={checkedStates[category.id] || false} />
                       <label htmlFor={category.id}>Выбрать все</label>
                     </div>
                     {questions
@@ -245,8 +326,10 @@ export default function PageForm__rightSide() {
                       })
                       .map((item, index) => (
                         <div key={item.id} className='questions__technology-questions-wrapper'>
-                          <input id={item.id} className="checkbox" type="checkbox" onChange={() => selectQuestions(item.id, category)} checked={checkedIdQuestions.includes(item.id)} />
-                          <label htmlFor={item.id} className={`questions__technology-questions ${checkedIdQuestions.includes(item.id) ? '' : 'isSelected'}`}>{index + 1}. {item.text}</label>
+                          <input id={`question-${item.id}`} className="checkbox" type="checkbox" onChange={() => selectQuestions(item.id, category)}
+                            checked={checkedIdQuestions.includes(item.id)} />
+                          <label htmlFor={`question-${item.id}`}
+                            className={`questions__technology-questions ${checkedIdQuestions.includes(item.id) ? '' : 'isSelected'}`}>{index + 1}. {item.text}</label>
                         </div>
                       ))
                     }
