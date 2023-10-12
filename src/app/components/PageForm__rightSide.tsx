@@ -316,7 +316,7 @@ export default function PageForm__rightSide() {
                       <input id={category.id} type="checkbox" className="checkbox"
                         onChange={() => selectAllQuestions(category, category.id)}
                         checked={checkedStates[category.id] || false} />
-                      <label htmlFor={category.id}>Выбрать все</label>
+                      <label htmlFor={category.id} className='questions__technology-questions'>Выбрать все</label>
                     </div>
                     {questions
                       .filter((item) => {

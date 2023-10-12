@@ -146,13 +146,13 @@ body {
   justify-content: center;
   top: 0;
   right: 0;
-  width: 125px;
   height: 30px;
+  padding: 0 20px;
   background: linear-gradient(180deg, rgba(218, 135, 255, 0) 0%, #DA87FF 100%);
   border-radius: 0px 5px;
 }
 .card__notAcive-text span {
-  color: #3C3E49;
+  color: #FFF;
 }
 .card__wrapper {
   display: grid;
@@ -194,6 +194,7 @@ body {
 }
 .questions__leftSide-div {
   font-size: 0;
+  padding: 0 27px;
   margin-bottom: 5px;
 }
 .questions__choosenQuestions-reports {

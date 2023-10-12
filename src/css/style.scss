@@ -165,13 +165,13 @@ body {
       justify-content: center;
       top: 0;
       right: 0;
-      width: 125px;
       height: 30px;
+      padding: 0 20px;
       background: $colorYellow1;
       border-radius: 0px 5px;
 
       & span {
-        color: $colorBlack3;
+        color: $colorWhite1;
       }
     }
   }
@@ -220,6 +220,7 @@ body {
     }
     &-div {
       font-size: 0;
+      padding: 0 27px;
       margin-bottom: 5px;
     }
   }

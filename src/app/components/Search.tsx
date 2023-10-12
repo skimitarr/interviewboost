@@ -2,12 +2,13 @@
 import { useState, useEffect, ChangeEvent } from "react";
 import { useAppSelector, useAppDispatch } from '../hooks'
 
-import { ICategory, IQuestion } from "./Types";
+import { DataReport, ICategory, IQuestion, ISearchReport } from "./Types";
 import { getCurrentIdQuestion } from '../store/DataSlice'
 
-export default function Search() {
+export default function Search({ pageName, getCurrentReport }: ISearchReport) {
   const [searchText, setSearchText] = useState('');
   const [searchResult, setSearchResult] = useState<IQuestion[]>([]);
+  const [searchResultReports, setSearchResultReports] = useState<DataReport[]>([]);
 
   const dispatch = useAppDispatch()
   const storeProfession = useAppSelector((state) => state.profession)
@@ -15,7 +16,7 @@ export default function Search() {
   const storeQuestions = useAppSelector((state) => state.questions)
 
   useEffect(() => {
-    if (searchText) {
+    if (searchText && pageName !== 'reports') {
       let set = new Set(); // фильтрация - получаем все вопросы из левой части и в них проводим поиск
       storeCategories.forEach((category: ICategory) => {
         category.questions.forEach(item => { set.add(item) })
@@ -32,6 +33,16 @@ export default function Search() {
         }
       });
     }
+
+    if (searchText && pageName === 'reports') {
+      const data = JSON.parse(localStorage.getItem('allDatas') || '[]');
+      data.forEach((item: DataReport) => {
+        const checkQuestion = item.name.toLowerCase().includes(searchText.trim().toLowerCase());
+        if (checkQuestion) {
+          setSearchResultReports(prevArr => [...prevArr, item])
+        }
+      });
+    }
   }, [searchText]);
 
   const searchInQuestion = (e: ChangeEvent<HTMLInputElement>) => { // при вводе в поиске показываются совпадающие вопросы (через useEffect)
@@ -41,6 +52,7 @@ export default function Search() {
 
   const clearSearch = () => { // очищаем результаты поиска
     setSearchResult([])
+    setSearchResultReports([])
     setSearchText('');
   }
 
@@ -49,9 +61,18 @@ export default function Search() {
     clearSearch();
   }
 
+  const getReport = (report: DataReport, id: string) => {
+    if (getCurrentReport) {
+      getCurrentReport(report, id)
+    }
+    clearSearch();
+  }
+
   return (
     <div className="search" >
-      <h2 className="search__title">Вопросы для {storeProfession?.title}</h2>
+      {pageName !== 'reports'
+        ? <h2 className="search__title">Вопросы для {storeProfession?.title}</h2>
+        : <h2 className="search__title">История отчетов</h2>}
       <div className="search__wrapper">
         <input type="text"
           className={`search__input ${searchText ? '' : 'hasPlaceholder'}`}
@@ -63,9 +84,28 @@ export default function Search() {
 
       {searchResult.length > 0 && <div className="search__results">
         {searchResult.map(question => {
+          console.log(searchResult)
           const parts = question.text.split(new RegExp(`(${searchText})`, 'gi')); //разбиваем текст чтобы выделить searchText
           return (
             <p key={question.id} className="search__result" onClick={() => getIdQuestion(question.id)}>
+              {parts.map((part, index) =>
+                part.toLowerCase() === searchText.toLowerCase()
+                  ? <span key={index} className="search__highlighted-text">{part}</span>
+                  : <span key={index}>{part}</span>
+              )}
+            </p>
+          );
+        })}
+      </div>}
+
+      {searchResultReports.length > 0 && <div className="search__results">
+        {searchResultReports.map(report => {
+          console.log(report)
+          const parts = report.name.split(new RegExp(`(${searchText})`, 'gi')); //разбиваем текст чтобы выделить searchText
+          const reportWithoutId = { ...report }; // Создаем копию объекта report без поля id, чтобы онo не отрисовывалась
+          delete reportWithoutId.id;
+          return (
+            <p key={report.id} className="search__result" onClick={() => getReport(reportWithoutId, report.id as string)}>
               {parts.map((part, index) =>
                 part.toLowerCase() === searchText.toLowerCase()
                   ? <span key={index} className="search__highlighted-text">{part}</span>

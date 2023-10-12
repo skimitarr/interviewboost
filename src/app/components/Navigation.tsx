@@ -22,7 +22,6 @@ const Navigation = ({ navLinks }: Props) => {
   // useSession использует реакт.контекст, чотбы заработал его нужно обернуть в SessionProvider. Это сделано в файле Providers.tsx
   // есть другой вариант вместо useSession - через сервер получать сессию и передавать сюда
   const session = useSession();
-  console.log(session)
 
   return (
     <>

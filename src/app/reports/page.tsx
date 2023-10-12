@@ -8,6 +8,7 @@ import { DataReport } from "../components/Types";
 
 import html2canvas from 'html2canvas';
 import pdfMake from 'pdfmake/build/pdfmake';
+import Search from "../components/Search";
 // import pdfFonts from "pdfmake/build/vfs_fonts";
 // pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
@@ -269,6 +270,7 @@ export default function Reports() {
   return (
     <div className='container container__form'>
       <div className='questions__leftSide'>
+        <Search pageName='reports' getCurrentReport={getCurrentReport} />
         {allData && allData.map((item) => {
           const itemWithoutId = { ...item }; // Создаем копию объекта item без поля id, чтобы онo не отрисовывалась
           delete itemWithoutId.id;

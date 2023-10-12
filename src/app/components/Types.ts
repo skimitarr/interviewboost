@@ -46,6 +46,11 @@ export interface ILeftPart {
   pageName?: string
 }
 
+export interface ISearchReport {
+  getCurrentReport?: (item: DataReport, id: string) => void;
+  pageName?: string
+}
+
 export type DataReport = {
   [blockName: string]: (string | number | undefined)[][];
 } & AdditionalData;
