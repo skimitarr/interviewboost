@@ -48,6 +48,7 @@ export default function Search({ pageName, getCurrentReport }: ISearchReport) {
   const searchInQuestion = (e: ChangeEvent<HTMLInputElement>) => { // при вводе в поиске показываются совпадающие вопросы (через useEffect)
     setSearchResult([])
     setSearchText(e.target.value);
+    setSearchResultReports([])
   }
 
   const clearSearch = () => { // очищаем результаты поиска

@@ -13,7 +13,7 @@ import { useSession } from "next-auth/react"
 import { DataReport, IQuestion, IAnswer, ICategory } from "../components/Types";
 import Search from '../components/Search';
 import PageForm__leftSide from '../components/PageForm__leftSide';
-import { getDbAllAnswers, getDbAllQuestions, getDbAnswers } from "@/services/DatabaseService";
+import { addReport, getDbAllAnswers, getDbAllQuestions, getDbAnswers } from "@/services/DatabaseService";
 import { getAnswers, getQuestions } from "../store/DataSlice";
 
 export default function MyQuestions() {
@@ -236,6 +236,19 @@ export default function MyQuestions() {
       conclusion: [[`Общий вывод`], [conclusion, averageMark]]
     };
     localStorage.setItem('dataReport', JSON.stringify(newDataReport));
+
+    function flattenArrays(obj: any) { // готовим данные для отправки отчета в Firestore
+      if (Array.isArray(obj)) {
+        return obj.flat(Infinity);
+      } else if (typeof obj === 'object') {
+        for (let key in obj) {
+          obj[key] = flattenArrays(obj[key]);
+        }
+      }
+      return obj;
+    }
+    const flattenedDataToGoogleSheets = flattenArrays(dataToGoogleSheets); // Применяем flat() к вашей структуре данных
+    addReport(newDataReport.name, { data: flattenedDataToGoogleSheets }) // Отправляем данные в Firestore
 
     setIsOpenModal(!isOpenModal)
 

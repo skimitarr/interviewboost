@@ -406,13 +406,15 @@ body {
   width: 66.6666666667%;
   height: 80px;
   bottom: 0;
-  right: 0;
   padding: 0 25px;
   background-color: #242526;
 }
 .questions__nextPage-wrapper.left {
   width: 33.3333333333%;
   border-top: 1px solid white;
+}
+.questions__nextPage-wrapper.right {
+  right: 0;
 }
 .questions__nextPage-btn {
   width: 100%;
@@ -966,6 +968,7 @@ input[type=checkbox] ~ label::before {
 
 input[type=checkbox] ~ label::before {
   border: 1px inset #FFF;
+  cursor: pointer;
 }
 
 input[type=checkbox]:checked ~ label::before {

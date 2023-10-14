@@ -57,22 +57,45 @@ export default function ProfessionCard({ profession }: { profession: IProffesion
   }
 
   return (
-    profession.id === '1'
-      ? <Link href={{
-        pathname: '/questions',
-        query: { ProfeesionId: profession.id },
-      }}
-        onClick={() => handleClick(profession)} className='card' >
-        <p className='card__title'>{profession.title}</p>
-        <p className='card__desc'>{profession.desc}</p>
-      </Link>
-      : <div className='card__notAcive'>
-        <div className='card__notAcive-wrapper'>
+    <>
+      {profession.id === '1'
+        ? <Link href={{
+          pathname: '/questions',
+          query: { ProfeesionId: profession.id },
+        }}
+          onClick={() => handleClick(profession)} className='card' >
           <p className='card__title'>{profession.title}</p>
           <p className='card__desc'>{profession.desc}</p>
+        </Link>
+        : <div className='card__notAcive'>
+          <div className='card__notAcive-wrapper'>
+            <p className='card__title'>{profession.title}</p>
+            <p className='card__desc'>{profession.desc}</p>
+          </div>
+          <p className='card__notAcive-text'><span>Coming soon</span></p>
+        </div>}
+
+
+      {/* {profession.id === '2'
+        ? <div className='card__notAcive'>
+          <div className='card__notAcive-wrapper'>
+            <p className='card__title'>{profession.title}</p>
+            <p className='card__desc'>{profession.desc}</p>
+          </div>
+          <p className='card__notAcive-text'><span>NEW</span></p>
         </div>
-        <p className='card__notAcive-text'><span>Сoming soon</span></p>
-      </div>
+        : null}
+
+      {profession.id === '3'
+        ? <div className='card__notAcive'>
+          <div className='card__notAcive-wrapper'>
+            <p className='card__title'>{profession.title}</p>
+            <p className='card__desc'>{profession.desc}</p>
+          </div>
+          <p className='card__notAcive-text'><span>Coming soon</span></p>
+        </div>
+        : null} */}
+    </>
 
   )
 }

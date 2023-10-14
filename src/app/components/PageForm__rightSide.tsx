@@ -8,8 +8,6 @@ import Link from "next/link"
 import { addCategory, getCategories, removeCategory } from '../store/DataSlice';
 import { IGrade, ICategory, IQuestion } from "../components/Types";
 
-type CheckedStates = Record<string, boolean>;
-
 export default function PageForm__rightSide() {
   const [grades, setGrades] = useState<IGrade[]>([]); // массив (junior middle) с базы данных
   const [activeGradeName, setActiveGradeName] = useState<string>('Junior'); // определяем активую кнопку (junior middle) для стилизации
@@ -18,7 +16,7 @@ export default function PageForm__rightSide() {
   const [activeCategoriesName, setActiveCategoriesName] = useState<string[]>([]); // определяем активные(раскрытые) категории (html css)
   const [questions, setQuestions] = useState<IQuestion[]>([]); // массив всех вопросов с базы данных
   const [checkedIdQuestions, setCheckedIdQuestions] = useState<string[]>([]); // массив id вопросов которые checked
-  const [checkedStates, setCheckedStates] = useState<CheckedStates>({});
+  const [checkedStates, setCheckedStates] = useState<{ [key: string]: boolean }>({});
 
   const router = useRouter();
   const dispatch = useAppDispatch()
@@ -186,39 +184,17 @@ export default function PageForm__rightSide() {
     }
   }
 
-  const selectAllQuestions = (questionCategory: ICategory, itemId: string) => { // добавляем/убираем вопросы
+  useEffect(() => { // делаем все checkedStates изначально true
+    const initialCheckedStates: { [key: string]: boolean } = {};
+    categories.forEach(category => {
+      initialCheckedStates[category.id] = true;
+    });
+    setCheckedStates(initialCheckedStates);
+  }, [categories]);
+
+  const selectAllQuestions = (questionCategory: ICategory, itemId: string) => { // добавляем/убираем все вопросы
     let currentCategoriesForStore = storeAllCategories.find(item => item.id === questionCategory.id); // нужная категория
     const restCategoriesForStore = categoriesForStore.filter(item => item.id !== questionCategory.id); // остальные категории
-    // if (currentCategoriesForStore) {
-    // setCheckedStates((prev) => ({ ...prev, [itemId]: !prev[itemId] }));
-    // if (checkedStates[itemId]) {
-    //   currentCategoriesForStore.questions.forEach(item => {
-    //     if (!checkedIdQuestions.includes(item)) {
-    //       setCheckedIdQuestions(prev => [...prev, item])
-    //     }
-    //   })
-    // } else {
-    //   let copy = checkedIdQuestions
-    //   currentCategoriesForStore.questions.forEach(item => {
-    //     const index = copy.findIndex((i) => i === item);
-    //     if (index !== -1) { // Если объект найден, удаляем его из массива
-    //       copy.splice(index, 1);
-    //     }
-    //   })
-    //   setCheckedIdQuestions(copy)
-    //   const temp = JSON.parse(JSON.stringify(currentCategoriesForStore.questions)) //удаляем вопросы для передачи в стор
-    //   temp.length = 0
-    //   currentCategoriesForStore = { ...currentCategoriesForStore, questions: temp }
-    // }
-
-    // setCategoriesForStore([...restCategoriesForStore, currentCategoriesForStore]);
-    // if (storeCategories.length > 0) { // если есть категории в сторе
-    //   const isCategory = storeCategories.find(item => item.id === questionCategory.id);
-    //   if (isCategory) { // если есть искомая категория в сторе
-    //     dispatch(addCategory(currentCategoriesForStore));
-    //   }
-    // }
-    // }
 
     setCheckedStates((prev) => {
       const updatedState = { ...prev, [itemId]: !prev[itemId] };
@@ -255,7 +231,6 @@ export default function PageForm__rightSide() {
       }
       return updatedState;
     });
-
 
     if (checkedIdQuestions.length === 0) { // чтобы не возникало ошибки при обращении к firestore
       return;
@@ -341,7 +316,7 @@ export default function PageForm__rightSide() {
           })}
         </div>
 
-        <div className='questions__nextPage-wrapper'>
+        <div className='questions__nextPage-wrapper right'>
           <button className='questions__nextPage-btn btn' onClick={saveQuestions}>Сохранить</button>
         </div>
 
