@@ -256,16 +256,16 @@ for (let index = 1; index <= 629; index++) {
 //   arr.push(index.toString());
 // }
 
-const setDocs = () => { // добавляем подколлекцию
-  for (const category of a) {
-    setDoc(doc(db, "answers", category.id), category);
-  }
+// const setDocs = () => { // добавляем подколлекцию
+//   for (const category of a) {
+//     setDoc(doc(db, "answers", category.id), category);
+//   }
   // setDoc(doc(db, "categories", '16'), {
   //   id: '16',
   //   questions: arr,
   //   title: 'Redux Toolkit'
   // });
-};
+// };
 
 // const updateDocs = () => { // заменем поле документа
 //   updateDoc(doc(db, "categories", "4"), {
