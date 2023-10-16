@@ -1,4 +1,4 @@
-import { getDbProfessions, setDocs } from '../services/DatabaseService'
+import { getDbProfessions } from '../services/DatabaseService'
 import ProfessionCard from './components/ProfessionCard';
 
 // setDocs()
