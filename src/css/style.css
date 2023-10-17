@@ -388,6 +388,7 @@ body {
   color: #FFF;
   letter-spacing: 0.5px;
   line-height: 1.5;
+  cursor: pointer;
 }
 .questions__technology-questions.highlited {
   color: #DA87FF;
