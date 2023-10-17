@@ -21,8 +21,6 @@ export default function Reports() {
   const session = useSession();
   const router = useRouter();
 
-  console.log(session)
-
   useEffect(() => { // получаем allData
     const tempAllData = localStorage.getItem('allDatas') || '[]';
     const tempCurrentData = localStorage.getItem('dataReport') ?? '[]';
