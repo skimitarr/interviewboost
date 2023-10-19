@@ -1,5 +1,5 @@
 'use client'
-import { ChangeEvent, FormEvent, MouseEventHandler, useEffect, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { polyfill } from 'interweave-ssr'; // interweave для того чтобы прочитать HTML из объекта
 import { Markup } from 'interweave'; // interweave для того чтобы прочитать HTML из объекта
 import { useAppSelector, useAppDispatch } from '../hooks'
@@ -13,7 +13,7 @@ import { useSession } from "next-auth/react"
 import { DataReport, IQuestion, IAnswer, ICategory } from "../components/Types";
 import Search from '../components/Search';
 import PageForm__leftSide from '../components/PageForm__leftSide';
-import { addReport, getDbAllAnswers, getDbAllQuestions, getDbAnswers } from "@/services/DatabaseService";
+import { addReport, getDbAllAnswers, getDbAllQuestions } from "@/services/DatabaseService";
 import { getAnswers, getQuestions } from "../store/DataSlice";
 
 const arrMarks = ['0', '5', '10', '15', '20', '25', '30', '35', '40', '45', '50', '55', '60', '65', '70', '75', '80', '85', '90', '95', '100',]
@@ -287,14 +287,6 @@ export default function MyQuestions() {
     setForm({
       ...form,
       [e.target.name]: e.target.value,
-      question: nameQuestion,
-    });
-  };
-
-  const handleClick = (mark: string) => {
-    setForm({
-      ...form,
-      mark,
       question: nameQuestion,
     });
   };
