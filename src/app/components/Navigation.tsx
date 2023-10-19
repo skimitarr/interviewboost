@@ -4,7 +4,7 @@
 import { useSession, signOut } from "next-auth/react"
 import Link from "next/link"
 import { usePathname } from 'next/navigation'
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 type NavLink = {
   label: string
@@ -23,8 +23,42 @@ const Navigation = ({ navLinks }: Props) => {
   // есть другой вариант вместо useSession - через сервер получать сессию и передавать сюда
   const session = useSession();
 
+  //парящий хедер
+  // const [isScrolled, setIsScrolled] = useState(false);
+  // const scrollContainer = document.querySelector('.report');
+  // const header = document.querySelector('.header');
+  // const container = document.querySelector('.container');
+  // useEffect(() => {
+  //   const handleScroll = () => {
+  //     if (scrollContainer) {
+  //       scrollContainer.scrollTop > 10 ? setIsScrolled(true) : setIsScrolled(false);
+  //     }
+  //   };
+  //   if (scrollContainer) {
+  //     scrollContainer.addEventListener('scroll', handleScroll);
+  //   }
+  //   return () => {
+  //     if (scrollContainer) {
+  //       scrollContainer.removeEventListener('scroll', handleScroll);
+  //     }
+  //   };
+  // }, []);
+  // useEffect(() => {
+  //   if (header) {
+  //     if (isScrolled) {
+  //       header.classList.add('scrolled');
+  //       container?.classList.add('scrolled');
+  //       scrollContainer?.classList.add('scrolled');
+  //     } else {
+  //       header.classList.remove('scrolled');
+  //       container?.classList.remove('scrolled');
+  //       scrollContainer?.classList.remove('scrolled');
+  //     }
+  //   }
+  // }, [isScrolled]);
+
   return (
-    <>
+    <header className="header">
       <div className="header__wrapper-1">
         {
           navLinks.map(link => {
@@ -51,7 +85,7 @@ const Navigation = ({ navLinks }: Props) => {
           // : <Link href='/api/auth/signin'>Sign In</Link>
         }
       </div>
-    </>
+    </header>
   )
 }
 export { Navigation }

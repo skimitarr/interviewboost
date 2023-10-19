@@ -13,14 +13,14 @@ const navItems = [
 
 const TheHeader = () => {
   return (
-    <header className="header">
+    <>
       {/* <Link href='/'>Home</Link>
       <Link href='/questions'>Questions & Answers</Link>
       <Link href='/video'>Video</Link> */}
 
       {/* подключение клиентского компонента в серверный */}
       <Navigation navLinks={navItems} />
-    </header>
+    </>
   )
 }
 export { TheHeader }

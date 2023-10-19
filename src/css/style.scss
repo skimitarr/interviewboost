@@ -45,6 +45,14 @@ body {
   align-items: center;
   height: 80px;
   background-color: $colorBlack2;
+  box-shadow: 2px 2px 10px red;
+  // transition: height 0.3s ease-in-out, background-color 0.3s ease-in-out;
+
+  // &.scrolled {
+  //   height: 60px;
+  //   background-color: #3e404d;
+  //   transition: height 0.3s ease-in-out, background-color 0.3s ease-in-out;
+  // }
 
   &__wrapper-1 {
     display: flex;
@@ -117,6 +125,12 @@ body {
 .container {
   background-color: $colorBlack1;
   min-height: calc(100vh - 80px);
+  // transition: min-height 0.3s ease-in-out;
+
+  // &.scrolled {
+  //   min-height: calc(100vh - 60px);
+  //   transition: min-height 0.3s ease-in-out;
+  // }
 
   &__home {
     display: flex;
@@ -633,14 +647,16 @@ body {
   &__form {
     position: fixed;
     width: calc(100% *2 / 3);
-    height: 200px;
+    height: 220px;
     bottom: 0;
     right: 0;
-    padding: 0 18px;
+    padding: 0 10px;
     background-color: $colorBlack2;
   }
 
   &__title {
+    padding-left: 30px;
+    margin-top: 20px;
     color: $colorWhite1;
   }
 
@@ -648,35 +664,93 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-around;
-    margin: 22px auto 50px auto;
+    margin: 12px auto 40px auto;
   }
 
   &__wrapper-mark {
     display: flex;
-    align-items: center;
-  }
-
-  &__mark {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    margin-right: 15px;
-    border-radius: 50%;
-    width: 20px;
-    height: 20px;
-    background-color: $colorWhite2; /* Цвет радиокнопки (например, синий) */
-    outline: none;
-
-    &:checked {
-      border: 2px solid $colorWhite2;
-      background-color: red;
+    width: 50px;
+    &:not(:last-child) {
+      margin-right: 10px;
     }
   }
 
+  &__mark {
+    display: none;
+    /* Стилизуем checked label, чтобы обозначить выбранный вариант */
+    &:checked {
+      & + .mark_0-55 {
+        background-color: #EB6C66;
+        height: 50px;
+        margin: 0;
+        padding: 15px 0;
+      }
+      & + .mark_60-65 {
+        background-color: #E9A469;
+        height: 50px;
+        margin: 0;
+        padding: 15px 0;
+      }
+      & + .mark_70-75 {
+        background-color: #D3BE5D;
+        height: 50px;
+        margin: 0;
+        padding: 15px 0;
+      }
+      & + .mark_80-85 {
+        background-color: #1583EC;
+        height: 50px;
+        margin: 0;
+        padding: 15px 0;
+      }
+      & + .mark_90-100 {
+        background-color: #37A77B;
+        height: 50px;
+        margin: 0;
+        padding: 15px 0;
+      }
+    }
+  }
+
+  /* Стилизуем label, чтобы они выглядели как кнопки */
   &__label {
-    margin-right: 15px;
-    font-size: 32px;
+    width: 100%;
+    height: 30px;
+    padding: 5px 0;
+    margin: 10px 0;
+    text-align: center;
+    border-radius: 5px;
+    border: 1px solid $colorWhite1;
+    background-color: $colorBlack4;
     color: $colorWhite1;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+
+    &:hover {
+      height: 50px;
+      margin: 0;
+      padding: 15px 0;
+
+      &.mark_0-55 {
+        background-color: #EB6C66;
+      }
+      &.mark_60-65 {
+        background-color: #E9A469;
+      }
+      &.mark_70-75 {
+        background-color: #D3BE5D;
+      }
+      &.mark_80-85 {
+        background-color: #1583EC;
+      }
+      &.mark_90-100 {
+        background-color: #37A77B;
+      }
+    }
+
+    &:active {
+      box-shadow: inset -6px -6px 9px 0px rgba(255,255,255,0.4), inset 6px 6px 9px rgba(0, 0, 0, 0.4)
+    }
   }
 
   &__textarea {
@@ -755,36 +829,36 @@ body {
 	color:#7A7A7A;
 }
 
-.mark1 {
-    color: $mark1;
-  &:checked {
-    background-color: $mark1;
-  }
-}
-.mark2 {
-  color: $mark2;
-&:checked {
-  background-color: $mark2;
-}
-}
-.mark3 {
-  color: $mark3;
-&:checked {
-  background-color: $mark3;
-}
-}
-.mark4 {
-  color: $mark4;
-&:checked {
-  background-color: $mark4;
-}
-}
-.mark5 {
-  color: $mark5;
-&:checked {
-  background-color: $mark5;
-}
-}
+// .mark1 {
+//     color: $mark1;
+//   &:checked {
+//     background-color: $mark1;
+//   }
+// }
+// .mark2 {
+//   color: $mark2;
+// &:checked {
+//   background-color: $mark2;
+// }
+// }
+// .mark3 {
+//   color: $mark3;
+// &:checked {
+//   background-color: $mark3;
+// }
+// }
+// .mark4 {
+//   color: $mark4;
+// &:checked {
+//   background-color: $mark4;
+// }
+// }
+// .mark5 {
+//   color: $mark5;
+// &:checked {
+//   background-color: $mark5;
+// }
+// }
 
 .modalWindow {
   position: fixed;
@@ -863,6 +937,7 @@ body {
   overflow-y: auto;
   scrollbar-width: thin;          /* "auto" или "thin" */
   scrollbar-color: $colorPurple1 transparent;   /* цвет бегунка и зоны отслеживания */
+  // transition: height 0.3s ease-in-out;
 
   &::-webkit-scrollbar {
     width: 4px;               /* ширина всей полосы прокрутки */
@@ -872,6 +947,11 @@ body {
       height: 300px;
     }
   }
+
+  // &.scrolled {
+  //   height: calc(100vh - 140px);
+  //   transition: height 0.3s ease-in-out;
+  // }
 
   &__container {
     position: relative;
