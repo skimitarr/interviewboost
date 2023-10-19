@@ -1,11 +1,11 @@
 import { getDbProfessions } from '../services/DatabaseService'
 import ProfessionCard from './components/ProfessionCard';
-
 // setDocs()
 
 export default async function Home() {
 
   const professions = await getDbProfessions()
+
 
   return (
     <div className='container container__home'>
