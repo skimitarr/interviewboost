@@ -13,8 +13,10 @@ import { useSession } from "next-auth/react"
 import { DataReport, IQuestion, IAnswer, ICategory } from "../components/Types";
 import Search from '../components/Search';
 import PageForm__leftSide from '../components/PageForm__leftSide';
-import { addReport, getDbAllAnswers, getDbAllQuestions, getDbAnswers } from "@/services/DatabaseService";
+import { addReport, getDbAllAnswers, getDbAllQuestions } from "@/services/DatabaseService";
 import { getAnswers, getQuestions } from "../store/DataSlice";
+
+const arrMarks = ['0', '5', '10', '15', '20', '25', '30', '35', '40', '45', '50', '55', '60', '65', '70', '75', '80', '85', '90', '95', '100',]
 
 export default function MyQuestions() {
   const [localData, setLocalData] = useState<ICategory[]>([]); // категории из localStorage
@@ -23,7 +25,7 @@ export default function MyQuestions() {
   const [dataReport, setDataReport] = useState<DataReport | null>(null); // отправляем и в гугл таблицу и на страницу reports
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [currentIdQuestion, setCurrentIdQuestion] = useState(''); // определяем активные(раскрытые) вопросы по id
-  const [currentMark, setCurrentMark] = useState<string | number>(''); // оценка для каждого вопроса
+  const [currentMark, setCurrentMark] = useState<string | number>('-1'); // оценка для каждого вопроса
   const [filteredAnswers, setFilteredAnswers] = useState<IAnswer[]>([]);
   const [loading, setLoading] = useState(false); // показывает лоадер когда чатГПТ делает вывод
   const [form, setForm] = useState({
@@ -184,17 +186,28 @@ export default function MyQuestions() {
 
     const copy = dataToGoogleSheets // чатГпт делает вывод
     copy[dataToGoogleSheets.length + 1] = [`Вы - опытный frontend-разработчик и технический лидер с многолетним опытом работы на коммерческих проектах.
-    В настоящее время вы проводите собеседование с кандидатом на должность ${storeProfession?.title}. Вам представлены конкретные данные об ответах кандидата на заданные вопросы:
+    В настоящее время вы проводите собеседование с кандидатом на должность ${storeProfession?.title}.
+    Вам представлены конкретные данные об ответах кандидата на заданные вопросы:
     Список вопросов, охватывающих профессиональные навыки и знания
-    Оценка по 5-балльной шкале за каждый ответ
+    Оценка по 100-балльной шкале за каждый ответ, границы оценок по 100-балльной шкале:
+
+    90-100: Отлично
+    80-85: Хорошо
+    70-75: Удовлетворительно
+    60-65: Ниже среднего
+    50-55: Неудовлетворительно
+    40-45: плохо 30-35: очень плохо
+     20-25: крайне плохо
+     10-15: недопустимо плохо
+     0-5: абсолютно неудовлетворительно
     Комментарии к каждому ответу (если есть)
     Средняя оценка кандидата по каждой категории есть в предоставленном тебе отчете
-    Общая средняя оценка кандидата по всем ответам - ${averageMark}
-
-    В своей оценке вы полагаетесь исключительно на предоставленные фактические оценки и комментарии. Если в отчет нет комментариев стоят только оценки, формируй отчет на основании оценок.
+    Общая средняя оценка кандидата по всем ответам - ${averageMark}.
+    В своей оценке вы полагаетесь исключительно на предоставленные фактические оценки и комментарии.
+    Если в отчет нет комментариев стоят только оценки, формируй отчет на основании оценок.
     Если в отчете есть комментарии по ответам на вопросы, в таком случае вы можете описать более детализированный отчет
     Вы не используете предположительные слова вроде "возможно", "вероятно", "скорее всего", "наверное".
-    Если общая средняя оценка кандидата после собеседования ниже 3 баллов, вы категорически не рекомендуете его принимать на работу. Если средняя оценка кандидата в любой категории ниже 3 баллов, вы не рекомендуете его принимать на работу. В остальных случаях вы подробно описываете сильные и слабые стороны кандидата, чтобы помочь принять взвешенное решение о приеме на работу.
+    Если общая средняя оценка кандидата после собеседования ниже 60 баллов, вы не рекомендуете его принимать на работу. Если средняя оценка кандидата в любой категории ниже 60 баллов, вы не рекомендуете его принимать на работу. В остальных случаях вы подробно описываете сильные и слабые стороны кандидата исходя только из оценок и комментариев к вопросам если они есть, чтобы помочь принять взвешенное решение о приеме на работу.
     Ваша цель - проанализировать данные и дать развернутый, обоснованный вывод об  уровне знаний кандидата, а также рекомендации к приему на работу(рекомендовал или не рекомендовал)`];
     const questionsAndAnswers = Object.keys(copy).map((key) => {
       const data = copy[key];
@@ -270,6 +283,7 @@ export default function MyQuestions() {
   };
 
   const handleChange = (e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement>) => {
+    console.log('1')
     setForm({
       ...form,
       [e.target.name]: e.target.value,
@@ -351,7 +365,7 @@ export default function MyQuestions() {
           if (choosenQuestion && choosenQuestion[1]) {
             setCurrentMark(choosenQuestion[1])
           } else {
-            setCurrentMark('0')
+            setCurrentMark('-1')
           }
         }
       }
@@ -383,43 +397,21 @@ export default function MyQuestions() {
 
             {currentIdQuestion && <form className="answers__form" onSubmit={submitForm}>
 
+              <div className="answers__title">Оцените ответ от 0 до 100</div>
               <div className="answers__marks">
-                <span className="answers__title">Оцените ответ</span>
-
-                <div className="answers__wrapper-mark" >
-                  <input type="radio" className="answers__mark mark1" id="mark1" name="mark" value="1" checked={currentMark === "1"}
-                    onChange={handleChange} />
-                  <label htmlFor="mark1" className={`answers__label ${currentMark === '1' ? 'mark1' : ''}`}>1</label>
-                  <img src="/sad.svg" alt="" className="answers__img" />
-                </div>
-
-                <div className="answers__wrapper-mark" >
-                  <input type="radio" className="answers__mark mark2" id="mark2" name="mark" value="2" checked={currentMark === "2"}
-                    onChange={handleChange} />
-                  <label htmlFor="mark2" className={`answers__label ${currentMark === '2' ? 'mark2' : ''}`}>2</label>
-                  <img src="/sleepy.svg" alt="" className="answers__img" />
-                </div>
-
-                <div className="answers__wrapper-mark" >
-                  <input type="radio" className="answers__mark mark3" id="mark3" name="mark" value="3" checked={currentMark === "3"}
-                    onChange={handleChange} />
-                  <label htmlFor="mark3" className={`answers__label ${currentMark === '3' ? 'mark3' : ''}`}>3</label>
-                  <img src="/confused.svg" alt="" className="answers__img" />
-                </div>
-
-                <div className="answers__wrapper-mark" >
-                  <input type="radio" className="answers__mark mark4" id="mark4" name="mark" value="4" checked={currentMark === "4"}
-                    onChange={handleChange} />
-                  <label htmlFor="mark4" className={`answers__label ${currentMark === '4' ? 'mark4' : ''}`}>4</label>
-                  <img src="/smile.svg" alt="" className="answers__img" />
-                </div>
-
-                <div className="answers__wrapper-mark" >
-                  <input type="radio" className='answers__mark mark5' id="mark5" name="mark" value="5" checked={currentMark === "5"}
-                    onChange={handleChange} />
-                  <label htmlFor="mark5" className={`answers__label ${currentMark === '5' ? 'mark5' : ''}`}>5</label>
-                  <img src="/cool.svg" alt="" className="answers__img" />
-                </div>
+                {arrMarks.map(mark => {
+                  return (
+                    <div className="answers__wrapper-mark" key={mark}>
+                      <input type="radio" className="answers__mark" id={`mark${mark}`} name="mark" value={mark} checked={currentMark === mark}
+                        onChange={handleChange} />
+                      <label htmlFor={`mark${mark}`} tabIndex={0}
+                        className={
+                          `answers__label ${+mark <= 55 ? 'mark_0-55' : ''}${+mark >= 60 && +mark <= 65 ? 'mark_60-65' : ''}${+mark >= 70 && +mark <= 75 ? 'mark_70-75' : ''}${+mark >= 80 && +mark <= 85 ? 'mark_80-85' : ''}${+mark >= 90 && +mark <= 100 ? 'mark_90-100' : ''}
+                      `}
+                      >{mark}</label>
+                    </div>
+                  )
+                })}
               </div>
 
               <label className="answers__textarea">
