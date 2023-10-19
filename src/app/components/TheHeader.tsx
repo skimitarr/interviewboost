@@ -1,6 +1,3 @@
-// import Link from "next/link"
-
-// подключение клиентского компонента в серверный
 import { Navigation } from "./Navigation"
 
 const navItems = [
@@ -13,14 +10,7 @@ const navItems = [
 
 const TheHeader = () => {
   return (
-    <>
-      {/* <Link href='/'>Home</Link>
-      <Link href='/questions'>Questions & Answers</Link>
-      <Link href='/video'>Video</Link> */}
-
-      {/* подключение клиентского компонента в серверный */}
-      <Navigation navLinks={navItems} />
-    </>
+    <Navigation navLinks={navItems} />
   )
 }
 export { TheHeader }
