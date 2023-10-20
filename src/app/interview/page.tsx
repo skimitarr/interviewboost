@@ -24,7 +24,7 @@ export default function MyQuestions() {
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [currentIdQuestion, setCurrentIdQuestion] = useState(''); // определяем активные(раскрытые) вопросы по id
   const [currentMark, setCurrentMark] = useState<string | number>('-1'); // оценка для каждого вопроса
-  const [currentComment, setCurrentComment] = useState<string>(''); // коментарий для каждого вопроса
+  const [currentComment, setCurrentComment] = useState<string | number>(''); // коментарий для каждого вопроса
   const [filteredAnswers, setFilteredAnswers] = useState<IAnswer[]>([]);
   const [loading, setLoading] = useState(false); // показывает лоадер когда чатГПТ делает вывод
   const [form, setForm] = useState({
@@ -361,8 +361,8 @@ export default function MyQuestions() {
             if (item[0] === nameQuestion) return item
           })
           if (choosenQuestion) {
-            setCurrentMark(choosenQuestion[1] as string)
-            setCurrentComment(choosenQuestion[2] as string)
+            choosenQuestion[1] ? setCurrentMark(choosenQuestion[1]) : null
+            choosenQuestion[2] ? setCurrentComment(choosenQuestion[2]) : null
           } else {
             setCurrentMark('-1')
             setCurrentComment('')
