@@ -8,8 +8,6 @@ import { useRouter } from "next/navigation";
 import Link from "next/link"
 import { useSession } from "next-auth/react"
 
-// import { Configuration, OpenAIApi } from "openai";
-
 import { DataReport, IQuestion, IAnswer, ICategory } from "../components/Types";
 import Search from '../components/Search';
 import PageForm__leftSide from '../components/PageForm__leftSide';
@@ -26,6 +24,7 @@ export default function MyQuestions() {
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [currentIdQuestion, setCurrentIdQuestion] = useState(''); // определяем активные(раскрытые) вопросы по id
   const [currentMark, setCurrentMark] = useState<string | number>('-1'); // оценка для каждого вопроса
+  const [currentComment, setCurrentComment] = useState<string>(''); // коментарий для каждого вопроса
   const [filteredAnswers, setFilteredAnswers] = useState<IAnswer[]>([]);
   const [loading, setLoading] = useState(false); // показывает лоадер когда чатГПТ делает вывод
   const [form, setForm] = useState({
@@ -283,7 +282,6 @@ export default function MyQuestions() {
   };
 
   const handleChange = (e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement>) => {
-    console.log('1')
     setForm({
       ...form,
       [e.target.name]: e.target.value,
@@ -355,17 +353,19 @@ export default function MyQuestions() {
     setNameBlock(title)
   }
 
-  useEffect(() => { // сохраняем поставленную оценку для каждого вопроса при возвращении к нему
+  useEffect(() => { // сохраняем поставленную оценку и коментарий для каждого вопроса при возвращении к нему
     for (let [key, value] of Object.entries(dataReport || {})) {
       if (key === nameBlock) {
         if (Array.isArray(value)) {
           let choosenQuestion = value.find(item => {
             if (item[0] === nameQuestion) return item
           })
-          if (choosenQuestion && choosenQuestion[1]) {
-            setCurrentMark(choosenQuestion[1])
+          if (choosenQuestion) {
+            setCurrentMark(choosenQuestion[1] as string)
+            setCurrentComment(choosenQuestion[2] as string)
           } else {
             setCurrentMark('-1')
+            setCurrentComment('')
           }
         }
       }
@@ -422,7 +422,7 @@ export default function MyQuestions() {
                   name="comment"
                   className="answers__textarea-body"
                   placeholder="Комментарий"
-                  value={form.comment}
+                  value={currentComment}
                   onChange={handleChange}
                 />
               </label>
@@ -431,7 +431,6 @@ export default function MyQuestions() {
                 <div className="modalWindow__container">
                   {<div className="search__clear modalWindow__close" onClick={() => setIsOpenModal(!isOpenModal)}></div>}
                   <input type="text" name="name" value={form.name} onChange={handleChange} placeholder="Введите имя претендента" className="answers__textarea-body" required />
-                  {/* <input type="text" name="conclusion" value={form.conclusion} onChange={handleChange} placeholder="Введите общий вывод" className="answers__textarea-body" /> */}
                   <button className='questions__nextPage-btn btn' type="submit"> Перейти к отчету</button>
                   {loading && <div className="modalWindow__loading">
                     <p className="modalWindow__loading-text">Пожалуйста подождите, генерирую отчет</p>

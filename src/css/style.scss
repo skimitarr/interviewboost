@@ -681,33 +681,38 @@ body {
     &:checked {
       & + .mark_0-55 {
         background-color: #EB6C66;
-        height: 50px;
+        height: 40px;
         margin: 0;
-        padding: 15px 0;
+        padding: 10px 0;
+        border: none;
       }
       & + .mark_60-65 {
         background-color: #E9A469;
-        height: 50px;
+        height: 40px;
         margin: 0;
-        padding: 15px 0;
+        padding: 10px 0;
+        border: none;
       }
       & + .mark_70-75 {
         background-color: #D3BE5D;
-        height: 50px;
+        height: 40px;
         margin: 0;
-        padding: 15px 0;
+        padding: 10px 0;
+        border: none;
       }
       & + .mark_80-85 {
         background-color: #1583EC;
-        height: 50px;
+        height: 40px;
         margin: 0;
-        padding: 15px 0;
+        padding: 10px 0;
+        border: none;
       }
       & + .mark_90-100 {
         background-color: #37A77B;
-        height: 50px;
+        height: 40px;
         margin: 0;
-        padding: 15px 0;
+        padding: 10px 0;
+        border: none;
       }
     }
   }
@@ -727,9 +732,10 @@ body {
     transition: all 0.2s ease-in-out;
 
     &:hover {
-      height: 50px;
+      height: 40px;
       margin: 0;
-      padding: 15px 0;
+      padding: 10px 0;
+      border: none;
 
       &.mark_0-55 {
         background-color: #EB6C66;
@@ -746,10 +752,6 @@ body {
       &.mark_90-100 {
         background-color: #37A77B;
       }
-    }
-
-    &:active {
-      box-shadow: inset -6px -6px 9px 0px rgba(255,255,255,0.4), inset 6px 6px 9px rgba(0, 0, 0, 0.4)
     }
   }
 
