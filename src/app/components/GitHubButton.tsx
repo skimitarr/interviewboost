@@ -1,11 +1,13 @@
 'use client'
 import { signIn } from "next-auth/react"
 import { useSearchParams } from 'next/navigation'
+import { useTranslation } from "react-i18next";
 
 const GitHubButton = () => {
   // получаем данные из URL используя useSearchParams()
   const searchParams = useSearchParams();
   const callbackUrl = searchParams?.get('callbackUrl') || '/interview';
+  const { t } = useTranslation();
 
   return (
     // signIn встроенная функция, она принимает провайдер из встроенного списка
@@ -14,7 +16,7 @@ const GitHubButton = () => {
     <button onClick={() => signIn('github', { callbackUrl })} className="signIn__btn btn">
       <div className="signIn__text">
         <img src="/icon-github.svg" alt="logo github" className="signIn__img" />
-        <p className="signIn__desc">Sign in with GitHub</p>
+        <p className="signIn__desc">{t('signInWithGitHub')}</p>
       </div>
     </button>
   )

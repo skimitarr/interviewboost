@@ -1,23 +1,22 @@
 'use client'
 import { useEffect, useState } from "react";
-import { nanoid } from 'nanoid'
+import { nanoid } from 'nanoid';
 import { useRouter } from "next/navigation";
-import Link from "next/link"
-import { useSession } from "next-auth/react"
-import { DataReport } from "../components/Types";
+import Link from "next/link";
+import { useSession } from "next-auth/react";
+import { useTranslation } from "react-i18next";
 
 import html2canvas from 'html2canvas';
 import pdfMake from 'pdfmake/build/pdfmake';
 import Search from "../components/Search";
-// import pdfFonts from "pdfmake/build/vfs_fonts";
-// pdfMake.vfs = pdfFonts.pdfMake.vfs;
+import { DataReport } from "../components/Types";
 
 export default function Reports() {
   const [allData, setAllData] = useState<DataReport[]>([]); // все отчеты в левой части экрана
   const [currentReport, setCurrentReport] = useState<any[]>([]); // отображение текущего отчета в правой части экрана
   const [currentName, setCurrentName] = useState(''); // для названия сохраняемого файла
   const [currentIdReport, setCurrentIdReport] = useState(''); // для выделения отчета цветом
-
+  const { t } = useTranslation();
   const session = useSession();
   const router = useRouter();
 
@@ -59,104 +58,6 @@ export default function Reports() {
     setCurrentIdReport(id)
   }
 
-  // const downloadFile = async () => { // скачиваем данные из гугл таблицы, превращаем в файл и загружаем его
-  //   try {
-  //     // Отправить запрос к api/submit, чтобы получить данные из Google Таблиц
-  //     const responseFromGoogleSheets = await fetch('/api/getData', {
-  //       method: 'GET',
-  //       headers: {
-  //         'Accept': 'application/json',
-  //         'Content-Type': 'application/json'
-  //       },
-  //     });
-
-  //     if (responseFromGoogleSheets.ok) {
-  //       // Если запрос к Google Таблицам успешен, получите данные
-  //       const dataFromGoogleSheets = await responseFromGoogleSheets.json();
-
-  //       // Теперь у вас есть данные из Google Таблицам
-  //       console.log(dataFromGoogleSheets.data[2][1]);
-  //       let data = dataFromGoogleSheets.data[2][1]
-
-  //       // Создайте новый массив для данных CSV
-  //       const csvData = [];
-  //       // Идем по каждому элементу в исходных данных
-  //       for (let i = 0; i < data.length; i++) {
-  //         // Если текущий элемент и следующий существуют, объедините их в одну строку CSV
-  //         if (data[i].length > 0) {
-  //           const csvRow = data[i].map((cell: any) => cell.replace(/ /g, '_')).join(' ');
-  //           // Замените запятые на пробелы
-  //           const csvRowWithSpaces = csvRow.replace(/,/g, ' ');
-  //           csvData.push(csvRowWithSpaces);
-  //         } else if (i > 0 && data[i - 1].length > 0) {
-  //           // Если текущий элемент пустой, но предыдущий элемент был заполнен, добавьте пустую строку в CSV
-  //           csvData.push('');
-  //         }
-  //       }
-  //       // Преобразуйте данные в формат CSV
-  //       const csvContent = csvData.join('\n');
-
-  //       // Затем выполните логику для скачивания файла и прочие действия
-  //       // Создайте Blob из данных (csvContent), Создайте ссылку для скачивания
-  //       // const blob = new Blob([data]);
-  //       // обычно хватает предыдущей строчки, но на следующей учтена поддержка русского языка
-  //       const blob = new Blob([new Uint8Array([0xEF, 0xBB, 0xBF]), csvContent], { type: "text/csv; charset=UTF-8" });
-  //       const link = document.createElement('a');
-  //       link.href = window.URL.createObjectURL(blob);
-  //       link.setAttribute('download', `${currentName}.csv`);
-
-  //       // Добавьте ссылку на страницу и симулируйте клик для скачивания
-  //       document.body.appendChild(link);
-  //       link.click();
-
-  //       // Удалите ссылку после скачивания
-  //       link.remove();
-  //     } else {
-  //       // Если запрос к Google Таблицам не удался, обработайте ошибку
-  //       console.error('Ошибка при получении данных из Google Таблиц');
-  //     }
-  //   } catch (error) {
-  //     console.error('Ошибка:', error);
-  //   }
-  // };
-
-
-  // const downloadFile = async () => { // скачиваем сам файл из гугл таблицы и загружаем его (пока что данные вунтри таблицы почемуто отсутствуют)
-  //   try {
-  //     // Отправить запрос к роуту /api/downloadFile, чтобы получить файл "downloaded_file.xlsx" с сервера
-  //     const responseFromServer = await fetch('/api/downloadFile', {
-  //       method: 'GET',
-  //       headers: {
-  //         'Accept': 'application/octet-stream', // Указываем тип данных, что это бинарный файл
-  //       },
-  //     });
-
-  //     console.log(responseFromServer)
-
-  //     if (responseFromServer) {
-  //       // Если запрос к серверу успешен, получите файл
-  //       const fileBlob = await responseFromServer.blob();
-
-  //       console.log(fileBlob)
-
-  //       // Создайте ссылку для скачивания и симулируйте клик для скачивания файла
-  //       const link = document.createElement('a');
-  //       link.href = window.URL.createObjectURL(fileBlob);
-  //       link.setAttribute('download', 'downloaded_file.csv'); // Установите имя файла
-  //       document.body.appendChild(link);
-  //       link.click();
-
-  //       // Удалите ссылку после скачивания
-  //       link.remove();
-  //     } else {
-  //       // Если запрос не удался, обработайте ошибку
-  //       console.error('Ошибка при получении файла с сервера.');
-  //     }
-  //   } catch (error) {
-  //     console.error('Ошибка:', error);
-  //   }
-  // };
-
   const downloadFile = async () => { //сохраняем отчет в pdf и скачиваем его
     const rightSideElement = document.querySelector('.report__container') as HTMLElement;
     const titles = document.querySelectorAll('.report__block-text') as NodeListOf<HTMLElement>; //из-за ошибки меняем выравнивание текста
@@ -179,22 +80,7 @@ export default function Reports() {
       border.classList.add('blackBorder1', 'blackBorder2'); // Добавляем класс для изменения стилей
     });
 
-    // const canvas = await html2canvas(rightSideElement); // Создаем скриншот элемента
-    // const pdfDoc = pdfMake.createPdf({ // Создаем PDF-документ
-    //   content: [ // Добавляем изображение скриншота в PDF
-    //     { image: canvas.toDataURL('image/jpeg'), width: 500 }, // Вы можете настроить размер изображения по своему усмотрению
-    //   ],
-    // });
-    // pdfDoc.download(`${currentName}.pdf`); // Скачиваем PDF-файл
-    // // pdfDoc.open({}, window); // открываем тут же PDF-файл (для тестирования)
-
     const elementsToCapture = [rightSideElement]; // Создайте массив элементов для захвата скриншотов
-    // const pageWidth = 810; // Ширина страницы в пикселях
-    // const pageHeight = 1200; // Высота страницы в пикселях
-    // const pageWidth = window.innerWidth * 2 / 3; // Ширина страницы в пикселях
-    // const pageHeight = window.innerHeight; // Высота страницы в пикселях, равная высоте окна браузера
-    // const pageWidth = rightSideElement.offsetWidth; // Добавьте небольшой запас
-    // const pageHeight = rightSideElement.offsetHeight; // Добавьте небольшой запас
 
     // Получите плотность пикселей устройства
     const devicePixelRatio = window.devicePixelRatio || 1;
@@ -308,8 +194,8 @@ export default function Reports() {
                                   </p>
                                 </div>
                                 <div className='report__conclusion'>
-                                  <span className='report__block-item report__comments report__text' style={{ marginLeft: '50px' }}>Комментарий</span>
-                                  <span className='report__block-item report__marks report__text'>Оценка</span>
+                                  <span className='report__block-item report__comments report__text' style={{ marginLeft: '50px' }}>{t('comment')}</span>
+                                  <span className='report__block-item report__marks report__text'>{t('rating')}</span>
                                 </div>
                               </div>
                               : <span key={nanoid()} className='report__conclusion-item report__text'>
@@ -328,9 +214,9 @@ export default function Reports() {
                       </div>
                       <div className='report__block-wrapper'>
                         <div className='report__block-row'>
-                          <span className='report__block-item report__questions report__text'>Вопросы</span>
-                          <span className='report__block-item report__marks report__text'>Оценка</span>
-                          <span className='report__block-item report__comments report__text'>Комментарий</span>
+                          <span className='report__block-item report__questions report__text'>{t('questions')}</span>
+                          <span className='report__block-item report__marks report__text'>{t('rating')}</span>
+                          <span className='report__block-item report__comments report__text'>{t('comment')}</span>
                         </div>
                         {Array.isArray(sectionData) && sectionData.map((elements: string[], index1) => {
                           return <div className='report__block-row' key={nanoid()}>
@@ -354,13 +240,13 @@ export default function Reports() {
           </div>
 
           <div className='questions__nextPage-wrapper'>
-            <button className='questions__nextPage-btn btn' onClick={downloadFile}>Скачать отчет</button>
+            <button className='questions__nextPage-btn btn' onClick={downloadFile}>{t('downloadReport')}</button>
           </div>
         </div>
 
         : <div className='questions__rightSide'>
           <div className='questions__noData'>
-            <Link className='questions__noData-btn btn' href='/'><p>Начнем</p></Link>
+            <Link className='questions__noData-btn btn' href='/'><p>{t('letsGetStarted')}</p></Link>
           </div>
         </div>}
 

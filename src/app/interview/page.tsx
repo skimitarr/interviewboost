@@ -2,11 +2,12 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { polyfill } from 'interweave-ssr'; // interweave для того чтобы прочитать HTML из объекта
 import { Markup } from 'interweave'; // interweave для того чтобы прочитать HTML из объекта
-import { useAppSelector, useAppDispatch } from '../hooks'
-import { nanoid } from 'nanoid'
+import { useAppSelector, useAppDispatch } from '../hooks';
+import { nanoid } from 'nanoid';
 import { useRouter } from "next/navigation";
-import Link from "next/link"
-import { useSession } from "next-auth/react"
+import Link from "next/link";
+import { useSession } from "next-auth/react";
+import { useTranslation } from "react-i18next";
 
 import { DataReport, IQuestion, IAnswer, ICategory } from "../components/Types";
 import Search from '../components/Search';
@@ -22,9 +23,8 @@ export default function MyQuestions() {
   const [nameBlock, setNameBlock] = useState('');   // nameBlock - название раздела вопросов для передачи в отчет
   const [dataReport, setDataReport] = useState<DataReport | null>(null); // отправляем и в гугл таблицу и на страницу reports
   const [isOpenModal, setIsOpenModal] = useState(false);
+  const [isActiveBtn, setIsActiveBtn] = useState(false); // активируем кнопку отчет
   const [currentIdQuestion, setCurrentIdQuestion] = useState(''); // определяем активные(раскрытые) вопросы по id
-  const [currentMark, setCurrentMark] = useState<string | number>('-1'); // оценка для каждого вопроса
-  const [currentComment, setCurrentComment] = useState<string | number>(''); // коментарий для каждого вопроса
   const [filteredAnswers, setFilteredAnswers] = useState<IAnswer[]>([]);
   const [loading, setLoading] = useState(false); // показывает лоадер когда чатГПТ делает вывод
   const [form, setForm] = useState({
@@ -34,6 +34,7 @@ export default function MyQuestions() {
     comment: '',
   });
 
+  const { t } = useTranslation();
   const session = useSession();
   const router = useRouter();
   const dispatch = useAppDispatch()
@@ -73,6 +74,10 @@ export default function MyQuestions() {
   useEffect(() => { // получаем выбранные категории из localstorage
     setLocalData(JSON.parse(local))
   }, [local])
+
+  useEffect(() => { // при получении первой оценки активируем кнопку отчет
+    if (form.mark) setIsActiveBtn(true)
+  }, [form])
 
   useEffect(() => {
     if (localData && storeQuestions.length <= 0) {
@@ -120,7 +125,6 @@ export default function MyQuestions() {
       mark: '',
       comment: '',
     });
-    setCurrentMark('');
   }, [storeCurrentIdQuestion])
 
   polyfill(); // для чтения HTML из объекта для SSR
@@ -242,18 +246,25 @@ export default function MyQuestions() {
       })
       .finally(() => setLoading(!loading));
 
-    // const conclusion = await makeCoclusionByChatgpt(dataToGoogleSheets, averageMark)
     dataToGoogleSheets.push([`${conclusion}`, averageMark]);
 
-    const response = await fetch('/api/submit', {// отправляем данные в гугл таблицу
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(dataToGoogleSheets)
-    })
-    const content = await response.json()
+    // const response = await fetch('/api/submit', {// отправляем данные в гугл таблицу
+    //   method: 'POST',
+    //   headers: {
+    //     'Accept': 'application/json',
+    //     'Content-Type': 'application/json'
+    //   },
+    //   body: JSON.stringify(dataToGoogleSheets)
+    // })
+    // const content = await response.json()
+
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth();
+    const day = now.getDate();
+    const hours = now.getHours();
+    const minutes = now.getMinutes();
+    const formattedDate = `${year}.${month}.${day} ${hours}:${minutes}`;
 
     const newDataReport = { // Обновляем dataReport и сохраняем его в localStorage
       id: nanoid(),
@@ -274,6 +285,7 @@ export default function MyQuestions() {
       return obj;
     }
     const flattenedDataToGoogleSheets = flattenArrays(dataToGoogleSheets); // Применяем flat() к вашей структуре данных
+    flattenedDataToGoogleSheets.push(`Отчет был создан ${formattedDate}, email создателя - ${session.data?.user?.email}`)
     addReport(newDataReport.name, { data: flattenedDataToGoogleSheets }) // Отправляем данные в Firestore
 
     setIsOpenModal(!isOpenModal)
@@ -354,22 +366,25 @@ export default function MyQuestions() {
   }
 
   useEffect(() => { // сохраняем поставленную оценку и коментарий для каждого вопроса при возвращении к нему
-    for (let [key, value] of Object.entries(dataReport || {})) {
+    Object.entries(dataReport || {}).forEach(([key, value]) => {
+      console.log(form)
       if (key === nameBlock) {
         if (Array.isArray(value)) {
-          let choosenQuestion = value.find(item => {
-            if (item[0] === nameQuestion) return item
-          })
+          const choosenQuestion = value.find(item => item[0] === nameQuestion);
+          console.log(choosenQuestion)
           if (choosenQuestion) {
-            choosenQuestion[1] ? setCurrentMark(choosenQuestion[1]) : null
-            choosenQuestion[2] ? setCurrentComment(choosenQuestion[2]) : null
-          } else {
-            setCurrentMark('-1')
-            setCurrentComment('')
+            const mark = typeof choosenQuestion[1] === 'string' ? choosenQuestion[1] : '';
+            const comment = typeof choosenQuestion[2] === 'string' ? choosenQuestion[2] : '';
+            setForm({
+              ...form,
+              mark,
+              comment,
+              question: nameQuestion,
+            });
           }
         }
       }
-    }
+    });
   }, [dataReport, currentIdQuestion])
 
   return (
@@ -378,7 +393,7 @@ export default function MyQuestions() {
         <Search />
         <PageForm__leftSide getQuestionText={getQuestionText} getCategoryTitle={getCategoryTitle} pageName="interview" />
         <div className='questions__nextPage-wrapper left'>
-          <button disabled={!currentMark} className='questions__nextPage-btn btn' onClick={() => setIsOpenModal(!isOpenModal)}>Отчет</button>
+          <button disabled={!isActiveBtn} className='questions__nextPage-btn btn' onClick={() => setIsOpenModal(!isOpenModal)}>{t('report')}</button>
         </div>
       </div>
 
@@ -393,16 +408,16 @@ export default function MyQuestions() {
                 .map((item: IAnswer) => {
                   return <Markup content={item.text} className="answers__content" key={item.id} />
                 })
-              : <p className="answers__preload">Выберете направление, а затем вопрос</p>}
+              : <p className="answers__preload">{t('chooseDirection')}</p>}
 
             {currentIdQuestion && <form className="answers__form" onSubmit={submitForm}>
 
-              <div className="answers__title">Оцените ответ от 0 до 100</div>
+              <div className="answers__title">{t('rateAnswerFrom0To100')}</div>
               <div className="answers__marks">
                 {arrMarks.map(mark => {
                   return (
                     <div className="answers__wrapper-mark" key={mark}>
-                      <input type="radio" className="answers__mark" id={`mark${mark}`} name="mark" value={mark} checked={currentMark === mark}
+                      <input type="radio" className="answers__mark" id={`mark${mark}`} name="mark" value={mark} checked={form.mark === mark}
                         onChange={handleChange} />
                       <label htmlFor={`mark${mark}`} tabIndex={0}
                         className={
@@ -416,13 +431,13 @@ export default function MyQuestions() {
 
               <label className="answers__textarea">
                 <div className="answers__textarea-wrapper">
-                  <p className="answers__textarea-title">Добавьте комментарий</p>
+                  <p className="answers__textarea-title">{t('addComment')}</p>
                 </div>
                 <textarea
                   name="comment"
                   className="answers__textarea-body"
                   placeholder="Комментарий"
-                  value={currentComment}
+                  value={form.comment}
                   onChange={handleChange}
                 />
               </label>
@@ -431,9 +446,9 @@ export default function MyQuestions() {
                 <div className="modalWindow__container">
                   {<div className="search__clear modalWindow__close" onClick={() => setIsOpenModal(!isOpenModal)}></div>}
                   <input type="text" name="name" value={form.name} onChange={handleChange} placeholder="Введите имя претендента" className="answers__textarea-body" required />
-                  <button className='questions__nextPage-btn btn' type="submit"> Перейти к отчету</button>
+                  <button className='questions__nextPage-btn btn' type="submit">{t('goToReport')}</button>
                   {loading && <div className="modalWindow__loading">
-                    <p className="modalWindow__loading-text">Пожалуйста подождите, генерирую отчет</p>
+                    <p className="modalWindow__loading-text">{t('generatingReport')}</p>
                     <div className="modalWindow__loading-loader"></div>
                   </div>}
                 </div>
@@ -445,8 +460,8 @@ export default function MyQuestions() {
         :
         <div className='questions__rightSide'>
           <div className='questions__noData'>
-            <p className='questions__noData-desc'>Для начала Вам необходимо выбрать специализацию</p>
-            <Link className='questions__noData-btn btn' href='/'><p>Начнем</p></Link>
+            <p className='questions__noData-desc'>{t('selectSpecialization')}</p>
+            <Link className='questions__noData-btn btn' href='/'><p>{t('letsGetStarted')}</p></Link>
           </div>
         </div>
       }

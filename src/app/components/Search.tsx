@@ -1,5 +1,6 @@
 'use client'
 import { useState, useEffect, ChangeEvent } from "react";
+import { useTranslation } from "react-i18next";
 import { useAppSelector, useAppDispatch } from '../hooks'
 
 import { DataReport, ICategory, IQuestion, ISearchReport } from "./Types";
@@ -10,6 +11,7 @@ export default function Search({ pageName, getCurrentReport }: ISearchReport) {
   const [searchResult, setSearchResult] = useState<IQuestion[]>([]);
   const [searchResultReports, setSearchResultReports] = useState<DataReport[]>([]);
 
+  const { t } = useTranslation();
   const dispatch = useAppDispatch()
   const storeProfession = useAppSelector((state) => state.profession)
   const storeCategories = useAppSelector((state) => state.categories)
@@ -72,8 +74,8 @@ export default function Search({ pageName, getCurrentReport }: ISearchReport) {
   return (
     <div className="search" >
       {pageName !== 'reports'
-        ? <h2 className="search__title">Вопросы для {storeProfession?.title}</h2>
-        : <h2 className="search__title">История отчетов</h2>}
+        ? <h2 className="search__title">{t('questionsFor')} {storeProfession?.title}</h2>
+        : <h2 className="search__title">{t('reportsHistory')}</h2>}
       <div className="search__wrapper">
         <input type="text"
           className={`search__input ${searchText ? '' : 'hasPlaceholder'}`}

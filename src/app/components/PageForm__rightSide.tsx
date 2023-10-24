@@ -3,9 +3,10 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAppSelector, useAppDispatch } from '../hooks'
 import Link from "next/link"
+import { useTranslation } from "react-i18next";
+import { DragDropContext, Draggable, DropResult, Droppable } from 'react-beautiful-dnd';
 
-// import { getDbGrades, getDbCategories, getDbQuestions } from '../../services/DatabaseService'
-import { addCategory, getCategories, removeCategory } from '../store/DataSlice';
+import { addCategory, removeCategory } from '../store/DataSlice';
 import { IGrade, ICategory, IQuestion } from "../components/Types";
 
 export default function PageForm__rightSide() {
@@ -17,7 +18,9 @@ export default function PageForm__rightSide() {
   const [questions, setQuestions] = useState<IQuestion[]>([]); // массив всех вопросов с базы данных
   const [checkedIdQuestions, setCheckedIdQuestions] = useState<string[]>([]); // массив id вопросов которые checked
   const [checkedStates, setCheckedStates] = useState<{ [key: string]: boolean }>({});
+  // const [currentDragQuestion, setCurrentDragQuestion] = useState<IQuestion>({ id: '', text: '', answers: [] });
 
+  const { t } = useTranslation();
   const router = useRouter();
   const dispatch = useAppDispatch()
   const storeProfession = useAppSelector((state) => state.profession)
@@ -41,7 +44,6 @@ export default function PageForm__rightSide() {
       categoriesData = categoriesData.sort((a: any, b: any) => a.id - b.id)
       setCategories(categoriesData);
       setCategoriesForStore(categoriesData);
-      // dispatch(getCategories([])) // в сторе убираем категории чтобы они сразу не добавлялись в левую часть
     }
   }, [grades, activeGradeName])
 
@@ -53,65 +55,12 @@ export default function PageForm__rightSide() {
       });
       const arrayOfIds = Array.from(set); // получаем все id вопросов со всех тем
 
-      let questionsData = storeQuestions.filter((item) => {
+      const questionsData = storeQuestions.filter((item) => {
         return arrayOfIds.includes(item.id);
       })
       setQuestions(questionsData);
     }
   }, [categories])
-
-  // useEffect(() => { // получаем grades
-  //   if (storeProfession) {
-  //     const fetchGrades = async () => {
-  //       try {
-  //         // profession.grades - это список grades (их id) в profession в базе данных
-  //         const gradesData = await getDbGrades(storeProfession.grades);
-  //         setGrades(gradesData);
-  //       } catch (error) {
-  //         console.error('Error getting documents:', error);
-  //       }
-  //     };
-  //     fetchGrades();
-  //   }
-  // }, [])
-
-  // useEffect(() => { // получаем categories
-  //   if (grades.length > 0) {
-  //     const filteredGrade = grades.find(grade => grade.title === activeGradeName);
-  //     const fetchCategories = async () => {
-  //       try {
-  //         // filteredGrade?.categories - это список categories (их id) в grades в базе данных
-  //         let categoriesData = await getDbCategories(filteredGrade?.categories as string[]);
-  //         categoriesData = categoriesData.sort((a: any, b: any) => a.id - b.id)
-  //         setCategories(categoriesData);
-  //         setCategoriesForStore(categoriesData);
-  //       } catch (error) {
-  //         console.error('Error getting documents:', error);
-  //       }
-  //     };
-  //     fetchCategories();
-  //   }
-  // }, [grades, activeGradeName])
-
-  // useEffect(() => { // получаем questions
-  //   if (categories.length > 0) {
-  //     let set = new Set();
-  //     categories.forEach(category => {
-  //       category.questions.forEach(item => { set.add(item) })
-  //     });
-  //     const arrayOfIds = Array.from(set); // получаем все id вопросов со всех тем
-
-  //     const fetchQuestions = async () => {
-  //       try {
-  //         const questionsData = await getDbQuestions(arrayOfIds as string[]);
-  //         setQuestions(questionsData);
-  //       } catch (error) {
-  //         console.error('Error getting documents:', error);
-  //       }
-  //     };
-  //     fetchQuestions();
-  //   }
-  // }, [categories])
 
   useEffect(() => { // получаем questions из стора с правильно активированными чекбоксами
     if (storeCategories.length > 0) {
@@ -200,14 +149,12 @@ export default function PageForm__rightSide() {
       const updatedState = { ...prev, [itemId]: !prev[itemId] };
       if (currentCategoriesForStore) {
         if (updatedState[itemId]) {
-          console.log(updatedState[itemId])
           currentCategoriesForStore.questions.forEach(item => {
             if (!checkedIdQuestions.includes(item)) {
               setCheckedIdQuestions(prev => [...prev, item])
             }
           })
         } else {
-          console.log(updatedState[itemId])
           let copy = checkedIdQuestions
           currentCategoriesForStore.questions.forEach(item => {
             const index = copy.findIndex((i) => i === item);
@@ -237,6 +184,19 @@ export default function PageForm__rightSide() {
     }
   }
 
+  const handleDragEnd = (result: DropResult, category: ICategory) => {
+    if (!result.destination) {
+      return;
+    }
+
+    const items = Array.from(questions);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+    setQuestions(items);
+
+    addStoreCategory(category)
+  };
+
   return (
     storeProfession
       ? <div className='questions__rightSide'>
@@ -250,7 +210,7 @@ export default function PageForm__rightSide() {
           })}
         </div> */}
 
-        <h2 className='questions__title'>Выберете стек технологий</h2>
+        <h2 className='questions__title'>{t('selectATechnologyStack')}</h2>
 
         <div className="questions">
           {categories && categories.map(category => {
@@ -281,8 +241,8 @@ export default function PageForm__rightSide() {
                     </div>}
 
                   {storeCategories.find(item => item.id === category.id)
-                    ? <button className='questions__technology-btn questions__technology btn' onClick={() => removeStoreCategory(category)}>Отменить</button>
-                    : <button className='questions__technology-btn isChoosen btn' onClick={() => addStoreCategory(category)}>Добавить</button>}
+                    ? <button className='questions__technology-btn questions__technology btn' onClick={() => removeStoreCategory(category)}>{t('cancel')}</button>
+                    : <button className='questions__technology-btn isChoosen btn' onClick={() => addStoreCategory(category)}>{t('add')}</button>}
                 </div>
 
                 {activeCategoriesName.includes(category.title) ? (
@@ -291,40 +251,54 @@ export default function PageForm__rightSide() {
                       <input id={category.id} type="checkbox" className="checkbox"
                         onChange={() => selectAllQuestions(category, category.id)}
                         checked={checkedStates[category.id] || false} />
-                      <label htmlFor={category.id} className='questions__technology-questions'>Выбрать все</label>
+                      <label htmlFor={category.id} className='questions__technology-questions'>{t('selectAll')}</label>
                     </div>
-                    {questions
-                      .filter((item) => {
-                        return category.questions.some((el) => {
-                          return item.id === el;
-                        });
-                      })
-                      .map((item, index) => (
-                        <div key={item.id} className='questions__technology-questions-wrapper'>
-                          <input id={`question-${item.id}`} className="checkbox" type="checkbox" onChange={() => selectQuestions(item.id, category)}
-                            checked={checkedIdQuestions.includes(item.id)} />
-                          <label htmlFor={`question-${item.id}`}
-                            className={`questions__technology-questions ${checkedIdQuestions.includes(item.id) ? '' : 'isSelected'}`}>{index + 1}. {item.text}</label>
-                        </div>
-                      ))
-                    }
+                    <DragDropContext onDragEnd={(result) => handleDragEnd(result, category)}>
+                      <Droppable droppableId="questions">
+                        {(provided) => (
+                          <div ref={provided.innerRef} >
+                            {questions
+                              .filter((item) => {
+                                return category.questions.some((el) => {
+                                  return item.id === el;
+                                });
+                              })
+                              .map((item, index) => (
+                                <Draggable key={item.id} draggableId={item.id} index={index}>
+                                  {(provided) => (
+                                    <div className='questions__technology-questions-wrapper'
+                                      ref={provided.innerRef}
+                                      {...provided.draggableProps}
+                                      {...provided.dragHandleProps}
+                                    >
+                                      <input id={`question-${item.id}`} className="checkbox" type="checkbox" onChange={() => selectQuestions(item.id, category)}
+                                        checked={checkedIdQuestions.includes(item.id)} />
+                                      <label htmlFor={`question-${item.id}`}
+                                        className={`questions__technology-questions ${checkedIdQuestions.includes(item.id) ? '' : 'isSelected'}`}
+                                      >{index + 1}. {item.text}</label>
+                                    </div>
+                                  )}
+                                </Draggable>
+                              ))}
+                          </div>
+                        )}
+                      </Droppable>
+                    </DragDropContext>
                   </>
                 ) : null}
-
-
               </div>)
           })}
         </div>
 
         <div className='questions__nextPage-wrapper right'>
-          <button className='questions__nextPage-btn btn' onClick={saveQuestions}>Сохранить</button>
+          <button className='questions__nextPage-btn btn' onClick={saveQuestions}>{t('save')}</button>
         </div>
 
       </div>
       : <div className='questions__rightSide'>
         <div className='questions__noData'>
-          <p className='questions__noData-desc'>Для начала Вам необходимо выбрать специализацию</p>
-          <Link className='questions__noData-btn btn' href='/'><p>Начнем</p></Link>
+          <p className='questions__noData-desc'>{t('selectSpecialization')}</p>
+          <Link className='questions__noData-btn btn' href='/'><p>{t('letsGetStarted')}</p></Link>
         </div>
       </div>
   )

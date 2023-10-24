@@ -1,5 +1,6 @@
 'use client'
 import Link from 'next/link'
+import { useTranslation } from "react-i18next"
 import { useAppDispatch } from '../hooks'
 import { getDbAllGrades, getDbAllCategories, getDbAllQuestions, getDbAllAnswers } from '../../services/DatabaseService'
 
@@ -7,7 +8,8 @@ import { IProffesion } from '../components/Types'
 import { getProfession, getGrades, getAllCategories, getQuestions, getAnswers } from '../store/DataSlice';
 
 export default function ProfessionCard({ profession }: { profession: IProffesion }) {
-  const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch();
+  const { t } = useTranslation();
 
   const fetchGrades = async () => {
     try {
@@ -32,6 +34,8 @@ export default function ProfessionCard({ profession }: { profession: IProffesion
     try {
       let questionsData = await getDbAllQuestions();
       questionsData = questionsData.sort((a: any, b: any) => a.id - b.id)
+      // questionsData.forEach(item => t(item.text))
+      // console.log(questionsData)
       dispatch(getQuestions(questionsData));
     } catch (error) {
       console.error('Error getting documents:', error);
@@ -46,7 +50,6 @@ export default function ProfessionCard({ profession }: { profession: IProffesion
       console.error('Error getting documents:', error);
     }
   };
-
 
   function handleClick(profession: IProffesion) {
     dispatch(getProfession(profession));
@@ -72,30 +75,8 @@ export default function ProfessionCard({ profession }: { profession: IProffesion
             <p className='card__title'>{profession.title}</p>
             <p className='card__desc'>{profession.desc}</p>
           </div>
-          <p className='card__notAcive-text'><span>Coming soon</span></p>
+          <p className='card__notAcive-text'><span>{t('comingSoon')}</span></p>
         </div>}
-
-
-      {/* {profession.id === '2'
-        ? <div className='card__notAcive'>
-          <div className='card__notAcive-wrapper'>
-            <p className='card__title'>{profession.title}</p>
-            <p className='card__desc'>{profession.desc}</p>
-          </div>
-          <p className='card__notAcive-text'><span>NEW</span></p>
-        </div>
-        : null}
-
-      {profession.id === '3'
-        ? <div className='card__notAcive'>
-          <div className='card__notAcive-wrapper'>
-            <p className='card__title'>{profession.title}</p>
-            <p className='card__desc'>{profession.desc}</p>
-          </div>
-          <p className='card__notAcive-text'><span>Coming soon</span></p>
-        </div>
-        : null} */}
     </>
-
   )
 }
