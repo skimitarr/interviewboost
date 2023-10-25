@@ -1,17 +1,16 @@
 'use client'
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useAppSelector, useAppDispatch } from '../hooks'
-// import { getDbQuestions } from '../../services/DatabaseService'
-import { getCurrentIdQuestion, getQuestions } from '../store/DataSlice';
-import { ICategory, IQuestion, ILeftPart } from "../components/Types";
-// import Link from 'next/link';
-// import translitRusEng from 'translit-rus-eng';
+import { DragDropContext, Draggable, DropResult, Droppable } from 'react-beautiful-dnd';
+import { getCurrentIdQuestion } from '../store/DataSlice';
+import { ICategory, ILeftPart, IQuestion } from "../components/Types";
 
 export default function PageForm__leftSide({ getQuestionText, getCategoryTitle, pageName }: ILeftPart) {
   const [сurrentIdQuestion, setСurrentIdQuestion] = useState('0'); // используем для выделения цветом текущего вопроса
   const [activeCategoriesName, setActiveCategoriesName] = useState<string[]>([]); // определяем активные(раскрытые) категории (html css)
   const [storeCategories, setStoreCategories] = useState<ICategory[]>([]); // получаем категории из categoriesFromStore или из localStorage
   const [showHighliting, setShowHighliting] = useState<boolean>(false); // флаг для выделения цветом текущего вопроса на странице форм
+  const [questions, setQuestions] = useState<IQuestion[]>([]);
 
   const dispatch = useAppDispatch();
   const storeQuestions = useAppSelector((state) => state.questions);
@@ -19,12 +18,13 @@ export default function PageForm__leftSide({ getQuestionText, getCategoryTitle, 
   const categoriesFromStore = useAppSelector((state) => state.categories);
   const initialIdQuestion = storeCategories.length > 0 ? storeCategories[0].questions[0] : '';
 
-  // console.log(translitRusEng(storeQuestions[0].text, { slug: true }))
+  useEffect(() => {
+    setQuestions(storeQuestions)
+  }, [storeQuestions]);
 
   useEffect(() => {
     dispatch(getCurrentIdQuestion(initialIdQuestion));
   }, [initialIdQuestion]);
-
 
   useEffect(() => {
     if (pageName === 'interview') {
@@ -56,23 +56,13 @@ export default function PageForm__leftSide({ getQuestionText, getCategoryTitle, 
   }, [categoriesFromStore]);
 
   useEffect(() => { // открываем список вопросов, когда изменяется сurrentIdQuestion
-    function getCategoryTitleFromCurrentIdAnswer(currentIdAnswer: string) {
-      const category = storeCategories.find(item => item.questions.includes(currentIdAnswer))
-      // console.log(category)
-      if (category) {
-        return category.title;
-      }
-    }
-    const categoryTitle = getCategoryTitleFromCurrentIdAnswer(сurrentIdQuestion);
-    // if (categoryTitle) {
-    //   setActiveCategoriesName([...activeCategoriesName, categoryTitle]) // добавляем categoryTitle в массив открытых категорий
-    // }
-    if (categoryTitle) {
+    const category = storeCategories.find(item => item.questions.includes(сurrentIdQuestion))
+    if (category?.title) {
       if (pageName !== 'interview') {
-        setActiveCategoriesName([...activeCategoriesName, categoryTitle]) // добавляем categoryTitle в массив открытых категорий для страницы questions
+        setActiveCategoriesName([...activeCategoriesName, category.title]) // добавляем categoryTitle в массив открытых категорий для страницы questions
       } else {
-        if (activeCategoriesName.length <= 1 && categoryTitle !== activeCategoriesName[0]) { // заменяем categoryTitle в массиве открытых категорий для страницы interview
-          setActiveCategoriesName([categoryTitle])
+        if (activeCategoriesName.length <= 1 && category.title !== activeCategoriesName[0]) { // заменяем categoryTitle в массиве открытых категорий для страницы interview
+          setActiveCategoriesName([category.title])
         } return // если уже есть, ничего не делаем
       }
     }
@@ -120,58 +110,69 @@ export default function PageForm__leftSide({ getQuestionText, getCategoryTitle, 
     }
   }
 
+  const handleDragEnd = (result: DropResult, category: ICategory) => {
+    if (!result.destination) {
+      return;
+    }
+    const newQuestions = [...questions];
+    const sourceIndex = newQuestions.findIndex((q) => q.id === result.draggableId);
+    const filteredQuestions = newQuestions.filter((item) => category.questions.includes(item.id));
+    const destinationQuestion = filteredQuestions.find((q, index) => index === result.destination?.index);
+    const destinationIndex = newQuestions.findIndex((q) => q.id === destinationQuestion?.id);
+    const [reorderedItem] = newQuestions.splice(sourceIndex, 1);
+    newQuestions.splice(destinationIndex, 0, reorderedItem);
+    setQuestions(newQuestions);
+  };
+
+  const isActiveCategoryHandler = useCallback((categoryTitle: string) => {
+    return activeCategoriesName.find(item => item === categoryTitle);
+  }, [activeCategoriesName])
+
   return (
     <div className='questions__categories'>
       {storeCategories && storeCategories.map((category: ICategory) => {
-        const isActive = activeCategoriesName.find(item => item === category.title);
-        return <div key={category.id}>
-          <button className={`questions__choosenQuestions ${isActive ? 'active' : ''}`} onClick={() => showQuestions(category.title)}>{category.title}</button>
+        return (
+          <DragDropContext onDragEnd={(result) => handleDragEnd(result, category)} key={category.id}>
+            <div>
+              <button className={`questions__choosenQuestions ${isActiveCategoryHandler(category.title) ? 'active' : ''}`} onClick={() => showQuestions(category.title)}>
+                {category.title}
+              </button>
 
-          <div>
-            {activeCategoriesName.includes(category.title)
-              ? storeQuestions.filter((question: IQuestion) => {
-                return category.questions.some((el) => { // фильтруем questions, берем только те что есть в category
-                  return question.id === el;
-                });
-              })
-                .map((question: IQuestion, index: number) => {
-                  return pageName !== 'interview'
-                    ?
-                    <p key={question.id}
-                      className={`questions__technology-questions questions__leftQustions ${question.id === сurrentIdQuestion && showHighliting ? 'highlited' : ''} ${pageName === 'interview' ? 'cursor' : ''}`}
-                      onClick={() => handleQuestion(question.text, question.id)}
-                    >
-                      {index + 1}. {question.text}
-                    </p>
-                    :
-                    <p key={question.id}
-                      className={`questions__technology-questions questions__leftQustions ${question.id === сurrentIdQuestion ? 'highlited' : ''} ${pageName === 'interview' ? 'cursor' : ''}`}
-                      onClick={() => handleQuestion(question.text, question.id)}
-                    >
-                      {index + 1}. {question.text}
-                    </p>;
-                })
-              : ''}
-          </div>
-
-        </div>
+              <Droppable droppableId="questions-list">
+                {(provided) => (
+                  <div ref={provided.innerRef}>
+                    {activeCategoriesName.includes(category.title) &&
+                      questions.filter((item) => category.questions.includes(item.id))
+                        .map((question, index) => {
+                          return (question ?
+                            <Draggable key={question.id} draggableId={question.id} index={index}>
+                              {(provided) => (
+                                <div
+                                  ref={provided.innerRef}
+                                  {...provided.draggableProps}
+                                  {...provided.dragHandleProps}
+                                >
+                                  <p
+                                    className={`questions__technology-questions questions__leftQustions ${question.id === сurrentIdQuestion && showHighliting ? 'highlited' : ''} ${pageName === 'interview' ? 'cursor' : ''}`}
+                                    onClick={() => handleQuestion(question.text, question.id)}
+                                  >
+                                    {index + 1}. {question.text}
+                                  </p>
+                                </div>
+                              )}
+                            </Draggable>
+                            : null
+                          )
+                        })}
+                    {provided.placeholder}
+                  </div>
+                )}
+              </Droppable>
+            </div>
+          </DragDropContext>
+        );
       })}
     </div>
-  )
+  );
 }
 
-// <Link
-//   key={question.id}
-//   onClick={() => handleQuestion(question.text, question.id)}
-//   href={``}
-//   className={`questions__technology-questions questions__leftQustions ${question.id === сurrentIdQuestion && showHighliting ? 'highlited' : ''}`}
-// >{index + 1}. {question.text}
-// </Link>
-
-
-// <Link
-//   key={question.id}
-//   onClick={() => handleQuestion(question.text, question.id)}
-//   href={`/interview/${question.id}`}
-//   className={`questions__technology-questions questions__leftQustions ${question.id === сurrentIdQuestion ? 'highlited' : ''}`}
-// >{index + 1}. {question.text}</Link>

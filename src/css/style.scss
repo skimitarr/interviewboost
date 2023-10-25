@@ -478,13 +478,17 @@ body {
       }
 
       &-wrapper {
-        // padding-left: 25px;
         &:last-child {
           margin-bottom: 10px;
+        }
+
+        &:active {
+          background-color: #D3BE5D;
         }
       }
     }
   }
+
 
   &__nextPage {
     &-wrapper {
@@ -831,37 +835,6 @@ body {
 	color:#7A7A7A;
 }
 
-// .mark1 {
-//     color: $mark1;
-//   &:checked {
-//     background-color: $mark1;
-//   }
-// }
-// .mark2 {
-//   color: $mark2;
-// &:checked {
-//   background-color: $mark2;
-// }
-// }
-// .mark3 {
-//   color: $mark3;
-// &:checked {
-//   background-color: $mark3;
-// }
-// }
-// .mark4 {
-//   color: $mark4;
-// &:checked {
-//   background-color: $mark4;
-// }
-// }
-// .mark5 {
-//   color: $mark5;
-// &:checked {
-//   background-color: $mark5;
-// }
-// }
-
 .modalWindow {
   position: fixed;
   top: 0;
@@ -1170,17 +1143,6 @@ body {
 }
 
 
-
-// input[type="checkbox"] {
-//   // opacity: 0;
-//   display: none;
-// }
-// input[type="checkbox"] ~ label::before {
-//   input[type="checkbox"] {
-//     // opacity: 0;
-//     display: none;
-//   }
-// }
 .checkbox {
   display: none;
 }
@@ -1223,3 +1185,4 @@ input[type="checkbox"]:checked ~ label::before {
     transform: rotate(3turn);
   }
 }
+

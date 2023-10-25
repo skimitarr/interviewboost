@@ -61,3 +61,11 @@ type AdditionalData = {
   conclusion?: [string, string];
 };
 
+type NavLink = {
+  label: string
+  href: string
+}
+
+export type Props = {
+  navLinks: NavLink[]
+}

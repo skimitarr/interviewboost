@@ -1,11 +1,11 @@
 import { Navigation } from "./Navigation"
 
 const navItems = [
-  { label: 'Home', href: '/' },
-  { label: 'Questions', href: '/questions' },
-  { label: 'Interview', href: '/interview' },
-  { label: 'Reports', href: '/reports' },
-  { label: 'Feedback', href: '/feedback' },
+  { label: 'home', href: '/' },
+  { label: 'questions', href: '/questions' },
+  { label: 'interview', href: '/interview' },
+  { label: 'reports', href: '/reports' },
+  { label: 'feedback', href: '/feedback' },
 ]
 
 const TheHeader = () => {

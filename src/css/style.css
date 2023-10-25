@@ -401,6 +401,9 @@ body {
 .questions__technology-questions-wrapper:last-child {
   margin-bottom: 10px;
 }
+.questions__technology-questions-wrapper:active {
+  background-color: #D3BE5D;
+}
 .questions__nextPage-wrapper {
   position: fixed;
   display: flex;
