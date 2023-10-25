@@ -109,9 +109,7 @@ export default function MyQuestions() {
       const arrayOfIds = Array.from(set); // получаем все id ответов со всех тем
 
       if (storeAnswers.length > 0) { // если в сторе есть ответы берем их оттуда
-        const answersData = storeAnswers.filter((item) => {
-          return arrayOfIds.includes(item.id);
-        })
+        const answersData = storeAnswers.filter((item) => arrayOfIds.includes(item.id))
         setFilteredAnswers(answersData);
       }
     }
@@ -173,8 +171,6 @@ export default function MyQuestions() {
     for (const blockName in dataReport) {
       if (dataReport.hasOwnProperty(blockName)) {
         const block = dataReport[blockName];
-        console.log(blockName)
-        console.log(block)
         dataToGoogleSheets.push([`Раздел ${blockName}`]); // Добавляем заголовки блока
         dataToGoogleSheets.push(['Вопрос', 'Оценка', 'Комментарий']); // Добавляем заголовки вопросов
         dataToGoogleSheets.push(...block); // Добавляем данные вопросов
@@ -247,16 +243,6 @@ export default function MyQuestions() {
       .finally(() => setLoading(!loading));
 
     dataToGoogleSheets.push([`${conclusion}`, averageMark]);
-
-    // const response = await fetch('/api/submit', {// отправляем данные в гугл таблицу
-    //   method: 'POST',
-    //   headers: {
-    //     'Accept': 'application/json',
-    //     'Content-Type': 'application/json'
-    //   },
-    //   body: JSON.stringify(dataToGoogleSheets)
-    // })
-    // const content = await response.json()
 
     const now = new Date();
     const year = now.getFullYear();
@@ -367,11 +353,9 @@ export default function MyQuestions() {
 
   useEffect(() => { // сохраняем поставленную оценку и коментарий для каждого вопроса при возвращении к нему
     Object.entries(dataReport || {}).forEach(([key, value]) => {
-      console.log(form)
       if (key === nameBlock) {
         if (Array.isArray(value)) {
           const choosenQuestion = value.find(item => item[0] === nameQuestion);
-          console.log(choosenQuestion)
           if (choosenQuestion) {
             const mark = typeof choosenQuestion[1] === 'string' ? choosenQuestion[1] : '';
             const comment = typeof choosenQuestion[2] === 'string' ? choosenQuestion[2] : '';
@@ -402,9 +386,7 @@ export default function MyQuestions() {
           <div className='answers__container'>
 
             {currentIdQuestion
-              ? filteredAnswers.filter((item: IAnswer) => {
-                return item.id === currentIdQuestion; // фильтруем Answers, берем только те что есть в currentIdQuestion
-              })
+              ? filteredAnswers.filter((item: IAnswer) => item.id === currentIdQuestion) // фильтруем Answers, берем только те что есть в currentIdQuestion
                 .map((item: IAnswer) => {
                   return <Markup content={item.text} className="answers__content" key={item.id} />
                 })

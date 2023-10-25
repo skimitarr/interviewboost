@@ -18,7 +18,6 @@ export default function PageForm__rightSide() {
   const [questions, setQuestions] = useState<IQuestion[]>([]); // массив всех вопросов с базы данных
   const [checkedIdQuestions, setCheckedIdQuestions] = useState<string[]>([]); // массив id вопросов которые checked
   const [checkedStates, setCheckedStates] = useState<{ [key: string]: boolean }>({});
-  // const [currentDragQuestion, setCurrentDragQuestion] = useState<IQuestion>({ id: '', text: '', answers: [] });
 
   const { t } = useTranslation();
   const router = useRouter();
@@ -38,9 +37,7 @@ export default function PageForm__rightSide() {
   useEffect(() => { // получаем categories
     if (grades.length > 0) {
       const filteredGrade = grades.find(grade => grade.title === activeGradeName);
-      let categoriesData = storeAllCategories.filter((item) => {
-        return filteredGrade?.categories.includes(item.id);
-      })
+      let categoriesData = storeAllCategories.filter((item) => filteredGrade?.categories.includes(item.id))
       categoriesData = categoriesData.sort((a: any, b: any) => a.id - b.id)
       setCategories(categoriesData);
       setCategoriesForStore(categoriesData);
@@ -55,9 +52,7 @@ export default function PageForm__rightSide() {
       });
       const arrayOfIds = Array.from(set); // получаем все id вопросов со всех тем
 
-      const questionsData = storeQuestions.filter((item) => {
-        return arrayOfIds.includes(item.id);
-      })
+      const questionsData = storeQuestions.filter((item) => arrayOfIds.includes(item.id))
       setQuestions(questionsData);
     }
   }, [categories])
@@ -189,18 +184,21 @@ export default function PageForm__rightSide() {
       return;
     }
 
-    const items = Array.from(questions);
-    const [reorderedItem] = items.splice(result.source.index, 1);
-    items.splice(result.destination.index, 0, reorderedItem);
-    setQuestions(items);
-
-    addStoreCategory(category)
+    const newQuestions = [...questions];
+    const sourceIndex = newQuestions.findIndex((q) => q.id === result.draggableId);
+    const filteredQuestions = newQuestions.filter((item) => category.questions.includes(item.id));
+    const destinationQuestion = filteredQuestions.find((q, index) => index === result.destination?.index);
+    const destinationIndex = newQuestions.findIndex((q) => q.id === destinationQuestion?.id);
+    const [reorderedItem] = newQuestions.splice(sourceIndex, 1);
+    newQuestions.splice(destinationIndex, 0, reorderedItem);
+    setQuestions(newQuestions);
   };
+
 
   return (
     storeProfession
       ? <div className='questions__rightSide'>
-        {/* <div className='questions__chooseGrade'>
+        {/* <div className='questions__chooseGrade'> //TODO: добавить кнопки джун мидл сеньйор
           {grades && grades.map(item => {
             return <button key={item.id}
               onClick={() => setActiveGradeName(item.title)}
@@ -215,30 +213,18 @@ export default function PageForm__rightSide() {
         <div className="questions">
           {categories && categories.map(category => {
             return (
-              <div key={category.id} className={`questions__technology ${activeCategoriesName.length > 0 ? 'active' : ''}`}>
+              <div key={category.id} className="questions__technology">
                 <div className='questions__technology-wrapper1'>
 
-
-                  {storeCategories.find(item => item.id === category.id) ?
-                    <div className='questions__technology-wrapper2'>
-                      <button
-                        className={`questions__technology-name ${activeCategoriesName.includes(category.title) ? 'active' : ''} isChoosen`}
-                        onClick={() => showQuestions(category.title)}
-                      >
-                        {category.title}
-                      </button>
-                      <p className="questions__technology-name-shadow"></p>
-                    </div>
-
-                    : <div className='questions__technology-wrapper2'>
-                      <button
-                        className={`questions__technology-name ${activeCategoriesName.includes(category.title) ? 'active' : ''}`}
-                        onClick={() => showQuestions(category.title)}
-                      >
-                        {category.title}
-                      </button>
-                      <p className="questions__technology-name-shadow"></p>
-                    </div>}
+                  <div className='questions__technology-wrapper2'>
+                    <button
+                      className={`questions__technology-name ${activeCategoriesName.includes(category.title) ? 'active' : ''} ${storeCategories.find(item => item.id === category.id) ? 'isChoosen' : ''} `}
+                      onClick={() => showQuestions(category.title)}
+                    >
+                      {category.title}
+                    </button>
+                    <p className="questions__technology-name-shadow"></p>
+                  </div>
 
                   {storeCategories.find(item => item.id === category.id)
                     ? <button className='questions__technology-btn questions__technology btn' onClick={() => removeStoreCategory(category)}>{t('cancel')}</button>
@@ -257,12 +243,7 @@ export default function PageForm__rightSide() {
                       <Droppable droppableId="questions">
                         {(provided) => (
                           <div ref={provided.innerRef} >
-                            {questions
-                              .filter((item) => {
-                                return category.questions.some((el) => {
-                                  return item.id === el;
-                                });
-                              })
+                            {questions.filter((item) => category.questions.includes(item.id))
                               .map((item, index) => (
                                 <Draggable key={item.id} draggableId={item.id} index={index}>
                                   {(provided) => (
@@ -275,11 +256,14 @@ export default function PageForm__rightSide() {
                                         checked={checkedIdQuestions.includes(item.id)} />
                                       <label htmlFor={`question-${item.id}`}
                                         className={`questions__technology-questions ${checkedIdQuestions.includes(item.id) ? '' : 'isSelected'}`}
-                                      >{index + 1}. {item.text}</label>
+                                      >{index + 1}. {item.text}
+                                      </label>
+
                                     </div>
                                   )}
                                 </Draggable>
                               ))}
+                            {provided.placeholder}
                           </div>
                         )}
                       </Droppable>

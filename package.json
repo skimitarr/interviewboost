@@ -32,7 +32,6 @@
     "redux": "^4.2.1",
     "resend": "^1.1.0",
     "styled-components": "^6.0.7",
-    "translit-rus-eng": "^1.0.8",
     "typescript": "5.2.2"
   },
   "devDependencies": {

@@ -31,7 +31,6 @@ export interface IQuestion {
   id: string
   text: string
   answers: string[]
-  order?: string
 }
 
 export interface IAnswer {

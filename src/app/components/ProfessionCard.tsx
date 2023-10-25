@@ -30,12 +30,10 @@ export default function ProfessionCard({ profession }: { profession: IProffesion
     }
   };
 
-  const fetchQuestions = async () => {
+  const fetchQuestions = async () => { // TODO: пересмотреть работу с БД
     try {
       let questionsData = await getDbAllQuestions();
       questionsData = questionsData.sort((a: any, b: any) => a.id - b.id)
-      // questionsData.forEach(item => t(item.text))
-      // console.log(questionsData)
       dispatch(getQuestions(questionsData));
     } catch (error) {
       console.error('Error getting documents:', error);
