@@ -1,4 +1,3 @@
-
 {
   "add": "Добавить",
   "addComment": "Добавьте комментарий",
@@ -7,7 +6,7 @@
   "comment": "Комментарий",
   "comingSoon": "Скоро",
   "downloadReport": "Скачать отчет",
-  "feedback": "Обратная\u00A0связь",
+  "feedback": "Обратная связь",
   "generalFeedback": "Общий вывод",
   "generatingReport": "Пожалуйста подождите, генерирую отчет",
   "goToReport": "Перейти к отчету",
@@ -33,10 +32,6 @@
   "signIn": "Войти",
   "signInWithGitHub": "Войти через GitHub",
   "signInWithGoogle": "Войти через Google",
-
-
-
-
   "whatIsHTML": "Что такое HTML и для чего он используется?",
   "HTMLElement": "Что такое HTML-элемент? Какова его структура?",
   "attributesInHTML": "Что такое атрибуты в HTML? Как они используются в элементах?",
@@ -97,12 +92,6 @@
   "waysToImprovePage": "Способы улучшения производительности веб-страницы при использовании HTML?",
   "attributesHTMLForms": "Основные атрибуты HTML-форм? Как они влияют на отправку данных с веб-страницы?",
   "HTMLElementsdToTables": "Какие HTML-элементы используются для создания и форматирования таблиц? Какие атрибуты у них есть?",
-
-
-
-
-
-
   "whatIsCSS": "Что такое CSS? И для чего он используется?",
   "CSSRule": "Что такое CSS-правило?",
   "waysAddCSS": "Варианты добавления CSS стилей на страницу?",
@@ -151,11 +140,6 @@
   "differencePseudoClassesAndPseudoElements": "Разница между псевдоклассами и псевдоэлементами?",
   "createStyleOnLargeProjects": "Как создавать и поддерживать единый стиль CSS на больших проектах?",
   "containerQueries": "Что такое 'контейнерные запросы' (container queries)? Как они отличаются от медиазапросов (media queries)?",
-
-
-
-
-
   "dataTypesJavaScript": "Типы данных в JavaScript?",
   "equality": "Разница между == и === (нестрогое/строгое равенство)?",
   "strictMode": "Что такое Strict mode в JavaScript?",
@@ -238,11 +222,6 @@
   "executionContext": "Как работает контекст выполнения (execution context) в JavaScript?",
   "primitiveAndObject": "Разница между примитивом и объектом?",
   "maxCallStackSizeExceeded": "Что значит текст max call stack size exceeded в консоли?",
-
-
-
-
-
   "whatIsDOM": "Что такое DOM?",
   "typesOfDOMTreeNodes": "Типы узлов DOM-дерева?",
   "findElementsInDOM": "Методы поиска элементов в DOM?",
@@ -275,12 +254,6 @@
   "intersectionObserver": "Расскажите о IntersectionObserver?",
   "URLSearchParams": "Расскажите о URLSearchParams?",
   "limitationsWindowClose": "Какие есть ограничения у window.close()?",
-
-
-
-
-
-
   "synchronousAndAsynchronousFunctions": "Разница между синхронными и асинхронными функциями?",
   "AJAX": "Что такое AJAX?",
   "sameOriginPolicy": "Что такое same-origin policy в контексте JavaScript?",
@@ -299,11 +272,6 @@
   "issuesWithCallback": "Проблемы при использовании callback-функций?",
   "multipleAsynchronousOperations": "Как выполнить несколько асинхронных операций последовательно?",
   "problemsIncorrectUseAsynchrony": "Какие проблемы может вызвать неправильное использование асинхронности в JavaScript?",
-
-
-
-
-
   "ECMAScript": "Что такое ECMAScript? В чём отличие от JavaScript?",
   "letConstVar": "Разница между let, const и var?",
   "changeValueConst": "Можно ли изменить значение, определённое через const?",
@@ -338,12 +306,6 @@
   "mapCollection": "Основные методы и свойства работы с коллекцией Map",
   "setCollection": "Основные методы и свойства работы с коллекцией Set",
   "iterateMapAndSet": "Как осуществить перебор элементов в коллекциях Map и Set?",
-
-
-
-
-
-
   "typeScript": "Что такое TypeScript?",
   "componentsTS": "Основные компоненты TypeScript?",
   "featuresTS": "Назовите особенности TypeScript?",
@@ -372,9 +334,6 @@
   "declareKeyword": "Для чего в TypeScript используют ключевое слово 'declare'?",
   "voidNeverAndUnknown": "Разница между типами 'void', 'never' и 'unknown'?",
   "catchErrorsTS": "Как вы отлавливаете ошибки в TypeScript коде?",
-
-
-
   "progressiveRendering": "Что такое прогрессивный рендеринг?",
   "progressiveSSR": "Что такое прогрессивный SSR?",
   "PWA": "Что такое Progressive Web Application (PWA)?",
@@ -401,10 +360,6 @@
   "coreWebVitalsMetrics": "Расскажите о метриках Core Web Vitals?",
   "preloadPrefetchPreconnectAndPrerender": "Разница между preload, prefetch, preconnect и prerender?",
   "PRPLPattern": "Для чего нужен паттерн PRPL?",
-
-
-
-
   "whatIsHTTP": "Что такое HTTP?",
   "HTTPRequest": "Из чего состоит HTTP-запрос?",
   "methodsHTTPRequest": "Какие методы может иметь HTTP-запрос?",
@@ -438,11 +393,6 @@
   "crossSiteScripting": "Что такое межсайтовый скриптинг (XSS)?",
   "methodsApplicationSecurity": "Методы повышения безопасности веб-приложений?",
   "OWASPTop10": "Что такое OWASP Top 10?",
-
-
-
-
-
   "principlesOfOOP": "Основные принципы ООП?",
   "SOLID": "Что такое SOLID?",
   "classAndPrototypalInheritance": "Разница между классовым и прототипным наследованием?",
@@ -481,10 +431,6 @@
   "dependencyInjection": "Что такое Dependency injection?",
   "aggregationAndComposition": "Разница между агрегацией и композицией?",
   "proceduralAndFunctionalProgramming": "Разница между процедурным и функциональным программированием?",
-
-
-
-
   "WCAG": "Что такое WCAG?",
   "principlesOfAccessibility": "Основные принципы доступности",
   "screenReader": "Что такое скринридер?",
@@ -498,11 +444,6 @@
   "accessibilityStandards": "Какие стандарты доступности следует учитывать при разработке?",
   "usabilityAndAccessibility": "Разница между usability и accessibility",
   "developingAccessibleWebsite": "Что нужно учитывать при разработке доступного сайта?",
-
-
-
-
-
   "whatIsReact": "Что такое React?",
   "benefitsReact": "Какие основные преимущества его использования в веб-разработке?",
   "featuresReact": "Перечислите особенности React.",
@@ -576,11 +517,6 @@
   "bestPracticesReact": "Лучшие практики безопасности в React?",
   "toolsAndLibrariesTestingReact": "Какие инструменты и библиотеки для тестирования React-компонентов вы использовали?",
   "principlesTestingReact": "Какие принципы тестирования React-приложений вы соблюдаете?",
-
-
-
-
-
   "whatIsVue": "Что такое Vue.js?",
   "featuresVue": "Перечислите особенности Vue.js.",
   "zdvantagesVue": "Перечислите преимущества Vue.js.",
@@ -616,11 +552,6 @@
   "renderFunctionVue": "Что такое рендер-функция (render function)? Преимущества рендер-функции?",
   "keepAliveComponentsVue": "Что такое динамические (keep-alive) компоненты?",
   "asynchronousComponentsVue": "Что такое асинхронные компоненты?",
-
-
-
-
-
   "whatIsAngular": "Что такое Angular?",
   "differenceAngularJSAndAngular": "Разница между AngularJS и Angular?",
   "angularComponentLifecycle": "Методы жизненного цикла Angular компонента?",
@@ -678,11 +609,6 @@
   "advantagesUsingServiceWorkers": "Преимущества использования сервис-воркеров в Angular приложении?",
   "pPlatformAngular": "Что такое платформа в Angular?",
   "ngForDirectiveWithTrackBy": "Для чего используется связка ngFor и trackBy?",
-
-
-
-
-
   "whatIsRedux": "Что такое Redux и какие основные преимущества его использования в управлении состоянием в React-приложениях?",
   "fundamentalConceptsRedux": "Какие основные концепции существуют в Redux и как они связаны между собой (Store, Actions, Reducers)?",
   "storeRedux": "Что представляет собой хранилище (Store) в Redux? Какие методы и свойства хранилища вы знаете?",
@@ -698,18 +624,12 @@
   "handleAsynchronousRedux": "Как обрабатывать асинхронные операции в Redux-приложении? Какие подходы к асинхронности вы предпочитаете?",
   "globalSettingsRedux": "Как организовать хранение и обработку глобальных настроек или данных в Redux?",
   "debuggingRedux": "Какие методы для отладки Redux-приложений вы используете? Упомяните инструменты или расширения для браузеров.",
-
-
-
-
-
   "whatIsReduxToolkit": "Что такое Redux Toolkit и какие основные преимущества его использования по сравнению с чистым Redux?",
   "toolsToolkit": "Какие ключевые функции и инструменты предоставляет Redux Toolkit для упрощения работы с Redux?",
   "storeToolkit": "Как создать хранилище (Store) с использованием Redux Toolkit? Какие функции и методы для этого предоставляются?",
   "slicesToolkit": "Что такое срезы (Slices) в Redux Toolkit и для чего они используются? Как создать срез?",
   "toolkitActions": "Какие методы в Redux Toolkit позволяют создавать действия (Actions) и редюсеры (Reducers) с более компактным синтаксисом?",
-  "handleAsynchronousToolkit":
-    "Как организовать асинхронные операции с использованием Redux Toolkit? Какой middleware часто используется с ним?",
+  "handleAsynchronousToolkit": "Как организовать асинхронные операции с использованием Redux Toolkit? Какой middleware часто используется с ним?",
   "toolkitUniqueIdentifiers": "Каким образом Redux Toolkit управляет созданием уникальных идентификаторов для действий и редюсеров?",
   "toolkitUpdateState": "Какие методы в Redux Toolkit позволяют обновлять состояние (state) с минимальной боли?",
   "selectorGenerationToolkit": "Какие преимущества приносит автоматическое создание селекторов (Selectors) с использованием Redux Toolkit?",
