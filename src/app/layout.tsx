@@ -1,5 +1,6 @@
 import { Providers } from './components/Providers'
 import { TheHeader } from './components/TheHeader'
+import ThemeRegistry from "@/theme/ThemeRegistry";
 import type { Metadata } from 'next'
 import '@/css/style.css'
 
@@ -15,14 +16,16 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
-        <Providers>
-          <TheHeader />
-          <main className="main">
-            {children}
-          </main>
-        </Providers>
-      </body>
+      <ThemeRegistry>
+        <body>
+          <Providers>
+            <TheHeader />
+            <main className="main">
+              {children}
+            </main>
+          </Providers>
+        </body>
+      </ThemeRegistry>
     </html>
   )
 }
