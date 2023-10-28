@@ -5,7 +5,7 @@ import { useAppDispatch } from '../hooks'
 import { getDbAllGrades, getDbAllCategories, getDbAllQuestions, getDbAllAnswers } from '../../services/DatabaseService'
 
 import { IProffesion } from '../components/Types'
-import { getProfession, getGrades, getAllCategories, getQuestions, getAnswers } from '../store/slices/data.slice';
+import { getProfession, getGrades, getAllCategories, getQuestions, getAnswers } from '../store/slices/app-data.slice';
 
 export default function ProfessionCard({ profession }: { profession: IProffesion }) {
   const dispatch = useAppDispatch();

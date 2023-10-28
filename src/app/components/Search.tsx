@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useAppSelector, useAppDispatch } from '../hooks'
 
 import { DataReport, ICategory, IQuestion, ISearchReport } from "./Types";
-import { getCurrentIdQuestion } from '../store/slices/data.slice'
+import { getCurrentIdQuestion } from '../store/slices/app-data.slice'
 
 export default function Search({ pageName, getCurrentReport }: ISearchReport) {
   const [searchText, setSearchText] = useState('');

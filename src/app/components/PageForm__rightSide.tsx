@@ -1,13 +1,34 @@
 'use client'
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useAppSelector, useAppDispatch } from '../hooks'
+import { useAppDispatch } from '../hooks'
 import Link from "next/link"
 import { useTranslation } from "react-i18next";
 import { DragDropContext, Draggable, DropResult, Droppable } from 'react-beautiful-dnd';
+import fastDeepEqual from 'fast-deep-equal';
 
-import { addCategory, removeCategory } from '../store/slices/data.slice';
-import { IGrade, ICategory, IQuestion } from "../components/Types";
+import { addCategory, removeCategory } from '../store/slices/app-data.slice';
+import { IGrade, ICategory, IQuestion, IProffesion } from "../components/Types";
+import { selectFromAppData } from '@/app/store/selectors/data';
+import applySpec from 'ramda/es/applySpec';
+import { useSelector } from "react-redux";
+import { StoreState } from "@/app/store/types";
+
+type Selector = {
+  storeProfession: IProffesion | null,
+  storeGrades: IGrade[],
+  storeAllCategories: ICategory[],
+  storeCategories: ICategory[],
+  storeQuestions: IQuestion[],
+};
+
+const selector = applySpec<Selector>({
+  storeProfession: selectFromAppData('profession', null),
+  storeGrades: selectFromAppData('grades', []),
+  storeAllCategories: selectFromAppData('allCategories', []),
+  storeCategories: selectFromAppData('categories', []),
+  storeQuestions: selectFromAppData('questions', []),
+});
 
 export default function PageForm__rightSide() {
   const [grades, setGrades] = useState<IGrade[]>([]); // массив (junior middle) с базы данных
@@ -22,11 +43,7 @@ export default function PageForm__rightSide() {
   const { t } = useTranslation();
   const router = useRouter();
   const dispatch = useAppDispatch()
-  const storeProfession = useAppSelector((state) => state.profession)
-  const storeGrades = useAppSelector((state) => state.grades)
-  const storeAllCategories = useAppSelector((state) => state.allCategories)
-  const storeCategories = useAppSelector((state) => state.categories)
-  const storeQuestions = useAppSelector((state) => state.questions)
+  const { storeProfession, storeGrades, storeAllCategories, storeCategories, storeQuestions  } = useSelector<StoreState, Selector>(selector, fastDeepEqual);
 
   useEffect(() => { // получаем grades
     if (storeGrades) {

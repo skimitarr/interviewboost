@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useAppSelector, useAppDispatch } from '../hooks'
 import { DragDropContext, Draggable, DropResult, Droppable } from 'react-beautiful-dnd';
-import { getCurrentIdQuestion } from '../store/slices/data.slice';
+import { getCurrentIdQuestion } from '../store/slices/app-data.slice';
 import { ICategory, ILeftPart, IQuestion } from "../components/Types";
 
 export default function PageForm__leftSide({ getQuestionText, getCategoryTitle, pageName }: ILeftPart) {

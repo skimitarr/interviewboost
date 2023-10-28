@@ -1,11 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
-import {userState} from '../types';import {
+import {UserState} from '../types';
+import {
     Locales
 } from '../enumes';
 
 export const name = 'user';
 
-const userInitialState: userState = {
+const userInitialState: UserState = {
     locale: Locales.English
 };
 
