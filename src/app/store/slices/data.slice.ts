@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { DataState , ICategory } from '../components/Types';
+import { DataState , ICategory } from '../../components/Types';
 
-const dataSlice = createSlice({
+export const dataSlice = createSlice({
   name: 'interviews',
   initialState: {
     profession: null,
@@ -53,4 +53,3 @@ const dataSlice = createSlice({
 
 export const { getProfession, getGrades, getAllCategories, getCategories, addCategory, removeCategory,
   getQuestions, getAnswers, getCurrentIdQuestion } = dataSlice.actions;
-export default dataSlice.reducer;

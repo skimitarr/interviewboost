@@ -6,7 +6,7 @@ import Link from "next/link"
 import { useTranslation } from "react-i18next";
 import { DragDropContext, Draggable, DropResult, Droppable } from 'react-beautiful-dnd';
 
-import { addCategory, removeCategory } from '../store/DataSlice';
+import { addCategory, removeCategory } from '../store/slices/data.slice';
 import { IGrade, ICategory, IQuestion } from "../components/Types";
 
 export default function PageForm__rightSide() {
