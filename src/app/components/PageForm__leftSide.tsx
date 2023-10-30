@@ -1,11 +1,31 @@
 'use client'
 import { useCallback, useEffect, useState } from 'react';
-import { useAppSelector, useAppDispatch } from '../hooks'
+import { useAppDispatch } from '../hooks'
 import { DragDropContext, Draggable, DropResult, Droppable } from 'react-beautiful-dnd';
 import { getCurrentIdQuestion } from '../store/slices/app-data.slice';
-import { ICategory, ILeftPart, IQuestion } from "../components/Types";
+import { ICategory, ILeftPart, IQuestion } from '../components/Types';
+import applySpec from 'ramda/es/applySpec';
+import { useSelector } from 'react-redux';
+import { StoreState } from '@/app/store/types';
+import fastDeepEqual from 'fast-deep-equal';
+import { selectFromAppData } from '@/app/store/selectors/data';
+
+type Selector = {
+  storeAllCategories: ICategory[],
+  categoriesFromStore: ICategory[],
+  storeCurrentIdQuestion: string,
+};
+
+const selector = applySpec<Selector>({
+  storeGrades: selectFromAppData('grades', []),
+  storeAllCategories: selectFromAppData('allCategories', []),
+  categoriesFromStore: selectFromAppData('categories', []),
+  storeCurrentIdQuestion: selectFromAppData('currentIdQuestion', []),
+});
 
 export default function PageForm__leftSide({ getQuestionText, getCategoryTitle, pageName }: ILeftPart) {
+  const { storeCurrentIdQuestion, categoriesFromStore, storeQuestions  } = useSelector<StoreState, Selector>(selector, fastDeepEqual);
+
   const [сurrentIdQuestion, setСurrentIdQuestion] = useState('0'); // используем для выделения цветом текущего вопроса
   const [activeCategoriesName, setActiveCategoriesName] = useState<string[]>([]); // определяем активные(раскрытые) категории (html css)
   const [storeCategories, setStoreCategories] = useState<ICategory[]>([]); // получаем категории из categoriesFromStore или из localStorage
@@ -13,9 +33,7 @@ export default function PageForm__leftSide({ getQuestionText, getCategoryTitle, 
   const [questions, setQuestions] = useState<IQuestion[]>([]);
 
   const dispatch = useAppDispatch();
-  const storeQuestions = useAppSelector((state) => state.questions);
-  const storeCurrentIdQuestion = useAppSelector((state) => state.currentIdQuestion);
-  const categoriesFromStore = useAppSelector((state) => state.categories);
+
   const initialIdQuestion = storeCategories.length > 0 ? storeCategories[0].questions[0] : '';
 
   useEffect(() => {

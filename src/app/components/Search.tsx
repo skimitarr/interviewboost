@@ -1,21 +1,43 @@
 'use client'
 import { useState, useEffect, ChangeEvent } from "react";
 import { useTranslation } from "react-i18next";
-import { useAppSelector, useAppDispatch } from '../hooks'
+import { useAppDispatch } from '../hooks'
 
-import { DataReport, ICategory, IQuestion, ISearchReport } from "./Types";
+import { DataReport, ICategory, IProffesion, IQuestion, ISearchReport } from './Types';
 import { getCurrentIdQuestion } from '../store/slices/app-data.slice'
 
+import { selectFromAppData } from '@/app/store/selectors/data';
+import applySpec from 'ramda/es/applySpec';
+import { useSelector } from 'react-redux';
+import { StoreState } from '@/app/store/types';
+import fastDeepEqual from 'fast-deep-equal';
+
+type Selector = {
+  storeProfession: IProffesion | null,
+  storeCategories: ICategory[],
+  storeQuestions: IQuestion[],
+};
+
+const selector = applySpec<Selector>({
+  storeProfession: selectFromAppData('profession', null),
+  storeCategories: selectFromAppData('categories', []),
+  storeQuestions: selectFromAppData('questions', []),
+});
+
 export default function Search({ pageName, getCurrentReport }: ISearchReport) {
-  const [searchText, setSearchText] = useState('');
-  const [searchResult, setSearchResult] = useState<IQuestion[]>([]);
-  const [searchResultReports, setSearchResultReports] = useState<DataReport[]>([]);
 
   const { t } = useTranslation();
   const dispatch = useAppDispatch()
-  const storeProfession = useAppSelector((state) => state.profession)
-  const storeCategories = useAppSelector((state) => state.categories)
-  const storeQuestions = useAppSelector((state) => state.questions)
+
+  const {
+    storeProfession,
+    storeCategories,
+    storeQuestions
+  } = useSelector<StoreState, Selector>(selector, fastDeepEqual);
+
+  const [searchText, setSearchText] = useState('');
+  const [searchResult, setSearchResult] = useState<IQuestion[]>([]);
+  const [searchResultReports, setSearchResultReports] = useState<DataReport[]>([]);
 
   useEffect(() => {
     if (searchText && pageName !== 'reports') {

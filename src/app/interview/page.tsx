@@ -2,7 +2,7 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { polyfill } from 'interweave-ssr'; // interweave для того чтобы прочитать HTML из объекта
 import { Markup } from 'interweave'; // interweave для того чтобы прочитать HTML из объекта
-import { useAppSelector, useAppDispatch } from '../hooks';
+import { useAppDispatch } from '../hooks';
 import { nanoid } from 'nanoid';
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -17,7 +17,42 @@ import { getAnswers, getQuestions } from "../store/slices/app-data.slice";
 
 const arrMarks = ['0', '5', '10', '15', '20', '25', '30', '35', '40', '45', '50', '55', '60', '65', '70', '75', '80', '85', '90', '95', '100',]
 
+import fastDeepEqual from 'fast-deep-equal';
+
+import { addCategory, removeCategory } from '../store/slices/app-data.slice';
+import { IGrade, ICategory, IQuestion, IProffesion } from "../components/Types";
+import { selectFromAppData } from '@/app/store/selectors/data';
+import applySpec from 'ramda/es/applySpec';
+import { useSelector } from "react-redux";
+import { StoreState } from "@/app/store/types";
+
+type Selector = {
+  storeProfession: IProffesion | null,
+  storeQuestions: IQuestion[],
+  storeAnswers: IAnswer[],
+  storeCurrentIdQuestion: string,
+};
+
+const selector = applySpec<Selector>({
+  storeProfession: selectFromAppData('profession', null),
+  storeGrades: selectFromAppData('grades', []),
+  storeQuestions: selectFromAppData('questions', []),
+  storeCurrentIdQuestion: selectFromAppData('currentIdQuestion', []),
+});
+
 export default function MyQuestions() {
+  const { t } = useTranslation();
+  const session = useSession();
+  const router = useRouter();
+  const dispatch = useAppDispatch()
+
+  const {
+    storeProfession,
+    storeAnswers,
+    storeQuestions,
+    storeCurrentIdQuestion
+  } = useSelector<StoreState, Selector>(selector, fastDeepEqual);
+
   const [localData, setLocalData] = useState<ICategory[]>([]); // категории из localStorage
   const [nameQuestion, setNameQuestion] = useState('');   // nameQuestion - вопрос для передачи в отчет
   const [nameBlock, setNameBlock] = useState('');   // nameBlock - название раздела вопросов для передачи в отчет
@@ -34,17 +69,10 @@ export default function MyQuestions() {
     comment: '',
   });
 
-  const { t } = useTranslation();
-  const session = useSession();
-  const router = useRouter();
-  const dispatch = useAppDispatch()
-  const storeProfession = useAppSelector((state) => state.profession)
-  const storeQuestions = useAppSelector((state) => state.questions)
-  const storeAnswers = useAppSelector((state) => state.answers)
-  const storeCurrentIdQuestion = useAppSelector((state) => state.currentIdQuestion)
-
   const isBrowser = typeof window !== 'undefined'; // Проверяем, что код выполняется в браузерной среде
   const local = isBrowser ? localStorage.getItem('choosenCategories') ?? '' : '';
+
+  console.log(local);
 
   const fetchQuestions = async () => {
     try {

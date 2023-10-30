@@ -31,6 +31,18 @@ const selector = applySpec<Selector>({
 });
 
 export default function PageForm__rightSide() {
+  const { t } = useTranslation();
+  const router = useRouter();
+  const dispatch = useAppDispatch()
+
+  const {
+    storeProfession,
+    storeGrades,
+    storeAllCategories,
+    storeCategories,
+    storeQuestions
+  } = useSelector<StoreState, Selector>(selector, fastDeepEqual);
+
   const [grades, setGrades] = useState<IGrade[]>([]); // массив (junior middle) с базы данных
   const [activeGradeName, setActiveGradeName] = useState<string>('Junior'); // определяем активую кнопку (junior middle) для стилизации
   const [categories, setCategories] = useState<ICategory[]>([]); // массив (html css) с базы данных
@@ -39,11 +51,6 @@ export default function PageForm__rightSide() {
   const [questions, setQuestions] = useState<IQuestion[]>([]); // массив всех вопросов с базы данных
   const [checkedIdQuestions, setCheckedIdQuestions] = useState<string[]>([]); // массив id вопросов которые checked
   const [checkedStates, setCheckedStates] = useState<{ [key: string]: boolean }>({});
-
-  const { t } = useTranslation();
-  const router = useRouter();
-  const dispatch = useAppDispatch()
-  const { storeProfession, storeGrades, storeAllCategories, storeCategories, storeQuestions  } = useSelector<StoreState, Selector>(selector, fastDeepEqual);
 
   useEffect(() => { // получаем grades
     if (storeGrades) {
