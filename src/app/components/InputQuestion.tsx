@@ -13,11 +13,9 @@ export default function InputQuestion({ item, index, category, selectQuestions, 
     checkedIdQuestions: string[],
     dragDropQuestion: (sourceId: string, destinationId: string) => void
   }) {
-
-
   const categoriesFromStore = useAppSelector((state) => state.categories);
-
   const ref = useRef(null);
+
   const [{ isDragging }, dragQuestions] = useDrag({
     type: 'inputRightSide',
     item: { id: item.id, category, categoriesFromStore, checked: checkedIdQuestions.includes(item.id) },

@@ -169,12 +169,6 @@ export default function PageForm__leftSide({ getQuestionText, getCategoryTitle, 
               questions.filter((item) => category.questions.includes(item.id))
                 .map((question, index) => {
                   return (question &&
-                    // <p key={question.id}
-                    //   className={`questions__technology-questions questions__leftQustions ${question.id === сurrentIdQuestion && showHighliting ? 'highlited' : ''} ${pageName === 'interview' ? 'cursor' : ''}`}
-                    //   onClick={() => handleQuestion(question.text, question.id)}
-                    // >
-                    //   {index + 1}. {question.text}
-                    // </p>
                     <Question__leftSide key={question.id}
                       item={question}
                       index={index}

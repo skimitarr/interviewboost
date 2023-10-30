@@ -251,7 +251,6 @@ export default function PageForm__rightSide() {
                         checked={checkedStates[category.id] || false} />
                       <label htmlFor={category.id} className='questions__technology-questions'>{t('selectAll')}</label>
                     </div>
-                    {/* <div ref={dropQuestions}> */}
                     <div>
                       {questions.filter((item) => category.questions.includes(item.id))
                         .map((item, index) => (
