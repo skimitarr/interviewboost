@@ -1,15 +1,17 @@
 'use client'
 import { useCallback, useEffect, useState } from 'react';
 import { useAppSelector, useAppDispatch } from '../hooks'
-import { DragDropContext, Draggable, DropResult, Droppable } from 'react-beautiful-dnd';
-import { getCurrentIdQuestion } from '../store/DataSlice';
+import { useDrop } from 'react-dnd';
+
+import { addCategory, getCheckedQuestionDragDrop, getCurrentIdQuestion } from '../store/DataSlice';
 import { ICategory, ILeftPart, IQuestion } from "../components/Types";
+import Question__leftSide from './Question__leftSide';
 
 export default function PageForm__leftSide({ getQuestionText, getCategoryTitle, pageName }: ILeftPart) {
   const [сurrentIdQuestion, setСurrentIdQuestion] = useState('0'); // используем для выделения цветом текущего вопроса
   const [activeCategoriesName, setActiveCategoriesName] = useState<string[]>([]); // определяем активные(раскрытые) категории (html css)
   const [storeCategories, setStoreCategories] = useState<ICategory[]>([]); // получаем категории из categoriesFromStore или из localStorage
-  const [showHighliting, setShowHighliting] = useState<boolean>(false); // флаг для выделения цветом текущего вопроса на странице форм
+  const [showHighliting, setShowHighliting] = useState<boolean>(false); // флаг для выделения цветом текущего вопроса на странице собеседование
   const [questions, setQuestions] = useState<IQuestion[]>([]);
 
   const dispatch = useAppDispatch();
@@ -38,6 +40,9 @@ export default function PageForm__leftSide({ getQuestionText, getCategoryTitle, 
       if (pageName !== 'interview' && storeCurrentIdQuestion !== сurrentIdQuestion && storeCurrentIdQuestion !== initialIdQuestion) { // showHighliting true если проводим поиск в вопросах
         setShowHighliting(true);
       }
+    }
+    if (pageName === 'interview') { // showHighliting true если проводим поиск в вопросах
+      setShowHighliting(true);
     }
     setСurrentIdQuestion(storeCurrentIdQuestion) // для для выделения цветом текущего вопроса из поиска
   }, [storeCurrentIdQuestion])
@@ -110,69 +115,80 @@ export default function PageForm__leftSide({ getQuestionText, getCategoryTitle, 
     }
   }
 
-  const handleDragEnd = (result: DropResult, category: ICategory) => {
-    if (!result.destination) {
-      return;
-    }
-    const newQuestions = [...questions];
-    const sourceIndex = newQuestions.findIndex((q) => q.id === result.draggableId);
-    const filteredQuestions = newQuestions.filter((item) => category.questions.includes(item.id));
-    const destinationQuestion = filteredQuestions.find((q, index) => index === result.destination?.index);
-    const destinationIndex = newQuestions.findIndex((q) => q.id === destinationQuestion?.id);
-    const [reorderedItem] = newQuestions.splice(sourceIndex, 1);
-    newQuestions.splice(destinationIndex, 0, reorderedItem);
-    setQuestions(newQuestions);
-  };
-
   const isActiveCategoryHandler = useCallback((categoryTitle: string) => {
     return activeCategoriesName.find(item => item === categoryTitle);
   }, [activeCategoriesName])
 
+  const [, dropQuestions] = useDrop(() => ({ // хук Drag&Drop
+    accept: 'inputRightSide',
+    drop({ id: sourceId, category, categoriesFromStore, checked }:
+      { id: string; type: string; category: ICategory, categoriesFromStore: ICategory[], checked: boolean }) {
+      !checked ? addDragDropQuestion(category, sourceId, categoriesFromStore) : null
+    },
+  }));
+
+  const addDragDropQuestion = (category: ICategory, sourceId: string, categoriesFromStore: ICategory[]) => { // логика добавления вопросов(и категорий) Drag&Drop
+    const updatedCategory = categoriesFromStore.find(item => item.id === category.id);
+    if (updatedCategory) {
+      const updatedCategoryWithQuestions = {
+        ...updatedCategory,
+        questions: updatedCategory.questions ? [...updatedCategory.questions, sourceId] : [sourceId],
+      };
+      dispatch(addCategory(updatedCategoryWithQuestions));
+    } else {
+      const updatedCategory = { ...category, questions: [sourceId] };
+      dispatch(addCategory(updatedCategory));
+    }
+
+    dispatch(getCheckedQuestionDragDrop(sourceId));
+  }
+
+  const dragDropQuestion = (sourceId: string, destinationId: string) => {
+    setQuestions(prevQuestions => {
+      const newQuestions = [...prevQuestions];
+      const sourceIndex = newQuestions.findIndex(q => q.id === sourceId);
+      const destinationIndex = newQuestions.findIndex(q => q.id === destinationId);
+
+      const [reorderedItem] = newQuestions.splice(sourceIndex, 1);
+      newQuestions.splice(destinationIndex, 0, reorderedItem);
+
+      return newQuestions;
+    });
+  };
+
   return (
-    <div className='questions__categories'>
+    <div className='questions__categories' ref={dropQuestions}>
       {storeCategories && storeCategories.map((category: ICategory) => {
         return (
-          <DragDropContext onDragEnd={(result) => handleDragEnd(result, category)} key={category.id}>
-            <div>
-              <button className={`questions__choosenQuestions ${isActiveCategoryHandler(category.title) ? 'active' : ''}`} onClick={() => showQuestions(category.title)}>
-                {category.title}
-              </button>
+          <div key={category.id} className='questions__choosenQuestions-wrapper'>
+            <button className={`questions__choosenQuestions ${isActiveCategoryHandler(category.title) ? 'active' : ''}`} onClick={() => showQuestions(category.title)}>
+              {category.title}
+            </button>
 
-              <Droppable droppableId="questions-list">
-                {(provided) => (
-                  <div ref={provided.innerRef}>
-                    {activeCategoriesName.includes(category.title) &&
-                      questions.filter((item) => category.questions.includes(item.id))
-                        .map((question, index) => {
-                          return (question ?
-                            <Draggable key={question.id} draggableId={question.id} index={index}>
-                              {(provided) => (
-                                <div
-                                  ref={provided.innerRef}
-                                  {...provided.draggableProps}
-                                  {...provided.dragHandleProps}
-                                >
-                                  <p
-                                    className={`questions__technology-questions questions__leftQustions ${question.id === сurrentIdQuestion && showHighliting ? 'highlited' : ''} ${pageName === 'interview' ? 'cursor' : ''}`}
-                                    onClick={() => handleQuestion(question.text, question.id)}
-                                  >
-                                    {index + 1}. {question.text}
-                                  </p>
-                                </div>
-                              )}
-                            </Draggable>
-                            : null
-                          )
-                        })}
-                    {provided.placeholder}
-                  </div>
-                )}
-              </Droppable>
-            </div>
-          </DragDropContext>
+            {activeCategoriesName.includes(category.title) &&
+              questions.filter((item) => category.questions.includes(item.id))
+                .map((question, index) => {
+                  return (question &&
+                    // <p key={question.id}
+                    //   className={`questions__technology-questions questions__leftQustions ${question.id === сurrentIdQuestion && showHighliting ? 'highlited' : ''} ${pageName === 'interview' ? 'cursor' : ''}`}
+                    //   onClick={() => handleQuestion(question.text, question.id)}
+                    // >
+                    //   {index + 1}. {question.text}
+                    // </p>
+                    <Question__leftSide key={question.id}
+                      item={question}
+                      index={index}
+                      сurrentIdQuestion={сurrentIdQuestion}
+                      showHighliting={showHighliting}
+                      pageName={pageName}
+                      dragDropQuestion={dragDropQuestion}
+                      handleQuestion={handleQuestion}
+                    />
+                  )
+                })}
+          </div>
         );
       })}
     </div>
   );
 }
-

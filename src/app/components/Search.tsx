@@ -87,7 +87,6 @@ export default function Search({ pageName, getCurrentReport }: ISearchReport) {
 
       {searchResult.length > 0 && <div className="search__results">
         {searchResult.map(question => {
-          console.log(searchResult)
           const parts = question.text.split(new RegExp(`(${searchText})`, 'gi')); //разбиваем текст чтобы выделить searchText
           return (
             <p key={question.id} className="search__result" onClick={() => getIdQuestion(question.id)}>

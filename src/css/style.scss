@@ -239,26 +239,9 @@ body {
     }
   }
 
-  &__choosenQuestions-reports {
-    position: relative;
-    width: 100%;
-    height: 20px;
-    padding: 0;
-    background-color: $colorBlack3;
-    font-size: 16px;
-    color: $colorWhite1;
-    text-align: center;
-    border: none;
-    cursor: pointer;
-
-    &.active {
-      background-color: $colorYellow2;
-      color: $colorBlack3;
-    }
-  }
-
   &__categories {
     padding: 0 27px;
+    height:80%;
   }
 
   &__choosenQuestions {
@@ -273,11 +256,14 @@ body {
     cursor: pointer;
     // font-size: 0;
 
-    &:not(:last-child) {
-      margin-bottom: 5px;
+    &-wrapper {
+      &:not(:last-child) {
+        margin-bottom: 5px;
+      }
     }
 
     &.active {
+      margin-bottom: 5px;
       background-color: $colorYellow2;
       color: $colorPurple1;
     }
@@ -309,6 +295,17 @@ body {
     }
 
     &-reports {
+      position: relative;
+      width: 100%;
+      height: 20px;
+      padding: 0;
+      background-color: $colorBlack3;
+      font-size: 16px;
+      color: $colorWhite1;
+      text-align: center;
+      border: none;
+      cursor: pointer;
+
       &.active {
         color: $colorPurple1;
       }
@@ -317,10 +314,6 @@ body {
 
   &__leftQustions {
     display: block;
-
-    &:first-child {
-      margin-top: 10px;
-    }
   }
 
   &__rightSide {
@@ -466,7 +459,6 @@ body {
       color: $colorWhite1;
       letter-spacing: 0.5px;
       line-height: 1.5;
-      cursor: pointer;
 
       &.highlited {
         color: $colorPurple1;
@@ -477,13 +469,29 @@ body {
         color: gray;
       }
 
+      &:active {
+        opacity: 0;
+      }
+
+      &.dragging {
+        opacity: 1;
+        background-color: #D3BE5D;
+        transition: all 0.3s ease-in-out;
+      }
+
       &-wrapper {
         &:last-child {
           margin-bottom: 10px;
         }
 
         &:active {
+          opacity: 0;
+        }
+
+        &.dragging {
+          opacity: 1;
           background-color: #D3BE5D;
+          transition: all 0.3s ease-in-out;
         }
       }
     }

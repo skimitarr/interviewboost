@@ -4,10 +4,10 @@ import { useRouter } from "next/navigation";
 import { useAppSelector, useAppDispatch } from '../hooks'
 import Link from "next/link"
 import { useTranslation } from "react-i18next";
-import { DragDropContext, Draggable, DropResult, Droppable } from 'react-beautiful-dnd';
 
 import { addCategory, removeCategory } from '../store/DataSlice';
 import { IGrade, ICategory, IQuestion } from "../components/Types";
+import InputQuestion from "./InputQuestion";
 
 export default function PageForm__rightSide() {
   const [grades, setGrades] = useState<IGrade[]>([]); // массив (junior middle) с базы данных
@@ -17,7 +17,7 @@ export default function PageForm__rightSide() {
   const [activeCategoriesName, setActiveCategoriesName] = useState<string[]>([]); // определяем активные(раскрытые) категории (html css)
   const [questions, setQuestions] = useState<IQuestion[]>([]); // массив всех вопросов с базы данных
   const [checkedIdQuestions, setCheckedIdQuestions] = useState<string[]>([]); // массив id вопросов которые checked
-  const [checkedStates, setCheckedStates] = useState<{ [key: string]: boolean }>({});
+  const [checkedStates, setCheckedStates] = useState<{ [key: string]: boolean }>({}); //чекобоксы выбрать все
 
   const { t } = useTranslation();
   const router = useRouter();
@@ -27,6 +27,7 @@ export default function PageForm__rightSide() {
   const storeAllCategories = useAppSelector((state) => state.allCategories)
   const storeCategories = useAppSelector((state) => state.categories)
   const storeQuestions = useAppSelector((state) => state.questions)
+  const сheckedIdQuestionDragDrop = useAppSelector((state) => state.checkedQuestionDragDrop)
 
   useEffect(() => { // получаем grades
     if (storeGrades) {
@@ -93,28 +94,50 @@ export default function PageForm__rightSide() {
     router.push('/interview');
   }
 
-  const selectQuestions = (questionId: string, questionCategory: ICategory) => { // добавляем/убираем вопросы
-    if (checkedIdQuestions.includes(questionId)) { //если вопрос неактивный, активируем его
-      let result = checkedIdQuestions.filter(item => item !== questionId)
-      setCheckedIdQuestions(result)
-    } else {
-      setCheckedIdQuestions(prev => [...prev, questionId]) //и наоборот
-    }
 
-    // обновляем categoriesForStore для передачи в Store
-    const currentCategoriesForStore = categoriesForStore.find(item => item.id === questionCategory.id); // нужная категория в categoriesForStore
+  useEffect(() => { // делаем все checkedStates изначально true
+    const initialCheckedStates: { [key: string]: boolean } = {};
+    categories.forEach(category => {
+      initialCheckedStates[category.id] = true;
+    });
+    setCheckedStates(initialCheckedStates);
+  }, [categories]);
+
+  useEffect(() => { // получаем id вопроса, который перетащили в левую часть и он станет checked
+    setCheckedIdQuestions(prev => [...prev, сheckedIdQuestionDragDrop]);
+    const currentCategoriesForStore = categoriesForStore.find(item => item.id === сheckedIdQuestionDragDrop);
     if (currentCategoriesForStore) {
-      let updatedQuestions: string[] = []
-      if (currentCategoriesForStore.questions.includes(questionId)) {
-        updatedQuestions = currentCategoriesForStore.questions.filter((item) => item !== questionId);
-      } else {
-        updatedQuestions = currentCategoriesForStore.questions.concat(questionId);
-        updatedQuestions = updatedQuestions.sort((a: any, b: any) => a - b)
-      }
+      selectQuestions(сheckedIdQuestionDragDrop, currentCategoriesForStore);
+    }
+  }, [сheckedIdQuestionDragDrop])
+
+  const selectQuestions = (questionId: string, questionCategory: ICategory) => { // добавляем/убираем вопросы
+    if (checkedIdQuestions.includes(questionId)) { //если вопрос активный, деактивируем его
+      let result = checkedIdQuestions.filter(item => item !== questionId);
+      setCheckedIdQuestions(result);
+      selectQuestionsLogic(questionCategory, result); // вводим result из-за асинхронщины
+    } else {
+      setCheckedIdQuestions(prev => [...prev, questionId]); //и наоборот
+      selectQuestionsLogic(questionCategory, [...checkedIdQuestions, questionId].sort((a: any, b: any) => a - b));
+    }
+  }
+
+  const selectQuestionsLogic = (questionCategory: ICategory, checkedIdQuestions: string[]) => {
+    // обновляем categoriesForStore для передачи в Store
+
+    const currentCategoriesForStore = categories.find(item => item.id === questionCategory.id); // нужная категория
+    if (currentCategoriesForStore) {
+      const updatedQuestions: string[] = [];
+      currentCategoriesForStore.questions.forEach(element => {
+        if (checkedIdQuestions.includes(element)) {
+          updatedQuestions.push(element)
+        }
+      });
 
       const updatedCategory = { ...questionCategory, questions: updatedQuestions }; // Создаем новый объект категории, чтобы избежать изменения исходного объекта
       const restCategoriesForStore = categoriesForStore.filter(item => item.id !== questionCategory.id);
       setCategoriesForStore([...restCategoriesForStore, updatedCategory]);
+
       if (storeCategories.length > 0) { // если есть категории в сторе
         const isCategory = storeCategories.find(item => item.id === questionCategory.id);
         if (isCategory) { // если есть искомая категория в сторе
@@ -128,16 +151,8 @@ export default function PageForm__rightSide() {
     }
   }
 
-  useEffect(() => { // делаем все checkedStates изначально true
-    const initialCheckedStates: { [key: string]: boolean } = {};
-    categories.forEach(category => {
-      initialCheckedStates[category.id] = true;
-    });
-    setCheckedStates(initialCheckedStates);
-  }, [categories]);
-
   const selectAllQuestions = (questionCategory: ICategory, itemId: string) => { // добавляем/убираем все вопросы
-    let currentCategoriesForStore = storeAllCategories.find(item => item.id === questionCategory.id); // нужная категория
+    let currentCategoriesForStore = categories.find(item => item.id === questionCategory.id); // нужная категория
     const restCategoriesForStore = categoriesForStore.filter(item => item.id !== questionCategory.id); // остальные категории
 
     setCheckedStates((prev) => {
@@ -179,21 +194,18 @@ export default function PageForm__rightSide() {
     }
   }
 
-  const handleDragEnd = (result: DropResult, category: ICategory) => {
-    if (!result.destination) {
-      return;
-    }
+  const dragDropQuestion = (sourceId: string, destinationId: string) => {
+    setQuestions(prevQuestions => {
+      const newQuestions = [...prevQuestions];
+      const sourceIndex = newQuestions.findIndex(q => q.id === sourceId);
+      const destinationIndex = newQuestions.findIndex(q => q.id === destinationId);
 
-    const newQuestions = [...questions];
-    const sourceIndex = newQuestions.findIndex((q) => q.id === result.draggableId);
-    const filteredQuestions = newQuestions.filter((item) => category.questions.includes(item.id));
-    const destinationQuestion = filteredQuestions.find((q, index) => index === result.destination?.index);
-    const destinationIndex = newQuestions.findIndex((q) => q.id === destinationQuestion?.id);
-    const [reorderedItem] = newQuestions.splice(sourceIndex, 1);
-    newQuestions.splice(destinationIndex, 0, reorderedItem);
-    setQuestions(newQuestions);
+      const [reorderedItem] = newQuestions.splice(sourceIndex, 1);
+      newQuestions.splice(destinationIndex, 0, reorderedItem);
+
+      return newQuestions;
+    });
   };
-
 
   return (
     storeProfession
@@ -239,35 +251,20 @@ export default function PageForm__rightSide() {
                         checked={checkedStates[category.id] || false} />
                       <label htmlFor={category.id} className='questions__technology-questions'>{t('selectAll')}</label>
                     </div>
-                    <DragDropContext onDragEnd={(result) => handleDragEnd(result, category)}>
-                      <Droppable droppableId="questions">
-                        {(provided) => (
-                          <div ref={provided.innerRef} >
-                            {questions.filter((item) => category.questions.includes(item.id))
-                              .map((item, index) => (
-                                <Draggable key={item.id} draggableId={item.id} index={index}>
-                                  {(provided) => (
-                                    <div className='questions__technology-questions-wrapper'
-                                      ref={provided.innerRef}
-                                      {...provided.draggableProps}
-                                      {...provided.dragHandleProps}
-                                    >
-                                      <input id={`question-${item.id}`} className="checkbox" type="checkbox" onChange={() => selectQuestions(item.id, category)}
-                                        checked={checkedIdQuestions.includes(item.id)} />
-                                      <label htmlFor={`question-${item.id}`}
-                                        className={`questions__technology-questions ${checkedIdQuestions.includes(item.id) ? '' : 'isSelected'}`}
-                                      >{index + 1}. {item.text}
-                                      </label>
-
-                                    </div>
-                                  )}
-                                </Draggable>
-                              ))}
-                            {provided.placeholder}
-                          </div>
-                        )}
-                      </Droppable>
-                    </DragDropContext>
+                    {/* <div ref={dropQuestions}> */}
+                    <div>
+                      {questions.filter((item) => category.questions.includes(item.id))
+                        .map((item, index) => (
+                          <InputQuestion key={item.id}
+                            item={item}
+                            index={index}
+                            category={category}
+                            selectQuestions={selectQuestions}
+                            checkedIdQuestions={checkedIdQuestions}
+                            dragDropQuestion={dragDropQuestion}
+                          />
+                        ))}
+                    </div>
                   </>
                 ) : null}
               </div>)

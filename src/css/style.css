@@ -198,24 +198,9 @@ body {
   padding: 0 27px;
   margin-bottom: 5px;
 }
-.questions__choosenQuestions-reports {
-  position: relative;
-  width: 100%;
-  height: 20px;
-  padding: 0;
-  background-color: #3C3E49;
-  font-size: 16px;
-  color: #FFF;
-  text-align: center;
-  border: none;
-  cursor: pointer;
-}
-.questions__choosenQuestions-reports.active {
-  background-color: linear-gradient(180deg, rgba(218, 135, 255, 0) 0%, #DA87FF 100%);
-  color: #3C3E49;
-}
 .questions__categories {
   padding: 0 27px;
+  height: 80%;
 }
 .questions__choosenQuestions {
   position: relative;
@@ -228,10 +213,11 @@ body {
   border: none;
   cursor: pointer;
 }
-.questions__choosenQuestions:not(:last-child) {
+.questions__choosenQuestions-wrapper:not(:last-child) {
   margin-bottom: 5px;
 }
 .questions__choosenQuestions.active {
+  margin-bottom: 5px;
   background-color: linear-gradient(180deg, rgba(218, 135, 255, 0) 0%, #DA87FF 100%);
   color: #DA87FF;
 }
@@ -258,14 +244,23 @@ body {
   border-right: 6px solid transparent; /* Правая граница (нулевая ширина) */
   border-top: 9px solid #FFF; /* верхняя граница (создает треугольник) */
 }
+.questions__choosenQuestions-reports {
+  position: relative;
+  width: 100%;
+  height: 20px;
+  padding: 0;
+  background-color: #3C3E49;
+  font-size: 16px;
+  color: #FFF;
+  text-align: center;
+  border: none;
+  cursor: pointer;
+}
 .questions__choosenQuestions-reports.active {
   color: #DA87FF;
 }
 .questions__leftQustions {
   display: block;
-}
-.questions__leftQustions:first-child {
-  margin-top: 10px;
 }
 .questions__rightSide {
   position: relative;
@@ -389,7 +384,6 @@ body {
   color: #FFF;
   letter-spacing: 0.5px;
   line-height: 1.5;
-  cursor: pointer;
 }
 .questions__technology-questions.highlited {
   color: #DA87FF;
@@ -398,11 +392,24 @@ body {
 .questions__technology-questions.isSelected {
   color: gray;
 }
+.questions__technology-questions:active {
+  opacity: 0;
+}
+.questions__technology-questions.dragging {
+  opacity: 1;
+  background-color: #D3BE5D;
+  transition: all 0.3s ease-in-out;
+}
 .questions__technology-questions-wrapper:last-child {
   margin-bottom: 10px;
 }
 .questions__technology-questions-wrapper:active {
+  opacity: 0;
+}
+.questions__technology-questions-wrapper.dragging {
+  opacity: 1;
   background-color: #D3BE5D;
+  transition: all 0.3s ease-in-out;
 }
 .questions__nextPage-wrapper {
   position: fixed;

@@ -6,6 +6,7 @@ export interface DataState {
   questions: IQuestion[];
   answers: IAnswer[];
   currentIdQuestion: string;
+  checkedQuestionDragDrop: string;
 }
 
 export interface IProffesion {

@@ -11,6 +11,7 @@ const dataSlice = createSlice({
     questions: [],
     answers: [],
     currentIdQuestion: '',
+    checkedQuestionDragDrop: ''
   } as DataState,
   reducers: {
     getProfession(state, action) {
@@ -48,9 +49,12 @@ const dataSlice = createSlice({
     getCurrentIdQuestion(state, action) {
       state.currentIdQuestion = action.payload;
     },
+    getCheckedQuestionDragDrop(state, action) {
+      state.checkedQuestionDragDrop = action.payload;
+    },
   },
 });
 
 export const { getProfession, getGrades, getAllCategories, getCategories, addCategory, removeCategory,
-  getQuestions, getAnswers, getCurrentIdQuestion } = dataSlice.actions;
+  getQuestions, getAnswers, getCurrentIdQuestion, getCheckedQuestionDragDrop } = dataSlice.actions;
 export default dataSlice.reducer;
