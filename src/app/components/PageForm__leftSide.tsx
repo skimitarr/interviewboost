@@ -5,7 +5,6 @@ import { useDrop } from 'react-dnd';
 
 import { addCategory, getCheckedQuestionDragDrop, getCurrentIdQuestion } from '../store/DataSlice';
 import { ICategory, ILeftPart, IQuestion } from "../components/Types";
-import Question__leftSide from './Question__leftSide';
 import Category__leftSide from './Category__leftSide';
 
 export default function PageForm__leftSide({ getQuestionText, getCategoryTitle, pageName }: ILeftPart) {
@@ -160,7 +159,6 @@ export default function PageForm__leftSide({ getQuestionText, getCategoryTitle, 
   return (
     <div className='questions__categories' ref={dropQuestions}>
       {storeCategories && storeCategories.map((category: ICategory) =>
-        // return (
         <Category__leftSide key={category.id}
           category={category}
           isActiveCategoryHandler={isActiveCategoryHandler}
@@ -175,30 +173,6 @@ export default function PageForm__leftSide({ getQuestionText, getCategoryTitle, 
           setQuestions={setQuestions}
           setStoreCategories={setStoreCategories}
         />
-
-        // <div key={category.id} className='questions__choosenQuestions-wrapper'>
-        //   <button className={`questions__choosenQuestions ${isActiveCategoryHandler(category.title) ? 'active' : ''}`} onClick={() => showQuestions(category.title)}>
-        //     {category.title}
-        //   </button>
-
-        //   {activeCategoriesName.includes(category.title) &&
-        //     questions.filter((item) => category.questions.includes(item.id))
-        //       .map((question, index) => question && (
-        //         <Question__leftSide
-        //           key={question.id}
-        //           item={question}
-        //           index={index}
-        //           сurrentIdQuestion={сurrentIdQuestion}
-        //           showHighliting={showHighliting}
-        //           pageName={pageName}
-        //           dragDropElement={dragDropElement}
-        //           handleQuestion={handleQuestion}
-        //           setQuestions={setQuestions}
-        //         />
-        //       )
-        //       )}
-        // </div>
-        // );
       )}
     </div>
   );
