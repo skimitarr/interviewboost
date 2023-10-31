@@ -6,8 +6,10 @@ import Link from "next/link"
 import { useTranslation } from "react-i18next";
 
 import { addCategory, removeCategory } from '../store/DataSlice';
-import { IGrade, ICategory, IQuestion } from "../components/Types";
-import InputQuestion from "./InputQuestion";
+import { IGrade, ICategory, IQuestion } from "./Types";
+import Category__rightSide from "./Category__rightSide";
+import { createInstance } from "i18next";
+// import InputQuestion from "./InputQuestion";
 
 export default function PageForm__rightSide() {
   const [grades, setGrades] = useState<IGrade[]>([]); // массив (junior middle) с базы данных
@@ -93,6 +95,7 @@ export default function PageForm__rightSide() {
     localStorage.setItem('choosenCategories', JSON.stringify(storeCategories));
     router.push('/interview');
   }
+  console.log(categoriesForStore)
 
 
   useEffect(() => { // делаем все checkedStates изначально true
@@ -194,16 +197,16 @@ export default function PageForm__rightSide() {
     }
   }
 
-  const dragDropQuestion = (sourceId: string, destinationId: string) => {
-    setQuestions(prevQuestions => {
-      const newQuestions = [...prevQuestions];
-      const sourceIndex = newQuestions.findIndex(q => q.id === sourceId);
-      const destinationIndex = newQuestions.findIndex(q => q.id === destinationId);
+  const dragDropElement = (sourceId: string, destinationId: string, func: any) => {
+    func((prevState: any) => {
+      const newStateArray = [...prevState];
+      const sourceIndex = newStateArray.findIndex(q => q.id === sourceId);
+      const destinationIndex = newStateArray.findIndex(q => q.id === destinationId);
 
-      const [reorderedItem] = newQuestions.splice(sourceIndex, 1);
-      newQuestions.splice(destinationIndex, 0, reorderedItem);
+      const [reorderedItem] = newStateArray.splice(sourceIndex, 1);
+      newStateArray.splice(destinationIndex, 0, reorderedItem);
 
-      return newQuestions;
+      return newStateArray;
     });
   };
 
@@ -223,51 +226,23 @@ export default function PageForm__rightSide() {
         <h2 className='questions__title'>{t('selectATechnologyStack')}</h2>
 
         <div className="questions">
-          {categories && categories.map(category => {
-            return (
-              <div key={category.id} className="questions__technology">
-                <div className='questions__technology-wrapper1'>
-
-                  <div className='questions__technology-wrapper2'>
-                    <button
-                      className={`questions__technology-name ${activeCategoriesName.includes(category.title) ? 'active' : ''} ${storeCategories.find(item => item.id === category.id) ? 'isChoosen' : ''} `}
-                      onClick={() => showQuestions(category.title)}
-                    >
-                      {category.title}
-                    </button>
-                    <p className="questions__technology-name-shadow"></p>
-                  </div>
-
-                  {storeCategories.find(item => item.id === category.id)
-                    ? <button className='questions__technology-btn questions__technology btn' onClick={() => removeStoreCategory(category)}>{t('cancel')}</button>
-                    : <button className='questions__technology-btn isChoosen btn' onClick={() => addStoreCategory(category)}>{t('add')}</button>}
-                </div>
-
-                {activeCategoriesName.includes(category.title) ? (
-                  <>
-                    <div className='questions__technology-questions-wrapper'>
-                      <input id={category.id} type="checkbox" className="checkbox"
-                        onChange={() => selectAllQuestions(category, category.id)}
-                        checked={checkedStates[category.id] || false} />
-                      <label htmlFor={category.id} className='questions__technology-questions'>{t('selectAll')}</label>
-                    </div>
-                    <div>
-                      {questions.filter((item) => category.questions.includes(item.id))
-                        .map((item, index) => (
-                          <InputQuestion key={item.id}
-                            item={item}
-                            index={index}
-                            category={category}
-                            selectQuestions={selectQuestions}
-                            checkedIdQuestions={checkedIdQuestions}
-                            dragDropQuestion={dragDropQuestion}
-                          />
-                        ))}
-                    </div>
-                  </>
-                ) : null}
-              </div>)
-          })}
+          {categories && categories.map(category =>
+            <Category__rightSide key={category.id}
+              category={category}
+              activeCategoriesName={activeCategoriesName}
+              showQuestions={showQuestions}
+              removeStoreCategory={removeStoreCategory}
+              addStoreCategory={addStoreCategory}
+              selectAllQuestions={selectAllQuestions}
+              checkedStates={checkedStates}
+              questions={questions.filter((item) => category.questions.includes(item.id))}
+              selectQuestions={selectQuestions}
+              checkedIdQuestions={checkedIdQuestions}
+              dragDropElement={dragDropElement}
+              setCategories={setCategories}
+              setQuestions={setQuestions}
+            />
+          )}
         </div>
 
         <div className='questions__nextPage-wrapper right'>

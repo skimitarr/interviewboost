@@ -213,6 +213,14 @@ body {
   border: none;
   cursor: pointer;
 }
+.questions__choosenQuestions:active {
+  opacity: 0;
+}
+.questions__choosenQuestions.dragging {
+  opacity: 1;
+  background-color: #D3BE5D;
+  transition: all 0.3s ease-in-out;
+}
 .questions__choosenQuestions-wrapper:not(:last-child) {
   margin-bottom: 5px;
 }
@@ -338,6 +346,14 @@ body {
   background-color: transparent;
   color: #FFF;
   cursor: pointer;
+}
+.questions__technology-name:active {
+  opacity: 0;
+}
+.questions__technology-name.dragging {
+  opacity: 1;
+  background-color: #D3BE5D;
+  transition: all 0.3s ease-in-out;
 }
 .questions__technology-name-shadow {
   position: absolute;

@@ -2,15 +2,16 @@ import { useDrag, useDrop } from "react-dnd"
 import { useRef } from "react"
 import { IQuestion } from "./Types"
 
-export default function Question__leftSide({ item, index, сurrentIdQuestion, showHighliting, pageName, dragDropQuestion, handleQuestion }:
+export default function Question__leftSide({ item, index, сurrentIdQuestion, showHighliting, pageName, dragDropElement, handleQuestion, setQuestions }:
   {
     item: IQuestion,
     index: number,
     сurrentIdQuestion: string,
     showHighliting: boolean,
     pageName?: string,
-    dragDropQuestion: (sourceId: string, destinationId: string) => void,
-    handleQuestion: (questionText: string, questionId: string) => void
+    dragDropElement: (sourceId: string, destinationId: string, func: any) => void,
+    handleQuestion: (questionText: string, questionId: string) => void,
+    setQuestions: React.Dispatch<React.SetStateAction<IQuestion[]>>
   }) {
 
 
@@ -28,7 +29,7 @@ export default function Question__leftSide({ item, index, сurrentIdQuestion, sh
     drop({ id: sourceId }:
       { id: string; type: string; }) {
       if (sourceId !== item.id) {
-        dragDropQuestion(sourceId, item.id)
+        dragDropElement(sourceId, item.id, setQuestions)
       }
     },
     collect: (monitor) => ({
@@ -36,7 +37,7 @@ export default function Question__leftSide({ item, index, сurrentIdQuestion, sh
     }),
     hover({ id: draggedId }) {
       if (draggedId !== item.id) { // item.id это элемент на котором ховер
-        dragDropQuestion(draggedId, item.id); // для стилизации перетаскивания элементов
+        dragDropElement(draggedId, item.id, setQuestions); // для стилизации перетаскивания элементов
       }
     },
   }));

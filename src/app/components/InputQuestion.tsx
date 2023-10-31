@@ -4,14 +4,15 @@ import { useAppSelector } from '../hooks'
 
 import { ICategory, IQuestion } from "./Types"
 
-export default function InputQuestion({ item, index, category, selectQuestions, checkedIdQuestions, dragDropQuestion }:
+export default function InputQuestion({ item, index, category, selectQuestions, checkedIdQuestions, dragDropElement, setQuestions }:
   {
     item: IQuestion,
     index: number,
     category: ICategory,
     selectQuestions: (questionId: string, questionCategory: ICategory) => void,
     checkedIdQuestions: string[],
-    dragDropQuestion: (sourceId: string, destinationId: string) => void
+    dragDropElement: (sourceId: string, destinationId: string, func: any) => void,
+    setQuestions: React.Dispatch<React.SetStateAction<IQuestion[]>>
   }) {
   const categoriesFromStore = useAppSelector((state) => state.categories);
   const ref = useRef(null);
@@ -29,7 +30,7 @@ export default function InputQuestion({ item, index, category, selectQuestions, 
     drop({ id: sourceId, category, categoriesFromStore, checked }:
       { id: string; type: string; category: ICategory, categoriesFromStore: ICategory[], checked: boolean }) {
       if (sourceId !== item.id) {
-        dragDropQuestion(sourceId, item.id)
+        dragDropElement(sourceId, item.id, setQuestions)
       }
     },
     collect: (monitor) => ({
@@ -37,7 +38,7 @@ export default function InputQuestion({ item, index, category, selectQuestions, 
     }),
     hover({ id: draggedId }) {
       if (draggedId !== item.id) { // item.id это элемент на котором ховер
-        dragDropQuestion(draggedId, item.id); // для стилизации перетаскивания элементов
+        dragDropElement(draggedId, item.id, setQuestions); // для стилизации перетаскивания элементов
       }
     },
   }));

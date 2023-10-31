@@ -256,6 +256,16 @@ body {
     cursor: pointer;
     // font-size: 0;
 
+    &:active {
+      opacity: 0;
+    }
+
+    &.dragging {
+      opacity: 1;
+      background-color: $colorDragDrop;
+      transition: all 0.3s ease-in-out;
+    }
+
     &-wrapper {
       &:not(:last-child) {
         margin-bottom: 5px;
@@ -363,10 +373,6 @@ body {
   }
 
   &__technology {
-    // padding: 0 20px 0 25px;
-    // &.active {
-    //   padding: 0 2px 0 25px;
-    // }
     &-wrapper1 {
       display: flex;
     }
@@ -406,6 +412,16 @@ body {
       background-color: transparent;
       color: $colorWhite1;
       cursor: pointer;
+
+      &:active {
+        opacity: 0;
+      }
+
+      &.dragging {
+        opacity: 1;
+        background-color: $colorDragDrop;
+        transition: all 0.3s ease-in-out;
+      }
 
       &-shadow {
         position: absolute;
@@ -475,7 +491,7 @@ body {
 
       &.dragging {
         opacity: 1;
-        background-color: #D3BE5D;
+        background-color: $colorDragDrop;
         transition: all 0.3s ease-in-out;
       }
 
@@ -490,7 +506,7 @@ body {
 
         &.dragging {
           opacity: 1;
-          background-color: #D3BE5D;
+          background-color: $colorDragDrop;
           transition: all 0.3s ease-in-out;
         }
       }
@@ -706,7 +722,7 @@ body {
         border: none;
       }
       & + .mark_70-75 {
-        background-color: #D3BE5D;
+        background-color: $colorDragDrop;
         height: 40px;
         margin: 0;
         padding: 10px 0;
@@ -756,7 +772,7 @@ body {
         background-color: #E9A469;
       }
       &.mark_70-75 {
-        background-color: #D3BE5D;
+        background-color: $colorDragDrop;
       }
       &.mark_80-85 {
         background-color: #1583EC;

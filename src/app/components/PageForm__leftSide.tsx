@@ -6,6 +6,7 @@ import { useDrop } from 'react-dnd';
 import { addCategory, getCheckedQuestionDragDrop, getCurrentIdQuestion } from '../store/DataSlice';
 import { ICategory, ILeftPart, IQuestion } from "../components/Types";
 import Question__leftSide from './Question__leftSide';
+import Category__leftSide from './Category__leftSide';
 
 export default function PageForm__leftSide({ getQuestionText, getCategoryTitle, pageName }: ILeftPart) {
   const [сurrentIdQuestion, setСurrentIdQuestion] = useState('0'); // используем для выделения цветом текущего вопроса
@@ -143,46 +144,62 @@ export default function PageForm__leftSide({ getQuestionText, getCategoryTitle, 
     dispatch(getCheckedQuestionDragDrop(sourceId));
   }
 
-  const dragDropQuestion = (sourceId: string, destinationId: string) => {
-    setQuestions(prevQuestions => {
-      const newQuestions = [...prevQuestions];
-      const sourceIndex = newQuestions.findIndex(q => q.id === sourceId);
-      const destinationIndex = newQuestions.findIndex(q => q.id === destinationId);
+  const dragDropElement = (sourceId: string, destinationId: string, func: any) => {
+    func((prevState: any) => {
+      const newStateArray = [...prevState];
+      const sourceIndex = newStateArray.findIndex(q => q.id === sourceId);
+      const destinationIndex = newStateArray.findIndex(q => q.id === destinationId);
 
-      const [reorderedItem] = newQuestions.splice(sourceIndex, 1);
-      newQuestions.splice(destinationIndex, 0, reorderedItem);
+      const [reorderedItem] = newStateArray.splice(sourceIndex, 1);
+      newStateArray.splice(destinationIndex, 0, reorderedItem);
 
-      return newQuestions;
+      return newStateArray;
     });
   };
 
   return (
     <div className='questions__categories' ref={dropQuestions}>
-      {storeCategories && storeCategories.map((category: ICategory) => {
-        return (
-          <div key={category.id} className='questions__choosenQuestions-wrapper'>
-            <button className={`questions__choosenQuestions ${isActiveCategoryHandler(category.title) ? 'active' : ''}`} onClick={() => showQuestions(category.title)}>
-              {category.title}
-            </button>
+      {storeCategories && storeCategories.map((category: ICategory) =>
+        // return (
+        <Category__leftSide key={category.id}
+          category={category}
+          isActiveCategoryHandler={isActiveCategoryHandler}
+          showQuestions={showQuestions}
+          activeCategoriesName={activeCategoriesName}
+          questions={questions.filter((item) => category.questions.includes(item.id))}
+          сurrentIdQuestion={сurrentIdQuestion}
+          showHighliting={showHighliting}
+          pageName={pageName}
+          dragDropElement={dragDropElement}
+          handleQuestion={handleQuestion}
+          setQuestions={setQuestions}
+          setStoreCategories={setStoreCategories}
+        />
 
-            {activeCategoriesName.includes(category.title) &&
-              questions.filter((item) => category.questions.includes(item.id))
-                .map((question, index) => {
-                  return (question &&
-                    <Question__leftSide key={question.id}
-                      item={question}
-                      index={index}
-                      сurrentIdQuestion={сurrentIdQuestion}
-                      showHighliting={showHighliting}
-                      pageName={pageName}
-                      dragDropQuestion={dragDropQuestion}
-                      handleQuestion={handleQuestion}
-                    />
-                  )
-                })}
-          </div>
-        );
-      })}
+        // <div key={category.id} className='questions__choosenQuestions-wrapper'>
+        //   <button className={`questions__choosenQuestions ${isActiveCategoryHandler(category.title) ? 'active' : ''}`} onClick={() => showQuestions(category.title)}>
+        //     {category.title}
+        //   </button>
+
+        //   {activeCategoriesName.includes(category.title) &&
+        //     questions.filter((item) => category.questions.includes(item.id))
+        //       .map((question, index) => question && (
+        //         <Question__leftSide
+        //           key={question.id}
+        //           item={question}
+        //           index={index}
+        //           сurrentIdQuestion={сurrentIdQuestion}
+        //           showHighliting={showHighliting}
+        //           pageName={pageName}
+        //           dragDropElement={dragDropElement}
+        //           handleQuestion={handleQuestion}
+        //           setQuestions={setQuestions}
+        //         />
+        //       )
+        //       )}
+        // </div>
+        // );
+      )}
     </div>
   );
 }
