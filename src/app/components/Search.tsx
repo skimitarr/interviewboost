@@ -6,7 +6,7 @@ import { useAppSelector, useAppDispatch } from '../hooks'
 import { DataReport, ICategory, IQuestion, ISearchReport } from "./Types";
 import { getCurrentIdQuestion } from '../store/DataSlice'
 
-export default function Search({ pageName, getCurrentReport }: ISearchReport) {
+export function Search({ pageName, getCurrentReport }: ISearchReport) {
   const [searchText, setSearchText] = useState('');
   const [searchResult, setSearchResult] = useState<IQuestion[]>([]);
   const [searchResultReports, setSearchResultReports] = useState<DataReport[]>([]);

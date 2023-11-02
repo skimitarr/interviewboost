@@ -1,6 +1,6 @@
-import Search from '../components/Search';
-import PageForm__leftSide from '../components/PageForm__leftSide';
-import PageForm__rightSide from '../components/PageForm__rightSide';
+import { Search } from '../components/Search';
+import { PageFormLeftSide } from '../components/PageFormLeftSide';
+import { PageFormRightSide } from '../components/PageFormRightSide';
 
 export default async function Form() {
 
@@ -8,9 +8,9 @@ export default async function Form() {
     <div className='container container__form'>
       <div className='questions__leftSide'>
         <Search />
-        <PageForm__leftSide />
+        <PageFormLeftSide />
       </div>
-      <PageForm__rightSide />
+      <PageFormRightSide />
     </div>
   )
 }

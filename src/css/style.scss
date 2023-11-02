@@ -125,12 +125,6 @@ body {
 .container {
   background-color: $colorBlack1;
   min-height: calc(100vh - 80px);
-  // transition: min-height 0.3s ease-in-out;
-
-  // &.scrolled {
-  //   min-height: calc(100vh - 60px);
-  //   transition: min-height 0.3s ease-in-out;
-  // }
 
   &__home {
     display: flex;
@@ -141,7 +135,6 @@ body {
   &__form {
     display: grid;
     grid-template-columns: 1fr 2fr;
-    // grid-gap: 5px;
   }
 }
 
@@ -257,13 +250,11 @@ body {
     // font-size: 0;
 
     &:active {
-      opacity: 0;
+      opacity: 1;
     }
 
     &.dragging {
-      opacity: 1;
-      background-color: $colorDragDrop;
-      transition: all 0.3s ease-in-out;
+      opacity: 0;
     }
 
     &-wrapper {
@@ -324,6 +315,14 @@ body {
 
   &__leftQustions {
     display: block;
+
+    &:active {
+      opacity: 1;
+    }
+
+    &.dragging {
+      opacity: 0;
+    }
   }
 
   &__rightSide {
@@ -373,6 +372,14 @@ body {
   }
 
   &__technology {
+    &:active {
+      opacity: 1;
+    }
+
+    &.dragging {
+      opacity: 0;
+    }
+
     &-wrapper1 {
       display: flex;
     }
@@ -413,23 +420,6 @@ body {
       color: $colorWhite1;
       cursor: pointer;
 
-      &:active {
-        opacity: 0;
-      }
-
-      &.dragging {
-        opacity: 1;
-        background-color: $colorDragDrop;
-        transition: all 0.3s ease-in-out;
-      }
-
-      &-shadow {
-        position: absolute;
-        width: 100%;
-        bottom: 14px;
-        box-shadow: 0px -6px 10px 1px #DA87FF;
-      }
-
       &::before {
         content: '';
         position: absolute;
@@ -467,14 +457,25 @@ body {
       &.active.isChoosen::after {
         border-top: 9px solid $colorWhite1;
       }
-
     }
+
     &-questions {
+      display: flex;
+      align-items: center;
       margin-bottom: 10px;
-      padding: 0 25px;
+      width: calc(100% - 135px);
+      padding: 0 0 0 25px;
       color: $colorWhite1;
       letter-spacing: 0.5px;
       line-height: 1.5;
+      cursor: pointer;
+
+      .selectAll {
+        padding-left: 15px;
+        &.isSelected {
+          color: gray;
+        }
+      }
 
       &.highlited {
         color: $colorPurple1;
@@ -485,34 +486,33 @@ body {
         color: gray;
       }
 
-      &:active {
-        opacity: 0;
-      }
+      &-text {
+        width: 100%;
+        min-height: 30px;
+        padding-left: 15px;
+        padding-top: 5px;
+        color: $colorWhite1;
+        letter-spacing: 0.5px;
+        line-height: 1.5;
+        border-radius: 4px;
+        box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+        cursor: pointer;
 
-      &.dragging {
-        opacity: 1;
-        background-color: $colorDragDrop;
-        transition: all 0.3s ease-in-out;
-      }
-
-      &-wrapper {
-        &:last-child {
-          margin-bottom: 10px;
+        &.isSelected {
+          color: gray;
         }
 
         &:active {
-          opacity: 0;
+          opacity: 1;
         }
 
         &.dragging {
-          opacity: 1;
-          background-color: $colorDragDrop;
-          transition: all 0.3s ease-in-out;
+          cursor: grabbing;
+          opacity: 0;
         }
       }
     }
   }
-
 
   &__nextPage {
     &-wrapper {
@@ -1178,11 +1178,10 @@ content: "\00a0"; //символ неразрывного пробела, на �
   height: 24px;
   border: 1px inset $colorWhite1;
   border-radius: 5px;
-  margin: 5px 15px 5px 0;
+  margin: 3px 15px 3px 0;
   display: inline-block;
 }
 input[type="checkbox"] ~ label::before {
-  border: 1px inset $colorWhite1;
   cursor: pointer;
 }
 input[type="checkbox"]:checked ~ label::before {
@@ -1209,4 +1208,7 @@ input[type="checkbox"]:checked ~ label::before {
     transform: rotate(3turn);
   }
 }
+
+
+
 

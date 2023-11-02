@@ -7,11 +7,9 @@ import { useTranslation } from "react-i18next";
 
 import { addCategory, removeCategory } from '../store/DataSlice';
 import { IGrade, ICategory, IQuestion } from "./Types";
-import Category__rightSide from "./Category__rightSide";
-import { createInstance } from "i18next";
-// import InputQuestion from "./InputQuestion";
+import { CategoryRightSide } from "./CategoryRghtSide";
 
-export default function PageForm__rightSide() {
+export function PageFormRightSide() {
   const [grades, setGrades] = useState<IGrade[]>([]); // массив (junior middle) с базы данных
   const [activeGradeName, setActiveGradeName] = useState<string>('Junior'); // определяем активую кнопку (junior middle) для стилизации
   const [categories, setCategories] = useState<ICategory[]>([]); // массив (html css) с базы данных
@@ -19,7 +17,6 @@ export default function PageForm__rightSide() {
   const [activeCategoriesName, setActiveCategoriesName] = useState<string[]>([]); // определяем активные(раскрытые) категории (html css)
   const [questions, setQuestions] = useState<IQuestion[]>([]); // массив всех вопросов с базы данных
   const [checkedIdQuestions, setCheckedIdQuestions] = useState<string[]>([]); // массив id вопросов которые checked
-  const [checkedStates, setCheckedStates] = useState<{ [key: string]: boolean }>({}); //чекобоксы выбрать все
 
   const { t } = useTranslation();
   const router = useRouter();
@@ -40,8 +37,9 @@ export default function PageForm__rightSide() {
   useEffect(() => { // получаем categories
     if (grades.length > 0) {
       const filteredGrade = grades.find(grade => grade.title === activeGradeName);
-      let categoriesData = storeAllCategories.filter((item) => filteredGrade?.categories.includes(item.id))
-      categoriesData = categoriesData.sort((a: any, b: any) => a.id - b.id)
+      const categoriesData = storeAllCategories
+        .filter((item) => filteredGrade?.categories.includes(item.id))
+        .sort((a: ICategory, b: ICategory) => +a.id - +b.id);
       setCategories(categoriesData);
       setCategoriesForStore(categoriesData);
     }
@@ -49,7 +47,7 @@ export default function PageForm__rightSide() {
 
   useEffect(() => { // получаем questions
     if (categories.length > 0) {
-      let set = new Set();
+      const set = new Set();
       categories.forEach(category => {
         category.questions.forEach(item => { set.add(item) })
       });
@@ -75,7 +73,7 @@ export default function PageForm__rightSide() {
 
   const showQuestions = (categoryTitle: string) => {
     if (activeCategoriesName.includes(categoryTitle)) { //если вопросы открыты, скрываем их
-      let result = activeCategoriesName.filter(item => item !== categoryTitle)
+      const result = activeCategoriesName.filter(item => item !== categoryTitle)
       setActiveCategoriesName(result)
     } else {
       setActiveCategoriesName([...activeCategoriesName, categoryTitle]) //и наоборот
@@ -95,16 +93,6 @@ export default function PageForm__rightSide() {
     localStorage.setItem('choosenCategories', JSON.stringify(storeCategories));
     router.push('/interview');
   }
-  console.log(categoriesForStore)
-
-
-  useEffect(() => { // делаем все checkedStates изначально true
-    const initialCheckedStates: { [key: string]: boolean } = {};
-    categories.forEach(category => {
-      initialCheckedStates[category.id] = true;
-    });
-    setCheckedStates(initialCheckedStates);
-  }, [categories]);
 
   useEffect(() => { // получаем id вопроса, который перетащили в левую часть и он станет checked
     setCheckedIdQuestions(prev => [...prev, сheckedIdQuestionDragDrop]);
@@ -116,18 +104,16 @@ export default function PageForm__rightSide() {
 
   const selectQuestions = (questionId: string, questionCategory: ICategory) => { // добавляем/убираем вопросы
     if (checkedIdQuestions.includes(questionId)) { //если вопрос активный, деактивируем его
-      let result = checkedIdQuestions.filter(item => item !== questionId);
+      const result = checkedIdQuestions.filter(item => item !== questionId);
       setCheckedIdQuestions(result);
       selectQuestionsLogic(questionCategory, result); // вводим result из-за асинхронщины
     } else {
       setCheckedIdQuestions(prev => [...prev, questionId]); //и наоборот
-      selectQuestionsLogic(questionCategory, [...checkedIdQuestions, questionId].sort((a: any, b: any) => a - b));
+      selectQuestionsLogic(questionCategory, [...checkedIdQuestions, questionId].sort((a: string, b: string) => +a - +b));
     }
   }
 
   const selectQuestionsLogic = (questionCategory: ICategory, checkedIdQuestions: string[]) => {
-    // обновляем categoriesForStore для передачи в Store
-
     const currentCategoriesForStore = categories.find(item => item.id === questionCategory.id); // нужная категория
     if (currentCategoriesForStore) {
       const updatedQuestions: string[] = [];
@@ -141,11 +127,8 @@ export default function PageForm__rightSide() {
       const restCategoriesForStore = categoriesForStore.filter(item => item.id !== questionCategory.id);
       setCategoriesForStore([...restCategoriesForStore, updatedCategory]);
 
-      if (storeCategories.length > 0) { // если есть категории в сторе
-        const isCategory = storeCategories.find(item => item.id === questionCategory.id);
-        if (isCategory) { // если есть искомая категория в сторе
-          dispatch(addCategory(updatedCategory));
-        }
+      if (storeCategories.some(item => item.id === questionCategory.id)) { // если есть категории в сторе
+        dispatch(addCategory(updatedCategory));
       }
     }
 
@@ -154,43 +137,38 @@ export default function PageForm__rightSide() {
     }
   }
 
-  const selectAllQuestions = (questionCategory: ICategory, itemId: string) => { // добавляем/убираем все вопросы
-    let currentCategoriesForStore = categories.find(item => item.id === questionCategory.id); // нужная категория
-    const restCategoriesForStore = categoriesForStore.filter(item => item.id !== questionCategory.id); // остальные категории
+  // TODO: на рефактор selectAllQuestions
+  const selectAllQuestions = (categoryId: string, statebuttonAllQuestions: boolean) => { // добавляем/убираем все вопросы
+    let currentCategoriesForStore = categories.find(item => item.id === categoryId); // нужная категория
+    const restCategoriesForStore = categoriesForStore.filter(item => item.id !== categoryId); // остальные категории
 
-    setCheckedStates((prev) => {
-      const updatedState = { ...prev, [itemId]: !prev[itemId] };
-      if (currentCategoriesForStore) {
-        if (updatedState[itemId]) {
-          currentCategoriesForStore.questions.forEach(item => {
-            if (!checkedIdQuestions.includes(item)) {
-              setCheckedIdQuestions(prev => [...prev, item])
-            }
-          })
-        } else {
-          let copy = checkedIdQuestions
-          currentCategoriesForStore.questions.forEach(item => {
-            const index = copy.findIndex((i) => i === item);
-            if (index !== -1) { // Если объект найден, удаляем его из массива
-              copy.splice(index, 1);
-            }
-          })
-          setCheckedIdQuestions(copy)
-          const temp = JSON.parse(JSON.stringify(currentCategoriesForStore.questions)) //удаляем вопросы для передачи в стор
-          temp.length = 0
-          currentCategoriesForStore = { ...currentCategoriesForStore, questions: temp }
-        }
-
-        setCategoriesForStore([...restCategoriesForStore, currentCategoriesForStore]);
-        if (storeCategories.length > 0) { // если есть категории в сторе
-          const isCategory = storeCategories.find(item => item.id === questionCategory.id);
-          if (isCategory) { // если есть искомая категория в сторе
-            dispatch(addCategory(currentCategoriesForStore));
+    if (currentCategoriesForStore) {
+      if (statebuttonAllQuestions) {
+        currentCategoriesForStore.questions.forEach(item => {
+          if (!checkedIdQuestions.includes(item)) {
+            setCheckedIdQuestions(prev => [...prev, item])
           }
-        }
+        })
+      } else {
+        const copy = checkedIdQuestions;
+        currentCategoriesForStore.questions.forEach(item => {
+          const index = copy.findIndex((i) => i === item);
+          if (index !== -1) { // Если объект найден, удаляем его из массива
+            copy.splice(index, 1);
+          }
+        })
+        setCheckedIdQuestions(copy);
+        const temp = JSON.parse(JSON.stringify(currentCategoriesForStore.questions)); //удаляем вопросы для передачи в стор
+        temp.length = 0;
+        currentCategoriesForStore = { ...currentCategoriesForStore, questions: temp };
       }
-      return updatedState;
-    });
+
+      setCategoriesForStore([...restCategoriesForStore, currentCategoriesForStore]);
+
+      if (storeCategories.some(item => item.id === categoryId)) { // если есть категории в сторе
+        dispatch(addCategory(currentCategoriesForStore));
+      }
+    }
 
     if (checkedIdQuestions.length === 0) { // чтобы не возникало ошибки при обращении к firestore
       return;
@@ -200,8 +178,9 @@ export default function PageForm__rightSide() {
   const dragDropElement = (sourceId: string, destinationId: string, func: any) => {
     func((prevState: any) => {
       const newStateArray = [...prevState];
-      const sourceIndex = newStateArray.findIndex(q => q.id === sourceId);
-      const destinationIndex = newStateArray.findIndex(q => q.id === destinationId);
+
+      const sourceIndex = newStateArray.findIndex((q: any) => q.id === sourceId);
+      const destinationIndex = newStateArray.findIndex((q: any) => q.id === destinationId);
 
       const [reorderedItem] = newStateArray.splice(sourceIndex, 1);
       newStateArray.splice(destinationIndex, 0, reorderedItem);
@@ -227,14 +206,13 @@ export default function PageForm__rightSide() {
 
         <div className="questions">
           {categories && categories.map(category =>
-            <Category__rightSide key={category.id}
+            <CategoryRightSide key={category.id}
               category={category}
               activeCategoriesName={activeCategoriesName}
               showQuestions={showQuestions}
               removeStoreCategory={removeStoreCategory}
               addStoreCategory={addStoreCategory}
               selectAllQuestions={selectAllQuestions}
-              checkedStates={checkedStates}
               questions={questions.filter((item) => category.questions.includes(item.id))}
               selectQuestions={selectQuestions}
               checkedIdQuestions={checkedIdQuestions}

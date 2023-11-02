@@ -1,10 +1,10 @@
 import { useDrag, useDrop } from "react-dnd"
 import { useRef } from "react"
 
-import { ICategory, IQuestion } from "./Types"
-import Question__leftSide from "./Question__leftSide";
+import { ICategory, ICategoryLeftSide } from "./Types"
+import { QuestionLeftSide } from "./QuestionLeftSide";
 
-export default function Category__leftSide({
+export function CategoryLeftSide({
   category,
   isActiveCategoryHandler,
   showQuestions,
@@ -17,23 +17,9 @@ export default function Category__leftSide({
   handleQuestion,
   setQuestions,
   setStoreCategories
-}:
-  {
-    category: ICategory,
-    isActiveCategoryHandler: (categoryTitle: string) => string | undefined,
-    showQuestions: (categoryTitle: string) => void,
-    activeCategoriesName: string[],
-    сurrentIdQuestion: string,
-    showHighliting: boolean,
-    pageName?: string,
-    questions: IQuestion[],
-    dragDropElement: (sourceId: string, destinationId: string, func: any) => void,
-    handleQuestion: (questionText: string, questionId: string) => void,
-    setQuestions: React.Dispatch<React.SetStateAction<IQuestion[]>>
-    setStoreCategories: React.Dispatch<React.SetStateAction<ICategory[]>>,
-  }) {
+}: ICategoryLeftSide) {
 
-  const ref = useRef(null);
+  const ref: React.RefObject<HTMLDivElement> = useRef(null);
 
   const [{ isDragging }, dragCategory] = useDrag({
     type: 'categoryRightSide',
@@ -70,22 +56,20 @@ export default function Category__leftSide({
         {category.title}
       </button>
 
-      {activeCategoriesName.includes(category.title) &&
-        questions
-          .map((question, index) => question && (
-            <Question__leftSide
-              key={question.id}
-              item={question}
-              index={index}
-              сurrentIdQuestion={сurrentIdQuestion}
-              showHighliting={showHighliting}
-              pageName={pageName}
-              dragDropElement={dragDropElement}
-              handleQuestion={handleQuestion}
-              setQuestions={setQuestions}
-            />
-          )
-          )}
+      {activeCategoriesName.includes(category.title) && questions.map((question, index) => question && (
+        <QuestionLeftSide
+          key={question.id}
+          item={question}
+          index={index}
+          сurrentIdQuestion={сurrentIdQuestion}
+          showHighliting={showHighliting}
+          pageName={pageName}
+          dragDropElement={dragDropElement}
+          handleQuestion={handleQuestion}
+          setQuestions={setQuestions}
+        />
+      )
+      )}
     </div>
   )
 }

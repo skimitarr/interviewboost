@@ -10,8 +10,8 @@ import { useSession } from "next-auth/react";
 import { useTranslation } from "react-i18next";
 
 import { DataReport, IQuestion, IAnswer, ICategory } from "../components/Types";
-import Search from '../components/Search';
-import PageForm__leftSide from '../components/PageForm__leftSide';
+import { Search } from '../components/Search';
+import { PageFormLeftSide } from '../components/PageFormLeftSide';
 import { addReport, getDbAllAnswers, getDbAllQuestions } from "@/services/DatabaseService";
 import { getAnswers, getQuestions, } from "../store/DataSlice";
 
@@ -49,7 +49,7 @@ export default function MyQuestions() {
   const fetchQuestions = async () => {
     try {
       let questionsData = await getDbAllQuestions();
-      questionsData = questionsData.sort((a: any, b: any) => a.id - b.id)
+      questionsData = questionsData.sort((a: IQuestion, b: IQuestion) => +a.id - +b.id)
       dispatch(getQuestions(questionsData));
     } catch (error) {
       console.error('Error getting documents:', error);
@@ -375,7 +375,7 @@ export default function MyQuestions() {
     <div className='container container__form'>
       <div className='questions__leftSide'>
         <Search />
-        <PageForm__leftSide getQuestionText={getQuestionText} getCategoryTitle={getCategoryTitle} pageName="interview" />
+        <PageFormLeftSide getQuestionText={getQuestionText} getCategoryTitle={getCategoryTitle} pageName="interview" />
         <div className='questions__nextPage-wrapper left'>
           <button disabled={!isActiveBtn} className='questions__nextPage-btn btn' onClick={() => setIsOpenModal(!isOpenModal)}>{t('report')}</button>
         </div>

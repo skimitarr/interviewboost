@@ -70,3 +70,54 @@ type NavLink = {
 export type Props = {
   navLinks: NavLink[]
 }
+
+export type ICategoryLeftSide = {
+  category: ICategory
+  isActiveCategoryHandler: (categoryTitle: string) => string | undefined
+  showQuestions: (categoryTitle: string) => void
+  activeCategoriesName: string[]
+  сurrentIdQuestion: string
+  showHighliting: boolean
+  pageName?: string
+  questions: IQuestion[]
+  dragDropElement: (sourceId: string, destinationId: string, func: any) => void
+  handleQuestion: (questionText: string, questionId: string) => void
+  setQuestions: React.Dispatch<React.SetStateAction<IQuestion[]>>
+  setStoreCategories: React.Dispatch<React.SetStateAction<ICategory[]>>
+}
+
+export type ICategoryRightSide = {
+  category: ICategory
+  activeCategoriesName: string[]
+  showQuestions: (categoryTitle: string) => void
+  removeStoreCategory: (category: ICategory) => void
+  addStoreCategory: (category: ICategory) => void
+  selectAllQuestions: (categoryId: string, statebuttonAllQuestions: boolean) => void
+  questions: IQuestion[]
+  selectQuestions: (questionId: string, questionCategory: ICategory) => void
+  checkedIdQuestions: string[]
+  dragDropElement: (sourceId: string, destinationId: string, func: any) => void
+  setCategories: React.Dispatch<React.SetStateAction<ICategory[]>>
+  setQuestions: React.Dispatch<React.SetStateAction<IQuestion[]>>
+}
+
+export type IInputQuestion = {
+  item: IQuestion
+  index: number
+  category: ICategory
+  selectQuestions: (questionId: string, questionCategory: ICategory) => void
+  checkedIdQuestions: string[]
+  dragDropElement: (sourceId: string, destinationId: string, func: any) => void
+  setQuestions: React.Dispatch<React.SetStateAction<IQuestion[]>>
+}
+
+export type IQuestionLeftSide = {
+  item: IQuestion
+  index: number
+  сurrentIdQuestion: string
+  showHighliting: boolean
+  pageName?: string
+  dragDropElement: (sourceId: string, destinationId: string, func: any) => void
+  handleQuestion: (questionText: string, questionId: string) => void
+  setQuestions: React.Dispatch<React.SetStateAction<IQuestion[]>>
+}

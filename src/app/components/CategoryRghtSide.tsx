@@ -1,42 +1,28 @@
 import { useDrag, useDrop } from "react-dnd"
-import { useRef } from "react"
+import { useRef, useState } from "react"
 import { useAppSelector } from '../hooks'
 import { useTranslation } from "react-i18next";
 
-import { ICategory, IQuestion } from "./Types"
-import InputQuestion from "./InputQuestion";
+import { ICategory, ICategoryRightSide } from "./Types"
+import { InputQuestion } from "./InputQuestion";
 
-export default function Category__rightSide({
+export function CategoryRightSide({
   category,
   activeCategoriesName,
   showQuestions,
   removeStoreCategory,
   addStoreCategory,
   selectAllQuestions,
-  checkedStates,
   questions,
   selectQuestions,
   checkedIdQuestions,
   dragDropElement,
   setCategories,
-  setQuestions }:
-  {
-    category: ICategory,
-    activeCategoriesName: string[],
-    showQuestions: (categoryTitle: string) => void,
-    removeStoreCategory: (category: ICategory) => void,
-    addStoreCategory: (category: ICategory) => void,
-    selectAllQuestions: (questionCategory: ICategory, itemId: string) => void,
-    checkedStates: { [key: string]: boolean },
-    questions: IQuestion[],
-    selectQuestions: (questionId: string, questionCategory: ICategory) => void,
-    checkedIdQuestions: string[],
-    dragDropElement: (sourceId: string, destinationId: string, func: any) => void,
-    setCategories: React.Dispatch<React.SetStateAction<ICategory[]>>,
-    setQuestions: React.Dispatch<React.SetStateAction<IQuestion[]>>
-  }) {
+  setQuestions,
+}: ICategoryRightSide) {
 
-  const ref = useRef(null);
+  const [checked, setChecked] = useState<boolean>(true); //чекобокс выбрать все
+  const ref: React.RefObject<HTMLDivElement> = useRef(null);
   const { t } = useTranslation();
   const storeCategories = useAppSelector((state) => state.categories)
 
@@ -69,8 +55,13 @@ export default function Category__rightSide({
   dragCategory(ref)
   dropCategory(ref)
 
+  const selectCurrentAllQuestions = (id: string) => {
+    setChecked(!checked)
+    selectAllQuestions(id, !checked)
+  }
+
   return (
-    <div className='questions__technology' ref={ref}>
+    <div className={`questions__technology ${isDragging ? 'dragging' : ''}`} ref={ref}>
       <div className='questions__technology-wrapper1'>
 
         <div className='questions__technology-wrapper2'>
@@ -88,13 +79,15 @@ export default function Category__rightSide({
           : <button className='questions__technology-btn isChoosen btn' onClick={() => addStoreCategory(category)}>{t('add')}</button>}
       </div>
 
-      {activeCategoriesName.includes(category.title) ? (
+      {activeCategoriesName.includes(category.title) &&
         <>
           <div className='questions__technology-questions-wrapper'>
             <input id={category.id} type="checkbox" className="checkbox"
-              onChange={() => selectAllQuestions(category, category.id)}
-              checked={checkedStates[category.id] || false} />
-            <label htmlFor={category.id} className='questions__technology-questions'>{t('selectAll')}</label>
+              onChange={() => selectCurrentAllQuestions(category.id)}
+              checked={checked} />
+            <label htmlFor={category.id} className='questions__technology-questions'>
+              <p className={`selectAll ${checked ? '' : 'isSelected'}`}>{t('selectAll')}</p>
+            </label>
           </div>
           <div>
             {questions.map((item, index) => (
@@ -109,8 +102,7 @@ export default function Category__rightSide({
               />
             ))}
           </div>
-        </>
-      ) : null}
+        </>}
     </div>
   )
 }

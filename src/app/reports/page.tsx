@@ -5,10 +5,10 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useTranslation } from "react-i18next";
-
 import html2canvas from 'html2canvas';
 import pdfMake from 'pdfmake/build/pdfmake';
-import Search from "../components/Search";
+
+import { Search } from "../components/Search";
 import { DataReport } from "../components/Types";
 
 export default function Reports() {

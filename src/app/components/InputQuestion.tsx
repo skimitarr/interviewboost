@@ -2,20 +2,11 @@ import { useDrag, useDrop } from "react-dnd"
 import { useRef } from "react"
 import { useAppSelector } from '../hooks'
 
-import { ICategory, IQuestion } from "./Types"
+import { ICategory, IInputQuestion } from "./Types"
 
-export default function InputQuestion({ item, index, category, selectQuestions, checkedIdQuestions, dragDropElement, setQuestions }:
-  {
-    item: IQuestion,
-    index: number,
-    category: ICategory,
-    selectQuestions: (questionId: string, questionCategory: ICategory) => void,
-    checkedIdQuestions: string[],
-    dragDropElement: (sourceId: string, destinationId: string, func: any) => void,
-    setQuestions: React.Dispatch<React.SetStateAction<IQuestion[]>>
-  }) {
+export function InputQuestion({ item, index, category, selectQuestions, checkedIdQuestions, dragDropElement, setQuestions }: IInputQuestion) {
   const categoriesFromStore = useAppSelector((state) => state.categories);
-  const ref = useRef(null);
+  const ref: React.RefObject<HTMLDivElement> = useRef(null);
 
   const [{ isDragging }, dragQuestions] = useDrag({
     type: 'inputRightSide',
@@ -46,13 +37,11 @@ export default function InputQuestion({ item, index, category, selectQuestions, 
   dragQuestions(ref)
   dropQuestions(ref)
   return (
-    <div ref={ref} className={`questions__technology-questions-wrapper ${isDragging ? 'dragging' : ''}`}>
+    <div className={`questions__technology-questions-wrapper `}>
       <input id={`question-${item.id}`} className="checkbox" type="checkbox" onChange={() => selectQuestions(item.id, category)}
         checked={checkedIdQuestions.includes(item.id)} />
-      <label htmlFor={`question-${item.id}`}
-        className={`questions__technology-questions ${checkedIdQuestions.includes(item.id) ? '' : 'isSelected'}`}
-      >
-        {index + 1}. {item.text}
+      <label htmlFor={`question-${item.id}`} className='questions__technology-questions'>
+        <p ref={ref} className={`questions__technology-questions-text ${isDragging ? 'dragging' : ''} ${checkedIdQuestions.includes(item.id) ? '' : 'isSelected'}`}>{index + 1}. {item.text}</p>
       </label>
     </div>
   )

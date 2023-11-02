@@ -1,21 +1,19 @@
 import { useDrag, useDrop } from "react-dnd"
 import { useRef } from "react"
-import { IQuestion } from "./Types"
+import { IQuestionLeftSide } from "./Types"
 
-export default function Question__leftSide({ item, index, сurrentIdQuestion, showHighliting, pageName, dragDropElement, handleQuestion, setQuestions }:
-  {
-    item: IQuestion,
-    index: number,
-    сurrentIdQuestion: string,
-    showHighliting: boolean,
-    pageName?: string,
-    dragDropElement: (sourceId: string, destinationId: string, func: any) => void,
-    handleQuestion: (questionText: string, questionId: string) => void,
-    setQuestions: React.Dispatch<React.SetStateAction<IQuestion[]>>
-  }) {
+export function QuestionLeftSide({
+  item,
+  index,
+  сurrentIdQuestion,
+  showHighliting,
+  pageName,
+  dragDropElement,
+  handleQuestion,
+  setQuestions
+}: IQuestionLeftSide) {
 
-
-  const ref = useRef(null);
+  const ref: React.RefObject<HTMLDivElement> = useRef(null);
   const [{ isDragging }, dragQuestions] = useDrag({
     type: 'lefttSide',
     item: { id: item.id, },
