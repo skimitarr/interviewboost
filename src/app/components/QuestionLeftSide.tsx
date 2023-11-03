@@ -1,6 +1,6 @@
-import { useDrag, useDrop } from "react-dnd"
-import { useRef } from "react"
-import { IQuestionLeftSide } from "./Types"
+import classnames from "classnames";
+import { IQuestionLeftSide } from "./Types";
+import { DragDropHooks } from "./Drag&DropHooks";
 
 export function QuestionLeftSide({
   item,
@@ -13,39 +13,21 @@ export function QuestionLeftSide({
   setQuestions
 }: IQuestionLeftSide) {
 
-  const ref: React.RefObject<HTMLDivElement> = useRef(null);
-  const [{ isDragging }, dragQuestions] = useDrag({
-    type: 'lefttSide',
-    item: { id: item.id, },
-    collect: (monitor) => ({
-      isDragging: !!monitor.isDragging(),
-    }),
+  const { ref, isDragging } = DragDropHooks({
+    type: 'questionLeftSide',
+    item,
+    dragDropElement,
+    func: setQuestions
   })
 
-  const [, dropQuestions] = useDrop(() => ({
-    accept: 'lefttSide',
-    drop({ id: sourceId }:
-      { id: string; type: string; }) {
-      if (sourceId !== item.id) {
-        dragDropElement(sourceId, item.id, setQuestions)
-      }
-    },
-    collect: (monitor) => ({
-      isOver: !!monitor.isOver(),
-    }),
-    hover({ id: draggedId }) {
-      if (draggedId !== item.id) { // item.id это элемент на котором ховер
-        dragDropElement(draggedId, item.id, setQuestions); // для стилизации перетаскивания элементов
-      }
-    },
-  }));
-
-  dragQuestions(ref)
-  dropQuestions(ref)
   return (
-    <p ref={ref}
-      className={`questions__technology-questions questions__leftQustions ${item.id === сurrentIdQuestion && showHighliting ? 'highlited' : ''} ${pageName === 'interview' ? 'cursor' : ''} ${isDragging ? 'dragging' : ''}`}
-      onClick={() => handleQuestion(item.text, item.id)}
+    <p ref={ref} onClick={() => handleQuestion(item.text, item.id)}
+      className={classnames(
+        'questions__technology-questions questions__leftQustions',
+        { 'highlited': item.id === сurrentIdQuestion && showHighliting },
+        { 'cursor': pageName === 'interview' },
+        { 'dragging': isDragging }
+      )}
     >
       {index + 1}. {item.text}
     </p>

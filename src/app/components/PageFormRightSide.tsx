@@ -1,8 +1,8 @@
 'use client'
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useAppSelector, useAppDispatch } from '../hooks'
-import Link from "next/link"
+import { useAppSelector, useAppDispatch } from '../hooks';
+import Link from "next/link";
 import { useTranslation } from "react-i18next";
 
 import { addCategory, removeCategory } from '../store/DataSlice';

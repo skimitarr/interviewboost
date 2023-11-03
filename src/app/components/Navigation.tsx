@@ -4,6 +4,7 @@ import Link from "next/link"
 import { usePathname } from 'next/navigation'
 import { useState } from "react"
 import { useTranslation } from 'react-i18next'
+import classnames from "classnames"
 import { Props } from "./Types"
 
 const Navigation = ({ navLinks }: Props) => {
@@ -18,7 +19,7 @@ const Navigation = ({ navLinks }: Props) => {
         {
           navLinks.map(link => {
             const isActive = pathname === link.href
-            return <Link key={link.label} href={link.href} className={isActive ? 'header__link active' : 'header__link'} >
+            return <Link key={link.label} href={link.href} className={classnames('header__link', { 'active': isActive })}>
               <p className="header__link-text">{t(link.label)}</p>
             </Link>
           })}

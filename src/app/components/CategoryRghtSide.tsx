@@ -1,10 +1,11 @@
-import { useDrag, useDrop } from "react-dnd"
-import { useRef, useState } from "react"
-import { useAppSelector } from '../hooks'
+import { useState } from "react";
+import { useAppSelector } from '../hooks';
 import { useTranslation } from "react-i18next";
+import classnames from "classnames";
 
-import { ICategory, ICategoryRightSide } from "./Types"
+import { ICategoryRightSide } from "./Types";
 import { InputQuestion } from "./InputQuestion";
+import { DragDropHooks } from "./Drag&DropHooks";
 
 export function CategoryRightSide({
   category,
@@ -22,38 +23,15 @@ export function CategoryRightSide({
 }: ICategoryRightSide) {
 
   const [checked, setChecked] = useState<boolean>(true); //чекобокс выбрать все
-  const ref: React.RefObject<HTMLDivElement> = useRef(null);
   const { t } = useTranslation();
-  const storeCategories = useAppSelector((state) => state.categories)
+  const storeCategories = useAppSelector((state) => state.categories);
 
-  const [{ isDragging }, dragCategory] = useDrag({
+  const { ref, isDragging } = DragDropHooks({
     type: 'categoryRightSide',
-    item: { id: category.id, category },
-    collect: (monitor) => ({
-      isDragging: !!monitor.isDragging(),
-    }),
+    item: category,
+    dragDropElement,
+    func: setCategories
   })
-
-  const [{ isOver }, dropCategory] = useDrop(() => ({
-    accept: 'categoryRightSide', // Тип элемента, который этот контейнер может принимать
-    drop({ id: sourceId, category }:
-      { id: string; type: string; category: ICategory }) {
-      if (sourceId !== category.id) {
-        dragDropElement(sourceId, category.id, setCategories)
-      }
-    },
-    collect: (monitor) => ({
-      isOver: !!monitor.isOver(),
-    }),
-    hover({ id: draggedId }) {
-      if (draggedId !== category.id) { // item.id это элемент на котором ховер
-        dragDropElement(draggedId, category.id, setCategories); // для стилизации перетаскивания элементов
-      }
-    },
-  }));
-
-  dragCategory(ref)
-  dropCategory(ref)
 
   const selectCurrentAllQuestions = (id: string) => {
     setChecked(!checked)
@@ -61,12 +39,17 @@ export function CategoryRightSide({
   }
 
   return (
-    <div className={`questions__technology ${isDragging ? 'dragging' : ''}`} ref={ref}>
+    <div className={classnames('questions__technology', { 'dragging': isDragging })} ref={ref}>
       <div className='questions__technology-wrapper1'>
 
         <div className='questions__technology-wrapper2'>
           <button
-            className={`questions__technology-name ${activeCategoriesName.includes(category.title) ? 'active' : ''} ${storeCategories.find(item => item.id === category.id) ? 'isChoosen' : ''} ${isDragging ? 'dragging' : ''}`}
+            className={classnames(
+              'questions__technology-name',
+              { 'active': activeCategoriesName.includes(category.title) },
+              { 'isChoosen': storeCategories.find(item => item.id === category.id) },
+              { 'dragging': isDragging }
+            )}
             onClick={() => showQuestions(category.title)}
           >
             {category.title}
@@ -86,7 +69,7 @@ export function CategoryRightSide({
               onChange={() => selectCurrentAllQuestions(category.id)}
               checked={checked} />
             <label htmlFor={category.id} className='questions__technology-questions'>
-              <p className={`selectAll ${checked ? '' : 'isSelected'}`}>{t('selectAll')}</p>
+              <p className={classnames('selectAll', { 'isSelected': !checked })}>{t('selectAll')}</p>
             </label>
           </div>
           <div>

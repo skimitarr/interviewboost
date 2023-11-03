@@ -121,3 +121,14 @@ export type IQuestionLeftSide = {
   handleQuestion: (questionText: string, questionId: string) => void
   setQuestions: React.Dispatch<React.SetStateAction<IQuestion[]>>
 }
+
+export type IDragDrop = {
+  type: string
+  item: ICategory | IQuestion
+  category?: ICategory
+  categoriesFromStore?: ICategory[]
+  checked?: boolean
+  dragDropElement: (sourceId: string, destinationId: string, func: any) => void
+  // func: React.Dispatch<React.SetStateAction<IQuestion[]>>
+  func: any
+}

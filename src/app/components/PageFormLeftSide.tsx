@@ -30,8 +30,10 @@ export function PageFormLeftSide({ getQuestionText, getCategoryTitle, pageName }
 
   useEffect(() => {
     if (pageName === 'interview') {
-      const choosenCategory = storeCategories.find(item => item.title === activeCategoriesName[0])
-      dispatch(getCurrentIdQuestion(choosenCategory?.questions[0]));
+      if (activeCategoriesName.length > 0) {
+        const choosenCategory = storeCategories.find(item => item.title === activeCategoriesName[0])
+        dispatch(getCurrentIdQuestion(choosenCategory?.questions[0]));
+      }
     }
   }, [activeCategoriesName]);
 
@@ -79,7 +81,7 @@ export function PageFormLeftSide({ getQuestionText, getCategoryTitle, pageName }
     }
 
     if (activeCategoriesName.includes(categoryTitle)) { //если вопросы открыты, скрываем их
-      let result = activeCategoriesName.filter(item => item !== categoryTitle)
+      const result = activeCategoriesName.filter(item => item !== categoryTitle)
       setActiveCategoriesName(result)
     } else {
       if (pageName !== 'interview') {

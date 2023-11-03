@@ -219,8 +219,8 @@ body {
 .questions__choosenQuestions.dragging {
   opacity: 0;
 }
-.questions__choosenQuestions-wrapper:not(:last-child) {
-  margin-bottom: 5px;
+.questions__choosenQuestions-wrapper {
+  padding-bottom: 5px;
 }
 .questions__choosenQuestions.active {
   margin-bottom: 5px;

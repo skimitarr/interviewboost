@@ -1,8 +1,7 @@
-import { useDrag, useDrop } from "react-dnd"
-import { useRef } from "react"
-
-import { ICategory, ICategoryLeftSide } from "./Types"
+import classnames from "classnames";
+import { ICategoryLeftSide } from "./Types";
 import { QuestionLeftSide } from "./QuestionLeftSide";
+import { DragDropHooks } from "./Drag&DropHooks";
 
 export function CategoryLeftSide({
   category,
@@ -19,40 +18,22 @@ export function CategoryLeftSide({
   setStoreCategories
 }: ICategoryLeftSide) {
 
-  const ref: React.RefObject<HTMLDivElement> = useRef(null);
-
-  const [{ isDragging }, dragCategory] = useDrag({
-    type: 'categoryRightSide',
-    item: { id: category.id, category },
-    collect: (monitor) => ({
-      isDragging: !!monitor.isDragging(),
-    }),
+  const { ref, isDragging } = DragDropHooks({
+    type: 'categoryLeftSide',
+    item: category,
+    dragDropElement,
+    func: setStoreCategories
   })
-
-  const [{ isOver }, dropCategory] = useDrop(() => ({
-    accept: 'categoryRightSide', // Тип элемента, который этот контейнер может принимать
-    drop({ id: sourceId, category }:
-      { id: string; type: string; category: ICategory }) {
-      if (sourceId !== category.id) {
-        dragDropElement(sourceId, category.id, setStoreCategories)
-      }
-    },
-    collect: (monitor) => ({
-      isOver: !!monitor.isOver(),
-    }),
-    hover({ id: draggedId }) {
-      if (draggedId !== category.id) { // item.id это элемент на котором ховер
-        dragDropElement(draggedId, category.id, setStoreCategories); // для стилизации перетаскивания элементов
-      }
-    },
-  }));
-
-  dragCategory(ref)
-  dropCategory(ref)
 
   return (
     <div className='questions__choosenQuestions-wrapper' ref={ref}>
-      <button className={`questions__choosenQuestions ${isActiveCategoryHandler(category.title) ? 'active' : ''} ${isDragging ? 'dragging' : ''}`} onClick={() => showQuestions(category.title)}>
+      <button onClick={() => showQuestions(category.title)}
+        className={classnames(
+          'questions__choosenQuestions',
+          { 'active': isActiveCategoryHandler(category.title) },
+          { 'dragging': isDragging }
+        )}
+      >
         {category.title}
       </button>
 
@@ -68,8 +49,7 @@ export function CategoryLeftSide({
           handleQuestion={handleQuestion}
           setQuestions={setQuestions}
         />
-      )
-      )}
+      ))}
     </div>
   )
 }

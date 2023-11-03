@@ -258,9 +258,7 @@ body {
     }
 
     &-wrapper {
-      &:not(:last-child) {
-        margin-bottom: 5px;
-      }
+      padding-bottom: 5px;
     }
 
     &.active {

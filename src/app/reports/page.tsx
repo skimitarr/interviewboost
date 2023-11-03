@@ -7,6 +7,7 @@ import { useSession } from "next-auth/react";
 import { useTranslation } from "react-i18next";
 import html2canvas from 'html2canvas';
 import pdfMake from 'pdfmake/build/pdfmake';
+import classnames from "classnames";
 
 import { Search } from "../components/Search";
 import { DataReport } from "../components/Types";
@@ -162,7 +163,7 @@ export default function Reports() {
           delete itemWithoutId.id;
           return (
             <div className='questions__leftSide-div' key={item.id}>
-              <button className={`questions__choosenQuestions-reports ${currentIdReport === item.id ? 'active' : ''}`}
+              <button className={classnames('questions__choosenQuestions-reports', { 'active': currentIdReport === item.id })}
                 onClick={() => getCurrentReport(itemWithoutId, item.id as string)}>{item.name}</button>
             </div>
           );
@@ -176,13 +177,13 @@ export default function Reports() {
               {currentReport.length > 0 && currentReport.map(([sectionName, sectionData]) => {
                 return <div className='report__block' key={nanoid()}>
                   {sectionName === 'name'
-                    ? <div className='report__block-title'>
+                    && <div className='report__block-title'>
                       <p className='report__block-text report__text'>{sectionData}</p>
                     </div>
-                    : ''}
+                  }
 
                   {sectionName === 'conclusion'
-                    ? Array.isArray(sectionData) && sectionData.map((el: string[]) => {
+                    && Array.isArray(sectionData) && sectionData.map((el: string[]) => {
                       return (
                         <div key={nanoid()} className="test">
                           {el.map(el => {
@@ -205,10 +206,10 @@ export default function Reports() {
                         </div>
                       )
                     })
-                    : ''}
+                  }
 
-                  {sectionName !== 'name' && sectionName !== 'conclusion'
-                    ? <>
+                  {sectionName !== 'name' && sectionName !== 'conclusion' &&
+                    <>
                       <div className='report__block-title'>
                         <p className='report__block-text report__text'>{sectionName}</p>
                       </div>
@@ -232,7 +233,7 @@ export default function Reports() {
                           </div>
                         })}</div>
                     </>
-                    : ''}
+                  }
 
                 </div>
               })}

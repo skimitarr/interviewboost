@@ -22,9 +22,9 @@ export function ProfessionCard({ profession }: { profession: IProffesion }) {
 
   const fetchCategories = async () => {
     try {
-      let categoriesData = await getDbAllCategories();
-      categoriesData = categoriesData.sort((a: ICategory, b: ICategory) => +a.id - +b.id)
-      dispatch(getAllCategories(categoriesData));
+      const categoriesData = await getDbAllCategories();
+      const filteredData = categoriesData.sort((a: ICategory, b: ICategory) => +a.id - +b.id)
+      dispatch(getAllCategories(filteredData));
     } catch (error) {
       console.error('Error getting documents:', error);
     }
@@ -32,9 +32,9 @@ export function ProfessionCard({ profession }: { profession: IProffesion }) {
 
   const fetchQuestions = async () => { // TODO: пересмотреть работу с БД
     try {
-      let questionsData = await getDbAllQuestions();
-      questionsData = questionsData.sort((a: IQuestion, b: IQuestion) => +a.id - +b.id)
-      dispatch(getQuestions(questionsData));
+      const questionsData = await getDbAllQuestions();
+      const filteredData = questionsData.sort((a: IQuestion, b: IQuestion) => +a.id - +b.id)
+      dispatch(getQuestions(filteredData));
     } catch (error) {
       console.error('Error getting documents:', error);
     }

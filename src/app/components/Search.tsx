@@ -1,10 +1,11 @@
 'use client'
 import { useState, useEffect, ChangeEvent } from "react";
 import { useTranslation } from "react-i18next";
-import { useAppSelector, useAppDispatch } from '../hooks'
+import { useAppSelector, useAppDispatch } from '../hooks';
+import classnames from "classnames";
 
 import { DataReport, ICategory, IQuestion, ISearchReport } from "./Types";
-import { getCurrentIdQuestion } from '../store/DataSlice'
+import { getCurrentIdQuestion } from '../store/DataSlice';
 
 export function Search({ pageName, getCurrentReport }: ISearchReport) {
   const [searchText, setSearchText] = useState('');
@@ -19,7 +20,7 @@ export function Search({ pageName, getCurrentReport }: ISearchReport) {
 
   useEffect(() => {
     if (searchText && pageName !== 'reports') {
-      let set = new Set(); // фильтрация - получаем все вопросы из левой части и в них проводим поиск
+      const set = new Set(); // фильтрация - получаем все вопросы из левой части и в них проводим поиск
       storeCategories.forEach((category: ICategory) => {
         category.questions.forEach(item => { set.add(item) })
       });
@@ -77,10 +78,8 @@ export function Search({ pageName, getCurrentReport }: ISearchReport) {
         ? <h2 className="search__title">{t('questionsFor')} {storeProfession?.title}</h2>
         : <h2 className="search__title">{t('reportsHistory')}</h2>}
       <div className="search__wrapper">
-        <input type="text"
-          className={`search__input ${searchText ? '' : 'hasPlaceholder'}`}
-          value={searchText}
-          onChange={searchInQuestion}
+        <input type="text" value={searchText} onChange={searchInQuestion}
+          className={classnames('search__input', { 'hasPlaceholder': !searchText })}
         />
         {searchText && <div className="search__clear" onClick={clearSearch}></div>}
       </div>
