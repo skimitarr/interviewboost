@@ -4,10 +4,16 @@ import { useAppSelector, useAppDispatch } from '../hooks'
 import { useDrop } from 'react-dnd';
 
 import { addCategory, getCheckedQuestionDragDrop, getCurrentIdQuestion } from '../store/DataSlice';
-import { ICategory, ILeftPart, IQuestion } from "./Types";
+import { ICategory, IQuestion } from "./Types";
 import { CategoryLeftSide } from './CategoryLeftSide';
 
-export function PageFormLeftSide({ getQuestionText, getCategoryTitle, pageName }: ILeftPart) {
+type Props = {
+  getQuestionText?: (title: string) => void
+  getCategoryTitle?: (title: string) => void
+  pageName?: string
+};
+
+export function PageFormLeftSide({ getQuestionText, getCategoryTitle, pageName }: Props) {
   const [сurrentIdQuestion, setСurrentIdQuestion] = useState('0'); // используем для выделения цветом текущего вопроса
   const [activeCategoriesName, setActiveCategoriesName] = useState<string[]>([]); // определяем активные(раскрытые) категории (html css)
   const [storeCategories, setStoreCategories] = useState<ICategory[]>([]); // получаем категории из categoriesFromStore или из localStorage

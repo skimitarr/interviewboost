@@ -4,10 +4,15 @@ import { useTranslation } from "react-i18next";
 import { useAppSelector, useAppDispatch } from '../hooks';
 import classnames from "classnames";
 
-import { DataReport, ICategory, IQuestion, ISearchReport } from "./Types";
+import { DataReport, ICategory, IQuestion } from "./Types";
 import { getCurrentIdQuestion } from '../store/DataSlice';
 
-export function Search({ pageName, getCurrentReport }: ISearchReport) {
+type Props = {
+  getCurrentReport?: (item: DataReport, id: string) => void;
+  pageName?: string
+}
+
+export function Search({ pageName, getCurrentReport }: Props) {
   const [searchText, setSearchText] = useState('');
   const [searchResult, setSearchResult] = useState<IQuestion[]>([]);
   const [searchResultReports, setSearchResultReports] = useState<DataReport[]>([]);

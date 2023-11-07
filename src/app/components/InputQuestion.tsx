@@ -1,9 +1,27 @@
 import classnames from "classnames";
 import { useAppSelector } from '../hooks';
-import { IInputQuestion } from "./Types";
+import { ICategory, IQuestion } from "./Types";
 import { DragDropHooks } from "./Drag&DropHooks";
 
-export function InputQuestion({ item, index, category, selectQuestions, checkedIdQuestions, dragDropElement, setQuestions }: IInputQuestion) {
+type Props = {
+  item: IQuestion
+  index: number
+  category: ICategory
+  selectQuestions: (questionId: string, questionCategory: ICategory) => void
+  checkedIdQuestions: string[]
+  dragDropElement: (sourceId: string, destinationId: string, func: any) => void
+  setQuestions: React.Dispatch<React.SetStateAction<IQuestion[]>>
+}
+
+export function InputQuestion({
+  item,
+  index,
+  category,
+  selectQuestions,
+  checkedIdQuestions,
+  dragDropElement,
+  setQuestions
+}: Props) {
   const categoriesFromStore = useAppSelector((state) => state.categories);
 
   const { ref, isDragging } = DragDropHooks({

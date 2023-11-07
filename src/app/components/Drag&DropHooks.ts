@@ -1,8 +1,27 @@
 import { useRef } from "react";
 import { useDrag, useDrop } from "react-dnd";
-import { ICategory, IDragDrop } from "./Types";
+import { ICategory, IQuestion } from "./Types";
 
-export function DragDropHooks({type, item, category, categoriesFromStore, checked, dragDropElement, func }: IDragDrop) {
+type Props = {
+  type: string
+  item: ICategory | IQuestion
+  category?: ICategory
+  categoriesFromStore?: ICategory[]
+  checked?: boolean
+  dragDropElement: (sourceId: string, destinationId: string, func: any) => void
+  // func: React.Dispatch<React.SetStateAction<IQuestion[]>>
+  func: any
+}
+
+export function DragDropHooks({
+  type,
+  item,
+  category,
+  categoriesFromStore,
+  checked,
+  dragDropElement,
+  func
+}: Props) {
   const ref: React.RefObject<HTMLDivElement> = useRef(null);
 
   const [{ isDragging }, drag] = useDrag({
@@ -15,7 +34,7 @@ export function DragDropHooks({type, item, category, categoriesFromStore, checke
 
   const [, drop] = useDrop(() => ({
     accept: type, // Тип элемента, который этот контейнер может принимать
-    drop({ id: sourceId, category, categoriesFromStore, checked }:
+    drop({ id: sourceId, category, categoriesFromStore, checked }: // category, categoriesFromStore, checked передаем в PageFormLeftSide из-за ассинхронщины там не получить актуальные данные
       { id: string; type: string; category: ICategory, categoriesFromStore: ICategory[], checked: boolean }) {
       if (sourceId !== item.id) {
         dragDropElement(sourceId, item.id, func)

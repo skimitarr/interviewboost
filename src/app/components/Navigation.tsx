@@ -4,10 +4,14 @@ import Link from "next/link"
 import { usePathname } from 'next/navigation'
 import { useEffect, useRef, useState } from "react"
 import { useTranslation } from 'react-i18next'
-import { Props } from "./Types"
 import classnames from "classnames"
 
-export function Navigation({ navLinks }: Props) {
+export function Navigation({ navLinks }: {
+  navLinks: [{
+    label: string
+    href: string
+  }]
+}) {
   const [wantSignOut, setWantSignOut] = useState(false);
   const { t } = useTranslation();
   const pathname = usePathname()

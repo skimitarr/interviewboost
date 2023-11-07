@@ -61,13 +61,12 @@ export default function Reports() {
 
   const downloadFile = async () => { //сохраняем отчет в pdf и скачиваем его
     const rightSideElement = document.querySelector('.report__container') as HTMLElement;
-    const titles = document.querySelectorAll('.report__block-text') as NodeListOf<HTMLElement>; //из-за ошибки меняем выравнивание текста
+    const titles = document.querySelectorAll('.report__block-text') as NodeListOf<HTMLElement>;
     const textsColor = document.querySelectorAll('.report__text') as NodeListOf<HTMLElement>;
     const titlesColor = document.querySelectorAll('.report__block-title') as NodeListOf<HTMLElement>;
     const borders = document.querySelectorAll('.report__block-row') as NodeListOf<HTMLElement>;
 
     titles.forEach((title) => {
-      // title.style.alignItems = 'flex-start';
       title.style.marginTop = '-10px';
     });
     rightSideElement.style.backgroundColor = 'white';
@@ -78,68 +77,29 @@ export default function Reports() {
       title.style.backgroundColor = '#b8b5b5';
     });
     borders.forEach((border) => {
-      border.classList.add('blackBorder1', 'blackBorder2'); // Добавляем класс для изменения стилей
+      border.classList.add('blackBorder1', 'blackBorder2');
     });
 
-    const elementsToCapture = [rightSideElement]; // Создайте массив элементов для захвата скриншотов
-
-    // Получите плотность пикселей устройства
-    const devicePixelRatio = window.devicePixelRatio || 1;
-    // Определите размеры страницы динамически на основе размеров rightSideElement и плотности пикселей
-    const pageWidth = (rightSideElement.offsetWidth) * devicePixelRatio;
-    const pageHeight = (rightSideElement.offsetHeight) * devicePixelRatio;
     const pdfContent: any[] = [];
 
-    // Функция для создания и добавления скриншотов в PDF
     async function addScreenshotsToPDF(element: HTMLElement) {
-      const canvas = await html2canvas(element); // Создаем скриншот элемента
-      const totalHeight = canvas.height;
-      let yOffset = 0;
+      const canvas = await html2canvas(element);
+      const pageImage = canvas.toDataURL('image/jpeg');
 
-      while (yOffset < totalHeight) {
-        // Создаем скриншот, обрезанный до размеров страницы A4
-        const pageCanvas = document.createElement('canvas');
-        const pageContext = pageCanvas.getContext('2d');
-        pageCanvas.width = pageWidth;
-
-        // Вычисляем высоту отрисовываемой области для этой страницы
-        const pageContentHeight = Math.min(pageHeight, totalHeight - yOffset);
-        pageCanvas.height = pageContentHeight;
-
-        // Рисуем скриншот с учетом смещения
-        pageContext?.drawImage(
-          canvas,
-          0,
-          yOffset,
-          pageWidth,
-          pageContentHeight,
-          0,
-          0,
-          pageWidth,
-          pageContentHeight
-        );
-
-        // Преобразуем скриншот в изображение и добавляем в массив для PDF
-        const pageImage = pageCanvas.toDataURL('image/jpeg');
-        pdfContent.push({ image: pageImage, width: 500 });
-
-        // Увеличиваем yOffset для следующего скриншота
-        yOffset += pageHeight;
-      }
+      // Установите размеры страницы PDF равными размерам скриншота
+      pdfContent.push({ image: pageImage, width: canvas.width, height: canvas.height });
     }
 
-    // Обходим все элементы и создаем скриншоты
-    for (const element of elementsToCapture) {
-      await addScreenshotsToPDF(element);
-    }
-    // Создаем PDF-документ с содержимым
+    await addScreenshotsToPDF(rightSideElement);
+
     const pdfDoc = pdfMake.createPdf({
       content: pdfContent,
+      pageSize: { width: pdfContent[0].width + 70, height: pdfContent[0].height + 70 }
     });
+
     pdfDoc.download(`${currentName}.pdf`);
 
-    titles.forEach((title) => { //возвращаем выравнивание текста
-      // title.style.alignItems = 'center'
+    titles.forEach((title) => {
       title.style.marginTop = '0';
     });
     rightSideElement.style.backgroundColor = '#3C3E49';
@@ -153,6 +113,7 @@ export default function Reports() {
       border.classList.remove('blackBorder1', 'blackBorder2');
     });
   };
+
 
   return (
     <div className='container container__form'>

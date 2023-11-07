@@ -1,6 +1,17 @@
 import classnames from "classnames";
-import { IQuestionLeftSide } from "./Types";
+import { IQuestion } from "./Types";
 import { DragDropHooks } from "./Drag&DropHooks";
+
+type Props = {
+  item: IQuestion
+  index: number
+  сurrentIdQuestion: string
+  showHighliting: boolean
+  pageName?: string
+  dragDropElement: (sourceId: string, destinationId: string, func: any) => void
+  handleQuestion: (questionText: string, questionId: string) => void
+  setQuestions: React.Dispatch<React.SetStateAction<IQuestion[]>>
+}
 
 export function QuestionLeftSide({
   item,
@@ -11,7 +22,7 @@ export function QuestionLeftSide({
   dragDropElement,
   handleQuestion,
   setQuestions
-}: IQuestionLeftSide) {
+}: Props) {
 
   const { ref, isDragging } = DragDropHooks({
     type: 'questionLeftSide',

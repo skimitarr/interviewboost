@@ -1,7 +1,22 @@
 import classnames from "classnames";
-import { ICategoryLeftSide } from "./Types";
+import { ICategory, IQuestion } from "./Types";
 import { QuestionLeftSide } from "./QuestionLeftSide";
 import { DragDropHooks } from "./Drag&DropHooks";
+
+type Props = {
+  category: ICategory
+  isActiveCategoryHandler: (categoryTitle: string) => string | undefined
+  showQuestions: (categoryTitle: string) => void
+  activeCategoriesName: string[]
+  сurrentIdQuestion: string
+  showHighliting: boolean
+  pageName?: string
+  questions: IQuestion[]
+  dragDropElement: (sourceId: string, destinationId: string, func: any) => void
+  handleQuestion: (questionText: string, questionId: string) => void
+  setQuestions: React.Dispatch<React.SetStateAction<IQuestion[]>>
+  setStoreCategories: React.Dispatch<React.SetStateAction<ICategory[]>>
+}
 
 export function CategoryLeftSide({
   category,
@@ -16,7 +31,7 @@ export function CategoryLeftSide({
   handleQuestion,
   setQuestions,
   setStoreCategories
-}: ICategoryLeftSide) {
+}: Props) {
 
   const { ref, isDragging } = DragDropHooks({
     type: 'categoryLeftSide',

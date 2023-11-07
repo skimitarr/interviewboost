@@ -3,9 +3,24 @@ import { useAppSelector } from '../hooks';
 import { useTranslation } from "react-i18next";
 import classnames from "classnames";
 
-import { ICategoryRightSide } from "./Types";
+import { ICategory, IQuestion } from "./Types";
 import { InputQuestion } from "./InputQuestion";
 import { DragDropHooks } from "./Drag&DropHooks";
+
+type Props = {
+  category: ICategory
+  activeCategoriesName: string[]
+  showQuestions: (categoryTitle: string) => void
+  removeStoreCategory: (category: ICategory) => void
+  addStoreCategory: (category: ICategory) => void
+  selectAllQuestions: (categoryId: string, statebuttonAllQuestions: boolean) => void
+  questions: IQuestion[]
+  selectQuestions: (questionId: string, questionCategory: ICategory) => void
+  checkedIdQuestions: string[]
+  dragDropElement: (sourceId: string, destinationId: string, func: any) => void
+  setCategories: React.Dispatch<React.SetStateAction<ICategory[]>>
+  setQuestions: React.Dispatch<React.SetStateAction<IQuestion[]>>
+}
 
 export function CategoryRightSide({
   category,
@@ -20,7 +35,7 @@ export function CategoryRightSide({
   dragDropElement,
   setCategories,
   setQuestions,
-}: ICategoryRightSide) {
+}: Props) {
 
   const [checked, setChecked] = useState<boolean>(true); //чекобокс выбрать все
   const { t } = useTranslation();
