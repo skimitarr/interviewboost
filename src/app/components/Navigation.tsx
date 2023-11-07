@@ -7,10 +7,10 @@ import { useTranslation } from 'react-i18next'
 import classnames from "classnames"
 
 export function Navigation({ navLinks }: {
-  navLinks: [{
+  navLinks: {
     label: string
     href: string
-  }]
+  }[]
 }) {
   const [wantSignOut, setWantSignOut] = useState(false);
   const { t } = useTranslation();
