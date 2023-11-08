@@ -15,6 +15,7 @@ export type AppDataState = {
     questions: IQuestion[];
     answers: IAnswer[];
     currentIdQuestion: string;
+    checkedQuestionDragDrop: string;
 }
 
 export type StoreState = {

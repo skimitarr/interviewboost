@@ -3,7 +3,7 @@ import { useState, useEffect, ChangeEvent } from "react";
 import { useTranslation } from "react-i18next";
 import { useAppDispatch } from '../hooks'
 
-import { DataReport, ICategory, IProffesion, IQuestion, ISearchReport } from './Types';
+import { DataReport, ICategory, IProffesion, IQuestion } from './Types';
 import { getCurrentIdQuestion } from '../store/slices/app-data.slice'
 import classnames from "classnames";
 

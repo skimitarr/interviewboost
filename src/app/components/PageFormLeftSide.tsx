@@ -31,7 +31,7 @@ type Props = {
   pageName?: string
 };
 
-export default function PageFormLeftSide({ getQuestionText, getCategoryTitle, pageName }: Props) {
+export function PageFormLeftSide({ getQuestionText, getCategoryTitle, pageName }: Props) {
   const { storeCurrentIdQuestion, categoriesFromStore, storeQuestions  } = useSelector<StoreState, Selector>(selector, fastDeepEqual);
 
   const [сurrentIdQuestion, setСurrentIdQuestion] = useState('0'); // используем для выделения цветом текущего вопроса

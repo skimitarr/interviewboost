@@ -9,7 +9,7 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useTranslation } from "react-i18next";
 
-import { DataReport, IQuestion, IAnswer, ICategory } from "../components/Types";
+import { DataReport, IQuestion, IAnswer, ICategory, IProffesion } from "../components/Types";
 import { Search } from '../components/Search';
 import { PageFormLeftSide } from '../components/PageFormLeftSide';
 import { addReport, getDbAllAnswers, getDbAllQuestions } from "@/services/DatabaseService";
@@ -20,8 +20,6 @@ const arrMarks = ['0', '5', '10', '15', '20', '25', '30', '35', '40', '45', '50'
 
 import fastDeepEqual from 'fast-deep-equal';
 
-import { addCategory, removeCategory } from '../store/slices/app-data.slice';
-import { IGrade, ICategory, IQuestion, IProffesion } from "../components/Types";
 import { selectFromAppData } from '@/app/store/selectors/data';
 import applySpec from 'ramda/es/applySpec';
 import { useSelector } from "react-redux";
@@ -36,7 +34,7 @@ type Selector = {
 
 const selector = applySpec<Selector>({
   storeProfession: selectFromAppData('profession', null),
-  storeGrades: selectFromAppData('grades', []),
+  storeAnswers: selectFromAppData('answers', []),
   storeQuestions: selectFromAppData('questions', []),
   storeCurrentIdQuestion: selectFromAppData('currentIdQuestion', []),
 });
@@ -99,7 +97,9 @@ export default function MyQuestions() {
   }, [session]);
 
   useEffect(() => { // получаем выбранные категории из localstorage
-    setLocalData(JSON.parse(local))
+    if (local) {
+      setLocalData(JSON.parse(local))
+    }
   }, [local])
 
   useEffect(() => { // при получении первой оценки активируем кнопку отчет
@@ -373,7 +373,7 @@ export default function MyQuestions() {
   const getQuestionText = (text: string) => { // получаем текст вопроса для отчета
     setNameQuestion(text)
   }
-
+  //
   const getCategoryTitle = (title: string) => { // получаем название категории для отчета
     setNameBlock(title)
   }
@@ -415,11 +415,11 @@ export default function MyQuestions() {
             {currentIdQuestion
               ? filteredAnswers.filter((item: IAnswer) => item.id === currentIdQuestion) // фильтруем Answers, берем только те что есть в currentIdQuestion
                 .map((item: IAnswer) => {
-                  return <Markup content={item.text} className="answers__content" key={item.id} />
+                 return <Markup content={item.text} className="answers__content" key={item.id} />
                 })
-              : <p className="answers__preload">{t('chooseDirection')}</p>}
+             : <p className="answers__preload">{t('chooseDirection')}</p>}
 
-            {currentIdQuestion && <form className="answers__form" onSubmit={submitForm}>
+           {currentIdQuestion && <form className="answers__form" onSubmit={submitForm}>
 
               <div className="answers__title">{t('rateAnswerFrom0To100')}</div>
               <div className="answers__marks">
