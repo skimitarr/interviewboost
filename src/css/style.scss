@@ -125,12 +125,6 @@ body {
 .container {
   background-color: $colorBlack1;
   min-height: calc(100vh - 80px);
-  // transition: min-height 0.3s ease-in-out;
-
-  // &.scrolled {
-  //   min-height: calc(100vh - 60px);
-  //   transition: min-height 0.3s ease-in-out;
-  // }
 
   &__home {
     display: flex;
@@ -141,7 +135,6 @@ body {
   &__form {
     display: grid;
     grid-template-columns: 1fr 2fr;
-    // grid-gap: 5px;
   }
 }
 
@@ -239,26 +232,9 @@ body {
     }
   }
 
-  &__choosenQuestions-reports {
-    position: relative;
-    width: 100%;
-    height: 20px;
-    padding: 0;
-    background-color: $colorBlack3;
-    font-size: 16px;
-    color: $colorWhite1;
-    text-align: center;
-    border: none;
-    cursor: pointer;
-
-    &.active {
-      background-color: $colorYellow2;
-      color: $colorBlack3;
-    }
-  }
-
   &__categories {
     padding: 0 27px;
+    height:80%;
   }
 
   &__choosenQuestions {
@@ -273,11 +249,20 @@ body {
     cursor: pointer;
     // font-size: 0;
 
-    &:not(:last-child) {
-      margin-bottom: 5px;
+    &:active {
+      opacity: 1;
+    }
+
+    &.dragging {
+      opacity: 0;
+    }
+
+    &-wrapper {
+      padding-bottom: 5px;
     }
 
     &.active {
+      margin-bottom: 5px;
       background-color: $colorYellow2;
       color: $colorPurple1;
     }
@@ -309,6 +294,17 @@ body {
     }
 
     &-reports {
+      position: relative;
+      width: 100%;
+      height: 20px;
+      padding: 0;
+      background-color: $colorBlack3;
+      font-size: 16px;
+      color: $colorWhite1;
+      text-align: center;
+      border: none;
+      cursor: pointer;
+
       &.active {
         color: $colorPurple1;
       }
@@ -318,8 +314,12 @@ body {
   &__leftQustions {
     display: block;
 
-    &:first-child {
-      margin-top: 10px;
+    &:active {
+      opacity: 1;
+    }
+
+    &.dragging {
+      opacity: 0;
     }
   }
 
@@ -370,10 +370,14 @@ body {
   }
 
   &__technology {
-    // padding: 0 20px 0 25px;
-    // &.active {
-    //   padding: 0 2px 0 25px;
-    // }
+    &:active {
+      opacity: 1;
+    }
+
+    &.dragging {
+      opacity: 0;
+    }
+
     &-wrapper1 {
       display: flex;
     }
@@ -414,13 +418,6 @@ body {
       color: $colorWhite1;
       cursor: pointer;
 
-      &-shadow {
-        position: absolute;
-        width: 100%;
-        bottom: 14px;
-        box-shadow: 0px -6px 10px 1px #DA87FF;
-      }
-
       &::before {
         content: '';
         position: absolute;
@@ -458,15 +455,25 @@ body {
       &.active.isChoosen::after {
         border-top: 9px solid $colorWhite1;
       }
-
     }
+
     &-questions {
+      display: flex;
+      align-items: center;
       margin-bottom: 10px;
-      padding: 0 25px;
+      width: calc(100% - 135px);
+      padding: 0 0 0 25px;
       color: $colorWhite1;
       letter-spacing: 0.5px;
       line-height: 1.5;
       cursor: pointer;
+
+      .selectAll {
+        padding-left: 15px;
+        &.isSelected {
+          color: gray;
+        }
+      }
 
       &.highlited {
         color: $colorPurple1;
@@ -477,18 +484,33 @@ body {
         color: gray;
       }
 
-      &-wrapper {
-        &:last-child {
-          margin-bottom: 10px;
+      &-text {
+        width: 100%;
+        min-height: 30px;
+        padding-left: 15px;
+        padding-top: 5px;
+        color: $colorWhite1;
+        letter-spacing: 0.5px;
+        line-height: 1.5;
+        border-radius: 4px;
+        box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+        cursor: pointer;
+
+        &.isSelected {
+          color: gray;
         }
 
         &:active {
-          background-color: #D3BE5D;
+          opacity: 1;
+        }
+
+        &.dragging {
+          cursor: grabbing;
+          opacity: 0;
         }
       }
     }
   }
-
 
   &__nextPage {
     &-wrapper {
@@ -698,7 +720,7 @@ body {
         border: none;
       }
       & + .mark_70-75 {
-        background-color: #D3BE5D;
+        background-color: $colorDragDrop;
         height: 40px;
         margin: 0;
         padding: 10px 0;
@@ -748,7 +770,7 @@ body {
         background-color: #E9A469;
       }
       &.mark_70-75 {
-        background-color: #D3BE5D;
+        background-color: $colorDragDrop;
       }
       &.mark_80-85 {
         background-color: #1583EC;
@@ -1154,11 +1176,10 @@ content: "\00a0"; //символ неразрывного пробела, на �
   height: 24px;
   border: 1px inset $colorWhite1;
   border-radius: 5px;
-  margin: 5px 15px 5px 0;
+  margin: 3px 15px 3px 0;
   display: inline-block;
 }
 input[type="checkbox"] ~ label::before {
-  border: 1px inset $colorWhite1;
   cursor: pointer;
 }
 input[type="checkbox"]:checked ~ label::before {
@@ -1185,4 +1206,7 @@ input[type="checkbox"]:checked ~ label::before {
     transform: rotate(3turn);
   }
 }
+
+
+
 

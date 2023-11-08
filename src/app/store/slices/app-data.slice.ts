@@ -12,6 +12,7 @@ const userInitialState: AppDataState = {
   questions: [],
   answers: [],
   currentIdQuestion: '',
+  checkedQuestionDragDrop: ''
 };
 
 export const appDataSlice = createSlice({
@@ -53,8 +54,11 @@ export const appDataSlice = createSlice({
     getCurrentIdQuestion(state, action) {
       state.currentIdQuestion = action.payload;
     },
+    getCheckedQuestionDragDrop(state, action) {
+      state.checkedQuestionDragDrop = action.payload;
+    },
   },
 });
 
 export const { getProfession, getGrades, getAllCategories, getCategories, addCategory, removeCategory,
-  getQuestions, getAnswers, getCurrentIdQuestion } = appDataSlice.actions;
+  getQuestions, getAnswers, getCurrentIdQuestion, getCheckedQuestionDragDrop } = appDataSlice.actions;
