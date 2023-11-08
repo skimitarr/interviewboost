@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useAppDispatch } from '../hooks'
 import { DragDropContext, Draggable, DropResult, Droppable } from 'react-beautiful-dnd';
 import { addCategory, getCheckedQuestionDragDrop, getCurrentIdQuestion } from '../store/slices/app-data.slice';
-import { ICategory, ILeftPart, IQuestion } from '../components/Types';
+import { ICategory, IQuestion } from '../components/Types';
 import { useDrop } from 'react-dnd';
 import applySpec from 'ramda/es/applySpec';
 import { useSelector } from 'react-redux';
@@ -13,14 +13,13 @@ import { selectFromAppData } from '@/app/store/selectors/data';
 import { CategoryLeftSide } from './CategoryLeftSide';
 
 type Selector = {
-  storeAllCategories: ICategory[],
+  storeQuestions: IQuestion[],
   categoriesFromStore: ICategory[],
   storeCurrentIdQuestion: string,
 };
 
 const selector = applySpec<Selector>({
-  storeGrades: selectFromAppData('grades', []),
-  storeAllCategories: selectFromAppData('allCategories', []),
+  storeQuestions: selectFromAppData('questions', []),
   categoriesFromStore: selectFromAppData('categories', []),
   storeCurrentIdQuestion: selectFromAppData('currentIdQuestion', []),
 });
@@ -34,7 +33,7 @@ type Props = {
 export function PageFormLeftSide({ getQuestionText, getCategoryTitle, pageName }: Props) {
   const { storeCurrentIdQuestion, categoriesFromStore, storeQuestions  } = useSelector<StoreState, Selector>(selector, fastDeepEqual);
 
-  const [сurrentIdQuestion, setСurrentIdQuestion] = useState('0'); // используем для выделения цветом текущего вопроса
+  const [currentIdQuestion, setCurrentIdQuestion] = useState('0'); // используем для выделения цветом текущего вопроса
   const [activeCategoriesName, setActiveCategoriesName] = useState<string[]>([]); // определяем активные(раскрытые) категории (html css)
   const [storeCategories, setStoreCategories] = useState<ICategory[]>([]); // получаем категории из categoriesFromStore или из localStorage
   const [showHighliting, setShowHighliting] = useState<boolean>(false); // флаг для выделения цветом текущего вопроса на странице собеседование
@@ -61,16 +60,16 @@ export function PageFormLeftSide({ getQuestionText, getCategoryTitle, pageName }
     }
   }, [activeCategoriesName]);
 
-  useEffect(() => { // получаем сurrentIdQuestion
-    if (storeCurrentIdQuestion && сurrentIdQuestion && initialIdQuestion) {
-      if (pageName !== 'interview' && storeCurrentIdQuestion !== сurrentIdQuestion && storeCurrentIdQuestion !== initialIdQuestion) { // showHighliting true если проводим поиск в вопросах
+  useEffect(() => { // получаем currentIdQuestion
+    if (storeCurrentIdQuestion && currentIdQuestion && initialIdQuestion) {
+      if (pageName !== 'interview' && storeCurrentIdQuestion !== currentIdQuestion && storeCurrentIdQuestion !== initialIdQuestion) { // showHighliting true если проводим поиск в вопросах
         setShowHighliting(true);
       }
     }
     if (pageName === 'interview') { // showHighliting true если проводим поиск в вопросах
       setShowHighliting(true);
     }
-    setСurrentIdQuestion(storeCurrentIdQuestion) // для для выделения цветом текущего вопроса из поиска
+    setCurrentIdQuestion(storeCurrentIdQuestion) // для для выделения цветом текущего вопроса из поиска
   }, [storeCurrentIdQuestion])
 
   useEffect(() => { // получаем категории из categoriesFromStore или из localStorage
@@ -86,8 +85,8 @@ export function PageFormLeftSide({ getQuestionText, getCategoryTitle, pageName }
     }
   }, [categoriesFromStore]);
 
-  useEffect(() => { // открываем список вопросов, когда изменяется сurrentIdQuestion
-    const category = storeCategories.find(item => item.questions.includes(сurrentIdQuestion))
+  useEffect(() => { // открываем список вопросов, когда изменяется currentIdQuestion
+    const category = storeCategories.find(item => item.questions.includes(currentIdQuestion))
     if (category?.title) {
       if (pageName !== 'interview') {
         setActiveCategoriesName([...activeCategoriesName, category.title]) // добавляем categoryTitle в массив открытых категорий для страницы questions
@@ -97,7 +96,7 @@ export function PageFormLeftSide({ getQuestionText, getCategoryTitle, pageName }
         } return // если уже есть, ничего не делаем
       }
     }
-  }, [сurrentIdQuestion]);
+  }, [currentIdQuestion]);
 
   const showQuestions = (categoryTitle: string) => {
     if (getCategoryTitle) { //сохраняем categoryTitle для передачи в родит. компонент
@@ -132,7 +131,7 @@ export function PageFormLeftSide({ getQuestionText, getCategoryTitle, pageName }
   }
 
   const handleQuestion = (questionText: string, questionId: string) => { //передаем данные question в стор
-    setСurrentIdQuestion(questionId) // получаем сurrentIdQuestion
+    setCurrentIdQuestion(questionId) // получаем currentIdQuestion
     getQuestion(questionId) // запускаем предыдущую функцию
     setShowHighliting(false) // на странице форм по клику убираем подсветку
     dispatch(getCurrentIdQuestion(questionId)) //передаем данные questionId в стор
@@ -191,7 +190,7 @@ export function PageFormLeftSide({ getQuestionText, getCategoryTitle, pageName }
           showQuestions={showQuestions}
           activeCategoriesName={activeCategoriesName}
           questions={questions.filter((item) => category.questions.includes(item.id))}
-          сurrentIdQuestion={сurrentIdQuestion}
+          currentIdQuestion={currentIdQuestion}
           showHighliting={showHighliting}
           pageName={pageName}
           dragDropElement={dragDropElement}

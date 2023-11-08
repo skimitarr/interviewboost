@@ -8,7 +8,7 @@ type Props = {
   isActiveCategoryHandler: (categoryTitle: string) => string | undefined
   showQuestions: (categoryTitle: string) => void
   activeCategoriesName: string[]
-  сurrentIdQuestion: string
+  currentIdQuestion: string
   showHighliting: boolean
   pageName?: string
   questions: IQuestion[]
@@ -24,7 +24,7 @@ export function CategoryLeftSide({
   showQuestions,
   activeCategoriesName,
   questions,
-  сurrentIdQuestion,
+  currentIdQuestion,
   showHighliting,
   pageName,
   dragDropElement,
@@ -57,7 +57,7 @@ export function CategoryLeftSide({
           key={question.id}
           item={question}
           index={index}
-          сurrentIdQuestion={сurrentIdQuestion}
+          currentIdQuestion={currentIdQuestion}
           showHighliting={showHighliting}
           pageName={pageName}
           dragDropElement={dragDropElement}

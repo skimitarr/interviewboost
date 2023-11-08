@@ -1,17 +1,18 @@
 'use client'
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { useAppDispatch } from '../hooks';
-import Link from "next/link";
-import { useTranslation } from "react-i18next";
+import Link from 'next/link';
+import { useTranslation } from 'react-i18next';
 
 import { addCategory, removeCategory } from '../store/slices/app-data.slice';
-import { IGrade, ICategory, IQuestion, IProffesion } from "../components/Types";
+import { IGrade, ICategory, IQuestion, IProffesion } from '../components/Types';
 import { selectFromAppData } from '@/app/store/selectors/data';
 import applySpec from 'ramda/es/applySpec';
-import { useSelector } from "react-redux";
-import { StoreState } from "@/app/store/types";
+import { useSelector } from 'react-redux';
+import { StoreState } from '@/app/store/types';
 import fastDeepEqual from 'fast-deep-equal';
+import {CategoryRightSide} from '@/app/components/CategoryRghtSide';
 
 type Selector = {
   storeProfession: IProffesion | null,
@@ -19,6 +20,7 @@ type Selector = {
   storeAllCategories: ICategory[],
   storeCategories: ICategory[],
   storeQuestions: IQuestion[],
+  checkedIdQuestionDragDrop: string,
 };
 
 const selector = applySpec<Selector>({
@@ -27,7 +29,7 @@ const selector = applySpec<Selector>({
   storeAllCategories: selectFromAppData('allCategories', []),
   storeCategories: selectFromAppData('categories', []),
   storeQuestions: selectFromAppData('questions', []),
-  checkedIdQuestionDragDrop:  selectFromAppData('questions', []),
+  checkedIdQuestionDragDrop:  selectFromAppData('checkedQuestionDragDrop', ''),
 });
 
 export function PageFormRightSide() {
@@ -230,7 +232,8 @@ export function PageFormRightSide() {
 
         <div className="questions">
           {categories && categories.map(category =>
-            <CategoryRightSide key={category.id}
+            <CategoryRightSide
+              key={category.id}
               category={category}
               activeCategoriesName={activeCategoriesName}
               showQuestions={showQuestions}
