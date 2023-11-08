@@ -4,10 +4,10 @@ import { useTranslation } from "react-i18next"
 import { useAppDispatch } from '../hooks'
 import { getDbAllGrades, getDbAllCategories, getDbAllQuestions, getDbAllAnswers } from '../../services/DatabaseService'
 
-import { IProffesion } from '../components/Types'
+import { ICategory, IProffesion, IQuestion } from '../components/Types'
 import { getProfession, getGrades, getAllCategories, getQuestions, getAnswers } from '../store/DataSlice';
 
-export default function ProfessionCard({ profession }: { profession: IProffesion }) {
+export function ProfessionCard({ profession }: { profession: IProffesion }) {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
 
@@ -22,9 +22,9 @@ export default function ProfessionCard({ profession }: { profession: IProffesion
 
   const fetchCategories = async () => {
     try {
-      let categoriesData = await getDbAllCategories();
-      categoriesData = categoriesData.sort((a: any, b: any) => a.id - b.id)
-      dispatch(getAllCategories(categoriesData));
+      const categoriesData = await getDbAllCategories();
+      const filteredData = categoriesData.sort((a: ICategory, b: ICategory) => +a.id - +b.id)
+      dispatch(getAllCategories(filteredData));
     } catch (error) {
       console.error('Error getting documents:', error);
     }
@@ -32,9 +32,9 @@ export default function ProfessionCard({ profession }: { profession: IProffesion
 
   const fetchQuestions = async () => { // TODO: пересмотреть работу с БД
     try {
-      let questionsData = await getDbAllQuestions();
-      questionsData = questionsData.sort((a: any, b: any) => a.id - b.id)
-      dispatch(getQuestions(questionsData));
+      const questionsData = await getDbAllQuestions();
+      const filteredData = questionsData.sort((a: IQuestion, b: IQuestion) => +a.id - +b.id)
+      dispatch(getQuestions(filteredData));
     } catch (error) {
       console.error('Error getting documents:', error);
     }

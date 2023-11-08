@@ -1,12 +1,18 @@
 'use client'
 import { useState, useEffect, ChangeEvent } from "react";
 import { useTranslation } from "react-i18next";
-import { useAppSelector, useAppDispatch } from '../hooks'
+import { useAppSelector, useAppDispatch } from '../hooks';
+import classnames from "classnames";
 
-import { DataReport, ICategory, IQuestion, ISearchReport } from "./Types";
-import { getCurrentIdQuestion } from '../store/DataSlice'
+import { DataReport, ICategory, IQuestion } from "./Types";
+import { getCurrentIdQuestion } from '../store/DataSlice';
 
-export default function Search({ pageName, getCurrentReport }: ISearchReport) {
+type Props = {
+  getCurrentReport?: (item: DataReport, id: string) => void;
+  pageName?: string
+}
+
+export function Search({ pageName, getCurrentReport }: Props) {
   const [searchText, setSearchText] = useState('');
   const [searchResult, setSearchResult] = useState<IQuestion[]>([]);
   const [searchResultReports, setSearchResultReports] = useState<DataReport[]>([]);
@@ -19,7 +25,7 @@ export default function Search({ pageName, getCurrentReport }: ISearchReport) {
 
   useEffect(() => {
     if (searchText && pageName !== 'reports') {
-      let set = new Set(); // фильтрация - получаем все вопросы из левой части и в них проводим поиск
+      const set = new Set(); // фильтрация - получаем все вопросы из левой части и в них проводим поиск
       storeCategories.forEach((category: ICategory) => {
         category.questions.forEach(item => { set.add(item) })
       });
@@ -77,17 +83,14 @@ export default function Search({ pageName, getCurrentReport }: ISearchReport) {
         ? <h2 className="search__title">{t('questionsFor')} {storeProfession?.title}</h2>
         : <h2 className="search__title">{t('reportsHistory')}</h2>}
       <div className="search__wrapper">
-        <input type="text"
-          className={`search__input ${searchText ? '' : 'hasPlaceholder'}`}
-          value={searchText}
-          onChange={searchInQuestion}
+        <input type="text" value={searchText} onChange={searchInQuestion}
+          className={classnames('search__input', { 'hasPlaceholder': !searchText })}
         />
         {searchText && <div className="search__clear" onClick={clearSearch}></div>}
       </div>
 
       {searchResult.length > 0 && <div className="search__results">
         {searchResult.map(question => {
-          console.log(searchResult)
           const parts = question.text.split(new RegExp(`(${searchText})`, 'gi')); //разбиваем текст чтобы выделить searchText
           return (
             <p key={question.id} className="search__result" onClick={() => getIdQuestion(question.id)}>
