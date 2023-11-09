@@ -1,11 +1,24 @@
-import { useState } from "react";
-import { useAppSelector } from '../hooks';
-import { useTranslation } from "react-i18next";
-import classnames from "classnames";
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import classnames from 'classnames';
+import applySpec from 'ramda/es/applySpec';
+import fastDeepEqual from 'fast-deep-equal';
+import { useSelector } from 'react-redux';
 
-import { ICategory, IQuestion } from "./Types";
-import { InputQuestion } from "./InputQuestion";
-import { DragDropHooks } from "./Drag&DropHooks";
+import { ICategory, IQuestion } from './Types';
+import { InputQuestion } from './InputQuestion';
+import { DragDropHooks } from './Drag&DropHooks';
+import { selectFromAppData } from '@/app/store/selectors/data';
+import { StoreState } from '@/app/store/types';
+
+
+type Selector = {
+  storeCategories: ICategory[],
+};
+
+const selector = applySpec<Selector>({
+  storeCategories: selectFromAppData('categories', []),
+});
 
 type Props = {
   category: ICategory
@@ -39,7 +52,7 @@ export function CategoryRightSide({
 
   const [checked, setChecked] = useState<boolean>(true); //чекобокс выбрать все
   const { t } = useTranslation();
-  const storeCategories = useAppSelector((state) => state.categories);
+  const { storeCategories } = useSelector<StoreState, Selector>(selector, fastDeepEqual);
 
   const { ref, isDragging } = DragDropHooks({
     type: 'categoryRightSide',

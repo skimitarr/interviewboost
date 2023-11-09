@@ -2,23 +2,56 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { polyfill } from 'interweave-ssr'; // interweave для того чтобы прочитать HTML из объекта
 import { Markup } from 'interweave'; // interweave для того чтобы прочитать HTML из объекта
-import { useAppSelector, useAppDispatch } from '../hooks';
+import { useAppDispatch } from '../hooks';
 import { nanoid } from 'nanoid';
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useTranslation } from "react-i18next";
 
-import { DataReport, IQuestion, IAnswer, ICategory } from "../components/Types";
+import { DataReport, IQuestion, IAnswer, ICategory, IProffesion } from "../components/Types";
 import { Search } from '../components/Search';
 import { PageFormLeftSide } from '../components/PageFormLeftSide';
 import { addReport, getDbAllAnswers, getDbAllQuestions } from "@/services/DatabaseService";
-import { getAnswers, getQuestions, } from "../store/DataSlice";
+import { getAnswers, getQuestions } from "../store/slices/app-data.slice";
 import classnames from "classnames";
 
 const arrMarks = ['0', '5', '10', '15', '20', '25', '30', '35', '40', '45', '50', '55', '60', '65', '70', '75', '80', '85', '90', '95', '100',]
 
+import fastDeepEqual from 'fast-deep-equal';
+
+import { selectFromAppData } from '@/app/store/selectors/data';
+import applySpec from 'ramda/es/applySpec';
+import { useSelector } from "react-redux";
+import { StoreState } from "@/app/store/types";
+
+type Selector = {
+  storeProfession: IProffesion | null,
+  storeQuestions: IQuestion[],
+  storeAnswers: IAnswer[],
+  storeCurrentIdQuestion: string,
+};
+
+const selector = applySpec<Selector>({
+  storeProfession: selectFromAppData('profession', null),
+  storeAnswers: selectFromAppData('answers', []),
+  storeQuestions: selectFromAppData('questions', []),
+  storeCurrentIdQuestion: selectFromAppData('currentIdQuestion', []),
+});
+
 export default function MyQuestions() {
+  const { t } = useTranslation();
+  const session = useSession();
+  const router = useRouter();
+  const dispatch = useAppDispatch()
+
+  const {
+    storeProfession,
+    storeAnswers,
+    storeQuestions,
+    storeCurrentIdQuestion
+  } = useSelector<StoreState, Selector>(selector, fastDeepEqual);
+
   const [localData, setLocalData] = useState<ICategory[]>([]); // категории из localStorage
   const [nameQuestion, setNameQuestion] = useState('');   // nameQuestion - вопрос для передачи в отчет
   const [nameBlock, setNameBlock] = useState('');   // nameBlock - название раздела вопросов для передачи в отчет
@@ -34,15 +67,6 @@ export default function MyQuestions() {
     mark: '',
     comment: '',
   });
-
-  const { t } = useTranslation();
-  const session = useSession();
-  const router = useRouter();
-  const dispatch = useAppDispatch()
-  const storeProfession = useAppSelector((state) => state.profession)
-  const storeQuestions = useAppSelector((state) => state.questions)
-  const storeAnswers = useAppSelector((state) => state.answers)
-  const storeCurrentIdQuestion = useAppSelector((state) => state.currentIdQuestion)
 
   const isBrowser = typeof window !== 'undefined'; // Проверяем, что код выполняется в браузерной среде
   const local = isBrowser ? localStorage.getItem('choosenCategories') ?? '' : '';
@@ -73,7 +97,9 @@ export default function MyQuestions() {
   }, [session]);
 
   useEffect(() => { // получаем выбранные категории из localstorage
-    setLocalData(JSON.parse(local))
+    if (local) {
+      setLocalData(JSON.parse(local))
+    }
   }, [local])
 
   useEffect(() => { // при получении первой оценки активируем кнопку отчет
@@ -347,7 +373,7 @@ export default function MyQuestions() {
   const getQuestionText = (text: string) => { // получаем текст вопроса для отчета
     setNameQuestion(text)
   }
-
+  //
   const getCategoryTitle = (title: string) => { // получаем название категории для отчета
     setNameBlock(title)
   }
@@ -389,11 +415,11 @@ export default function MyQuestions() {
             {currentIdQuestion
               ? filteredAnswers.filter((item: IAnswer) => item.id === currentIdQuestion) // фильтруем Answers, берем только те что есть в currentIdQuestion
                 .map((item: IAnswer) => {
-                  return <Markup content={item.text} className="answers__content" key={item.id} />
+                 return <Markup content={item.text} className="answers__content" key={item.id} />
                 })
-              : <p className="answers__preload">{t('chooseDirection')}</p>}
+             : <p className="answers__preload">{t('chooseDirection')}</p>}
 
-            {currentIdQuestion && <form className="answers__form" onSubmit={submitForm}>
+           {currentIdQuestion && <form className="answers__form" onSubmit={submitForm}>
 
               <div className="answers__title">{t('rateAnswerFrom0To100')}</div>
               <div className="answers__marks">

@@ -1,7 +1,21 @@
-import classnames from "classnames";
+import classnames from 'classnames';
 import { useAppSelector } from '../hooks';
-import { ICategory, IQuestion } from "./Types";
-import { DragDropHooks } from "./Drag&DropHooks";
+import { ICategory, IQuestion } from './Types';
+import { DragDropHooks } from './Drag&DropHooks';
+import applySpec from 'ramda/es/applySpec';
+import {selectFromAppData} from '@/app/store/selectors/data';
+import {StoreState} from "@/app/store/types";
+import fastDeepEqual from "fast-deep-equal";
+import {useSelector} from "react-redux";
+
+type Selector = {
+  categoriesFromStore: ICategory[],
+};
+
+const selector = applySpec<Selector>({
+  categoriesFromStore: selectFromAppData('categories', []),
+});
+
 
 type Props = {
   item: IQuestion
@@ -22,7 +36,7 @@ export function InputQuestion({
   dragDropElement,
   setQuestions
 }: Props) {
-  const categoriesFromStore = useAppSelector((state) => state.categories);
+  const { categoriesFromStore } = useSelector<StoreState, Selector>(selector, fastDeepEqual);
 
   const { ref, isDragging } = DragDropHooks({
     type: 'inputRightSide',
