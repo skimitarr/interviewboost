@@ -2,6 +2,8 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useAppSelector, useAppDispatch } from '../hooks'
 import { useDrop } from 'react-dnd';
+import { useTranslation } from "react-i18next";
+import { useRouter } from "next/navigation";
 
 import { addCategory, getCheckedQuestionDragDrop, getCurrentIdQuestion } from '../store/DataSlice';
 import { ICategory, IQuestion } from "./Types";
@@ -20,7 +22,10 @@ export function PageFormLeftSide({ getQuestionText, getCategoryTitle, pageName }
   const [showHighliting, setShowHighliting] = useState<boolean>(false); // флаг для выделения цветом текущего вопроса на странице собеседование
   const [questions, setQuestions] = useState<IQuestion[]>([]);
 
+  const { t } = useTranslation();
+  const router = useRouter();
   const dispatch = useAppDispatch();
+  const storeProfession = useAppSelector((state) => state.profession);
   const storeQuestions = useAppSelector((state) => state.questions);
   const storeCurrentIdQuestion = useAppSelector((state) => state.currentIdQuestion);
   const categoriesFromStore = useAppSelector((state) => state.categories);
@@ -129,26 +134,26 @@ export function PageFormLeftSide({ getQuestionText, getCategoryTitle, pageName }
 
   const [, dropQuestions] = useDrop(() => ({ // хук Drag&Drop
     accept: 'inputRightSide',
-    drop({ id: sourceId, category, categoriesFromStore, checked }:
-      { id: string; type: string; category: ICategory, categoriesFromStore: ICategory[], checked: boolean }) {
-      !checked ? addDragDropQuestion(category, sourceId, categoriesFromStore) : null
+    drop({ id: sourceId, category, categoriesFromStore, checkedIdQuestions }:
+      { id: string; type: string; category: ICategory, categoriesFromStore: ICategory[], checkedIdQuestions: string[] }) {
+      !checkedIdQuestions.includes(sourceId) ? addDragDropQuestion(category, sourceId, categoriesFromStore, checkedIdQuestions) : null
     },
   }));
 
-  const addDragDropQuestion = (category: ICategory, sourceId: string, categoriesFromStore: ICategory[]) => { // логика добавления вопросов(и категорий) Drag&Drop
+  const addDragDropQuestion = (category: ICategory, sourceId: string, categoriesFromStore: ICategory[], checkedIdQuestions: string[]) => { // логика добавления вопросов(и категорий) Drag&Drop
     const updatedCategory = categoriesFromStore.find(item => item.id === category.id);
     if (updatedCategory) {
       const updatedCategoryWithQuestions = {
         ...updatedCategory,
-        questions: updatedCategory.questions ? [...updatedCategory.questions, sourceId] : [sourceId],
+        questions: [...checkedIdQuestions, sourceId]
       };
       dispatch(addCategory(updatedCategoryWithQuestions));
     } else {
-      const updatedCategory = { ...category, questions: [sourceId] };
+      const updatedCategory = { ...category, questions: [...checkedIdQuestions, sourceId] };
       dispatch(addCategory(updatedCategory));
     }
 
-    dispatch(getCheckedQuestionDragDrop(sourceId));
+    dispatch(getCheckedQuestionDragDrop({ id: sourceId, timestamp: Date.now() }));
   }
 
   const dragDropElement = (sourceId: string, destinationId: string, func: any) => {
@@ -164,24 +169,35 @@ export function PageFormLeftSide({ getQuestionText, getCategoryTitle, pageName }
     });
   };
 
+  const saveQuestions = () => {
+    localStorage.setItem('choosenCategories', JSON.stringify(storeCategories));
+    router.push('/interview');
+  }
+
   return (
-    <div className='questions__categories' ref={dropQuestions}>
-      {storeCategories && storeCategories.map((category: ICategory) =>
-        <CategoryLeftSide key={category.id}
-          category={category}
-          isActiveCategoryHandler={isActiveCategoryHandler}
-          showQuestions={showQuestions}
-          activeCategoriesName={activeCategoriesName}
-          questions={questions.filter((item) => category.questions.includes(item.id))}
-          сurrentIdQuestion={сurrentIdQuestion}
-          showHighliting={showHighliting}
-          pageName={pageName}
-          dragDropElement={dragDropElement}
-          handleQuestion={handleQuestion}
-          setQuestions={setQuestions}
-          setStoreCategories={setStoreCategories}
-        />
-      )}
-    </div>
+    <>
+      <div className='questions__categories' ref={dropQuestions}>
+        {storeCategories && storeCategories.map((category: ICategory) =>
+          <CategoryLeftSide key={category.id}
+            category={category}
+            isActiveCategoryHandler={isActiveCategoryHandler}
+            showQuestions={showQuestions}
+            activeCategoriesName={activeCategoriesName}
+            questions={questions.filter((item) => category.questions.includes(item.id))}
+            сurrentIdQuestion={сurrentIdQuestion}
+            showHighliting={showHighliting}
+            pageName={pageName}
+            dragDropElement={dragDropElement}
+            handleQuestion={handleQuestion}
+            setQuestions={setQuestions}
+            setStoreCategories={setStoreCategories}
+          />
+        )}
+      </div>
+
+      {storeProfession && <div className='questions__nextPage-wrapper left'>
+        <button className='questions__nextPage-btn btn' onClick={saveQuestions}>{t('save')}</button>
+      </div>}
+    </>
   );
 }

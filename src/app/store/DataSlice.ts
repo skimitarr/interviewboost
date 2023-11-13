@@ -11,7 +11,7 @@ const dataSlice = createSlice({
     questions: [],
     answers: [],
     currentIdQuestion: '',
-    checkedQuestionDragDrop: ''
+    checkedQuestionDragDrop: {id: '', timestamp: 0}
   } as DataState,
   reducers: {
     getProfession(state, action) {

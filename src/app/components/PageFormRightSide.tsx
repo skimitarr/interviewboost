@@ -1,6 +1,5 @@
 'use client'
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { useAppSelector, useAppDispatch } from '../hooks';
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
@@ -8,18 +7,21 @@ import { useTranslation } from "react-i18next";
 import { addCategory, removeCategory } from '../store/DataSlice';
 import { IGrade, ICategory, IQuestion } from "./Types";
 import { CategoryRightSide } from "./CategoryRghtSide";
+import { InputQuestion } from "./InputQuestion";
+import { SelectAllQuestions } from "./SelectAllQuestions";
 
 export function PageFormRightSide() {
   const [grades, setGrades] = useState<IGrade[]>([]); // массив (junior middle) с базы данных
   const [activeGradeName, setActiveGradeName] = useState<string>('Junior'); // определяем активую кнопку (junior middle) для стилизации
   const [categories, setCategories] = useState<ICategory[]>([]); // массив (html css) с базы данных
   const [categoriesForStore, setCategoriesForStore] = useState<ICategory[]>([]); // тут убираем/добавляем вопросы
-  const [activeCategoriesName, setActiveCategoriesName] = useState<string[]>([]); // определяем активные(раскрытые) категории (html css)
+  // const [activeCategoriesName, setActiveCategoriesName] = useState<string[]>([]); // определяем активные(раскрытые) категории (html css)
+  const [activeCategory, setActiveCategory] = useState<ICategory | null>(null); // определяем активные(раскрытые) категории (html css)
   const [questions, setQuestions] = useState<IQuestion[]>([]); // массив всех вопросов с базы данных
   const [checkedIdQuestions, setCheckedIdQuestions] = useState<string[]>([]); // массив id вопросов которые checked
+  const [checkedIdAllQuestions, setCheckedIdAllQuestions] = useState<string[]>([]); // массив категорий id выбрать все
 
   const { t } = useTranslation();
-  const router = useRouter();
   const dispatch = useAppDispatch()
   const storeProfession = useAppSelector((state) => state.profession)
   const storeGrades = useAppSelector((state) => state.grades)
@@ -27,6 +29,11 @@ export function PageFormRightSide() {
   const storeCategories = useAppSelector((state) => state.categories)
   const storeQuestions = useAppSelector((state) => state.questions)
   const сheckedIdQuestionDragDrop = useAppSelector((state) => state.checkedQuestionDragDrop)
+
+  useEffect(() => {
+    setActiveCategory(storeAllCategories[0]);
+    storeAllCategories.forEach(item => setCheckedIdAllQuestions(prev => [...prev, item.id]));
+  }, [storeAllCategories])
 
   useEffect(() => { // получаем grades
     if (storeGrades) {
@@ -71,12 +78,13 @@ export function PageFormRightSide() {
     }
   }, [categories])
 
-  const showQuestions = (categoryTitle: string) => {
-    if (activeCategoriesName.includes(categoryTitle)) { //если вопросы открыты, скрываем их
-      const result = activeCategoriesName.filter(item => item !== categoryTitle)
-      setActiveCategoriesName(result)
-    } else {
-      setActiveCategoriesName([...activeCategoriesName, categoryTitle]) //и наоборот
+  const showQuestions = (category: ICategory) => {
+    if (activeCategory) {
+      if (activeCategory.id === category.id) { //если вопросы открыты, скрываем их
+        setActiveCategory({ id: '', title: '', questions: [] })
+      } else {
+        setActiveCategory(category) //и наоборот
+      }
     }
   }
 
@@ -89,16 +97,11 @@ export function PageFormRightSide() {
     dispatch(removeCategory(category))
   }
 
-  const saveQuestions = () => {
-    localStorage.setItem('choosenCategories', JSON.stringify(storeCategories));
-    router.push('/interview');
-  }
-
   useEffect(() => { // получаем id вопроса, который перетащили в левую часть и он станет checked
-    setCheckedIdQuestions(prev => [...prev, сheckedIdQuestionDragDrop]);
-    const currentCategoriesForStore = categoriesForStore.find(item => item.id === сheckedIdQuestionDragDrop);
+    setCheckedIdQuestions(prev => [...prev, сheckedIdQuestionDragDrop.id]);
+    const currentCategoriesForStore = categoriesForStore.find(item => item.id === сheckedIdQuestionDragDrop.id);
     if (currentCategoriesForStore) {
-      selectQuestions(сheckedIdQuestionDragDrop, currentCategoriesForStore);
+      selectQuestions(сheckedIdQuestionDragDrop.id, currentCategoriesForStore);
     }
   }, [сheckedIdQuestionDragDrop])
 
@@ -139,6 +142,13 @@ export function PageFormRightSide() {
 
   // TODO: на рефактор selectAllQuestions
   const selectAllQuestions = (categoryId: string, statebuttonAllQuestions: boolean) => { // добавляем/убираем все вопросы
+    if (checkedIdAllQuestions.includes(categoryId)) { // меняем состояние самой кнопки
+      const newCheckedIdAllQuestions = checkedIdAllQuestions.filter(item => item !== categoryId);
+      setCheckedIdAllQuestions(newCheckedIdAllQuestions)
+    } else {
+      setCheckedIdAllQuestions(prev => [...prev, categoryId])
+    }
+
     let currentCategoriesForStore = categories.find(item => item.id === categoryId); // нужная категория
     const restCategoriesForStore = categoriesForStore.filter(item => item.id !== categoryId); // остальные категории
 
@@ -208,24 +218,37 @@ export function PageFormRightSide() {
           {categories && categories.map(category =>
             <CategoryRightSide key={category.id}
               category={category}
-              activeCategoriesName={activeCategoriesName}
+              activeCategory={activeCategory}
               showQuestions={showQuestions}
               removeStoreCategory={removeStoreCategory}
               addStoreCategory={addStoreCategory}
-              selectAllQuestions={selectAllQuestions}
-              questions={questions.filter((item) => category.questions.includes(item.id))}
-              selectQuestions={selectQuestions}
-              checkedIdQuestions={checkedIdQuestions}
               dragDropElement={dragDropElement}
               setCategories={setCategories}
-              setQuestions={setQuestions}
             />
           )}
         </div>
 
-        <div className='questions__nextPage-wrapper right'>
-          <button className='questions__nextPage-btn btn' onClick={saveQuestions}>{t('save')}</button>
-        </div>
+        {activeCategory && <div className='questions__selectAllQuestions'>
+          <SelectAllQuestions
+            category={activeCategory}
+            selectAllQuestions={selectAllQuestions}
+            checkedIdAllQuestions={checkedIdAllQuestions}
+          />
+          <div>
+            {questions.filter((item) => activeCategory.questions.includes(item.id))
+              .map((item, index) => (
+                <InputQuestion key={item.id}
+                  item={item}
+                  index={index}
+                  category={activeCategory}
+                  selectQuestions={selectQuestions}
+                  checkedIdQuestions={checkedIdQuestions}
+                  dragDropElement={dragDropElement}
+                  setQuestions={setQuestions}
+                />
+              ))}
+          </div>
+        </div>}
 
       </div>
       : <div className='questions__rightSide'>

@@ -3,19 +3,12 @@
 import * as React from "react";
 import CssBaseline from "@mui/material/CssBaseline";
 import { createTheme, ThemeOptions, ThemeProvider } from "@mui/material/styles";
-import { Roboto } from "next/font/google";
 import { NextAppDirEmotionCacheProvider } from "./EmotionCache";
-
-const roboto = Roboto({
-  weight: ["300", "400", "500", "700"],
-  style: ["normal", "italic"],
-  subsets: ["latin"],
-});
 
 const themeOptions: ThemeOptions = {
   typography: {
-    fontSize: 12,
-    fontFamily: roboto.style.fontFamily,
+    fontSize: 14,
+    fontFamily: '"Lato", "Roboto", "Helvetica", "Arial", sans-serif',
   },
   palette: {
     background: {
@@ -27,6 +20,31 @@ const themeOptions: ThemeOptions = {
     },
     text: {
       primary: "#300000",
+    },
+  },
+  components: {
+    MuiCssBaseline: {
+      styleOverrides: {
+        '@font-face': [
+          {
+            fontFamily: 'Lato',
+            src: `url('../../public/fonts/Lato-Regular.woff2') format('woff2')`,
+            fontStyle: 'normal',
+            fontWeight: 'normal',
+            fontDisplay: 'swap',
+          },
+          {
+            fontFamily: 'Lato',
+            src: `url('../../public/fonts/Lato-Semibold.woff2') format('woff2')`,
+            fontStyle: 'normal',
+            fontWeight: 600,
+            fontDisplay: 'swap',
+          },
+        ],
+        '*': {
+          textTransform: 'none',
+        },
+      },
     },
   },
 };
