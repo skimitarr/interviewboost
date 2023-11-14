@@ -1,13 +1,25 @@
 import { useCallback, useEffect, useState } from "react";
-import { useAppSelector } from '../hooks';
-import { useTranslation } from "react-i18next";
+import { useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
+import applySpec from 'ramda/es/applySpec';
+import fastDeepEqual from 'fast-deep-equal';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from "@mui/material/Button";
 
-import { ICategory } from "./Types";
-import { DragDropHooks } from "./Drag&DropHooks";
 import { сolorBtn, сolorWhite, getCategoryRightSideStyles } from '@/css/styled';
+import { ICategory } from './Types';
+import { DragDropHooks } from './Drag&DropHooks';
+import { selectFromAppData } from '@/app/store/selectors/data';
+import { StoreState } from '@/app/store/types';
+
+type Selector = {
+  storeCategories: ICategory[],
+};
+
+const selector = applySpec<Selector>({
+  storeCategories: selectFromAppData('categories', []),
+});
 
 type Props = {
   category: ICategory
@@ -32,7 +44,7 @@ export function CategoryRightSide({
   const [hoverBlockVisible, setHoverBlockVisible] = useState(false);
   const [isChoosen, setChoosen] = useState(false);
   const { t } = useTranslation();
-  const storeCategories = useAppSelector((state) => state.categories);
+  const { storeCategories } = useSelector<StoreState, Selector>(selector, fastDeepEqual);
 
   const { ref, isDragging } = DragDropHooks({
     type: 'categoryRightSide',
@@ -45,12 +57,12 @@ export function CategoryRightSide({
 
   useEffect(() => {
     if (activeCategory) {
-      activeCategory.id === category.id ? setChoosen(true) : setChoosen(false);
+      setChoosen(activeCategory.id === category.id)
     }
   }, [activeCategory])
 
   useEffect(() => {
-    storeCategories.find(item => item.id === category.id) ? setHoverBlockVisible(true) : setHoverBlockVisible(false);
+    setHoverBlockVisible(storeCategories.some(item => item.id === category.id));
   }, [storeCategories])
 
   const handleAddCategory = useCallback((e: React.SyntheticEvent, category: ICategory) => {

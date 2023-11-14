@@ -1,34 +1,59 @@
 'use client'
-import { useEffect, useState } from "react";
-import { useAppSelector, useAppDispatch } from '../hooks';
-import Link from "next/link";
-import { useTranslation } from "react-i18next";
+import { useEffect, useState } from 'react';
+import { useAppDispatch } from '../hooks';
+import Link from 'next/link';
+import { useTranslation } from 'react-i18next';
 
-import { addCategory, removeCategory } from '../store/DataSlice';
-import { IGrade, ICategory, IQuestion } from "./Types";
-import { CategoryRightSide } from "./CategoryRghtSide";
+import { addCategory, removeCategory } from '../store/slices/app-data.slice';
+import { IGrade, ICategory, IQuestion, IProffesion, CheckedQuestionDragDrop } from '../components/Types';
+import { selectFromAppData } from '@/app/store/selectors/data';
+import applySpec from 'ramda/es/applySpec';
+import { useSelector } from 'react-redux';
+import { StoreState } from '@/app/store/types';
+import fastDeepEqual from 'fast-deep-equal';
+import { CategoryRightSide } from '@/app/components/CategoryRghtSide';
 import { InputQuestion } from "./InputQuestion";
 import { SelectAllQuestions } from "./SelectAllQuestions";
 
+type Selector = {
+  storeProfession: IProffesion | null,
+  storeGrades: IGrade[],
+  storeAllCategories: ICategory[],
+  storeCategories: ICategory[],
+  storeQuestions: IQuestion[],
+  checkedIdQuestionDragDrop: CheckedQuestionDragDrop,
+};
+
+const selector = applySpec<Selector>({
+  storeProfession: selectFromAppData('profession', null),
+  storeGrades: selectFromAppData('grades', []),
+  storeAllCategories: selectFromAppData('allCategories', []),
+  storeCategories: selectFromAppData('categories', []),
+  storeQuestions: selectFromAppData('questions', []),
+  checkedIdQuestionDragDrop: selectFromAppData('checkedQuestionDragDrop', { id: '', timestamp: 0 }),
+});
+
 export function PageFormRightSide() {
+  const { t } = useTranslation();
+  const dispatch = useAppDispatch()
+
+  const {
+    storeProfession,
+    storeGrades,
+    storeAllCategories,
+    storeCategories,
+    storeQuestions,
+    checkedIdQuestionDragDrop,
+  } = useSelector<StoreState, Selector>(selector, fastDeepEqual);
+
   const [grades, setGrades] = useState<IGrade[]>([]); // массив (junior middle) с базы данных
   const [activeGradeName, setActiveGradeName] = useState<string>('Junior'); // определяем активую кнопку (junior middle) для стилизации
   const [categories, setCategories] = useState<ICategory[]>([]); // массив (html css) с базы данных
   const [categoriesForStore, setCategoriesForStore] = useState<ICategory[]>([]); // тут убираем/добавляем вопросы
-  // const [activeCategoriesName, setActiveCategoriesName] = useState<string[]>([]); // определяем активные(раскрытые) категории (html css)
   const [activeCategory, setActiveCategory] = useState<ICategory | null>(null); // определяем активные(раскрытые) категории (html css)
   const [questions, setQuestions] = useState<IQuestion[]>([]); // массив всех вопросов с базы данных
   const [checkedIdQuestions, setCheckedIdQuestions] = useState<string[]>([]); // массив id вопросов которые checked
   const [checkedIdAllQuestions, setCheckedIdAllQuestions] = useState<string[]>([]); // массив категорий id выбрать все
-
-  const { t } = useTranslation();
-  const dispatch = useAppDispatch()
-  const storeProfession = useAppSelector((state) => state.profession)
-  const storeGrades = useAppSelector((state) => state.grades)
-  const storeAllCategories = useAppSelector((state) => state.allCategories)
-  const storeCategories = useAppSelector((state) => state.categories)
-  const storeQuestions = useAppSelector((state) => state.questions)
-  const сheckedIdQuestionDragDrop = useAppSelector((state) => state.checkedQuestionDragDrop)
 
   useEffect(() => {
     setActiveCategory(storeAllCategories[0]);
@@ -98,12 +123,12 @@ export function PageFormRightSide() {
   }
 
   useEffect(() => { // получаем id вопроса, который перетащили в левую часть и он станет checked
-    setCheckedIdQuestions(prev => [...prev, сheckedIdQuestionDragDrop.id]);
-    const currentCategoriesForStore = categoriesForStore.find(item => item.id === сheckedIdQuestionDragDrop.id);
+    setCheckedIdQuestions(prev => [...prev, checkedIdQuestionDragDrop.id]);
+    const currentCategoriesForStore = categoriesForStore.find(item => item.id === checkedIdQuestionDragDrop.id);
     if (currentCategoriesForStore) {
-      selectQuestions(сheckedIdQuestionDragDrop.id, currentCategoriesForStore);
+      selectQuestions(checkedIdQuestionDragDrop.id, currentCategoriesForStore);
     }
-  }, [сheckedIdQuestionDragDrop])
+  }, [checkedIdQuestionDragDrop])
 
   const selectQuestions = (questionId: string, questionCategory: ICategory) => { // добавляем/убираем вопросы
     if (checkedIdQuestions.includes(questionId)) { //если вопрос активный, деактивируем его
@@ -216,7 +241,8 @@ export function PageFormRightSide() {
 
         <div className="questions">
           {categories && categories.map(category =>
-            <CategoryRightSide key={category.id}
+            <CategoryRightSide
+              key={category.id}
               category={category}
               activeCategory={activeCategory}
               showQuestions={showQuestions}

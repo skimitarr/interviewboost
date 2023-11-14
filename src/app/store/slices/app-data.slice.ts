@@ -1,18 +1,23 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { DataState , ICategory } from '../components/Types';
+import { ICategory } from '../../components/Types';
+import { AppDataState } from '../types';
 
-const dataSlice = createSlice({
-  name: 'interviews',
-  initialState: {
-    profession: null,
-    grades: [],
-    allCategories: [],
-    categories: [],
-    questions: [],
-    answers: [],
-    currentIdQuestion: '',
-    checkedQuestionDragDrop: {id: '', timestamp: 0}
-  } as DataState,
+export const name = 'appData';
+
+const userInitialState: AppDataState = {
+  profession: null,
+  grades: [],
+  allCategories: [],
+  categories: [],
+  questions: [],
+  answers: [],
+  currentIdQuestion: '',
+  checkedQuestionDragDrop: {id: '', timestamp: 0}
+};
+
+export const appDataSlice = createSlice({
+  name,
+  initialState: userInitialState,
   reducers: {
     getProfession(state, action) {
       state.profession = action.payload;
@@ -56,5 +61,4 @@ const dataSlice = createSlice({
 });
 
 export const { getProfession, getGrades, getAllCategories, getCategories, addCategory, removeCategory,
-  getQuestions, getAnswers, getCurrentIdQuestion, getCheckedQuestionDragDrop } = dataSlice.actions;
-export default dataSlice.reducer;
+  getQuestions, getAnswers, getCurrentIdQuestion, getCheckedQuestionDragDrop } = appDataSlice.actions;

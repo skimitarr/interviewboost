@@ -5,7 +5,7 @@ import { DragDropHooks } from "./Drag&DropHooks";
 type Props = {
   item: IQuestion
   index: number
-  сurrentIdQuestion: string
+  currentIdQuestion: string
   showHighliting: boolean
   pageName?: string
   dragDropElement: (sourceId: string, destinationId: string, func: any) => void
@@ -16,7 +16,7 @@ type Props = {
 export function QuestionLeftSide({
   item,
   index,
-  сurrentIdQuestion,
+  currentIdQuestion,
   showHighliting,
   pageName,
   dragDropElement,
@@ -35,7 +35,7 @@ export function QuestionLeftSide({
     <p ref={ref} onClick={() => handleQuestion(item.text, item.id)}
       className={classnames(
         'questions__technology-questions questions__leftQustions',
-        { 'highlited': item.id === сurrentIdQuestion && showHighliting },
+        { 'highlited': item.id === currentIdQuestion && showHighliting },
         { 'cursor': pageName === 'interview' },
         { 'dragging': isDragging }
       )}

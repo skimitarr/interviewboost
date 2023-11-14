@@ -48,3 +48,8 @@ type AdditionalData = {
   name: string;
   conclusion?: [string, string];
 };
+
+export type CheckedQuestionDragDrop = {
+  id: string,
+  timestamp: number
+};
