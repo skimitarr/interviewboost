@@ -8,11 +8,14 @@ $colorWhite2: #D9D9D9;
 
 // $colorYellow1: #FFFF0C;
 // $colorYellow2: #FCFC69;
-$colorYellow1: linear-gradient(180deg, rgba(218, 135, 255, 0.00) 0%, #DA87FF 100%);
-$colorYellow2: linear-gradient(180deg, rgba(218, 135, 255, 0.00) 0%, #DA87FF 100%);
+// $colorYellow1: linear-gradient(180deg, rgba(218, 135, 255, 0.00) 0%, #DA87FF 100%);
+// $colorYellow2: linear-gradient(180deg, rgba(218, 135, 255, 0.00) 0%, #DA87FF 100%);
+$colorYellow1: linear-gradient(180deg, #557CFC 0%, rgba(85, 124, 252, 0.09) 100%);
+$colorYellow2: linear-gradient(180deg, #557CFC 0%, rgba(85, 124, 252, 0.09) 100%);
 // $colorYellow2: linear-gradient(180deg, rgba(218, 135, 255, 0.00) 0%, rgba(218, 135, 255, 0.95) 100%);
 
-$colorPurple1: #DA87FF;
+// $colorPurple1: #DA87FF;
+$colorPurple1: #557CFC;
 $colorDragDrop: #D3BE5D;
 
 $mark1: #FF0C0C;

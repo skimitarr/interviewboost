@@ -1,43 +1,36 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useAppSelector } from '../hooks';
 import { useTranslation } from "react-i18next";
-import classnames from "classnames";
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import Button from "@mui/material/Button";
 
-import { ICategory, IQuestion } from "./Types";
-import { InputQuestion } from "./InputQuestion";
+import { ICategory } from "./Types";
 import { DragDropHooks } from "./Drag&DropHooks";
+import { сolorBtn, сolorWhite, getCategoryRightSideStyles } from '@/css/styled';
 
 type Props = {
   category: ICategory
-  activeCategoriesName: string[]
-  showQuestions: (categoryTitle: string) => void
+  activeCategory: ICategory | null
+  showQuestions: (category: ICategory) => void
   removeStoreCategory: (category: ICategory) => void
   addStoreCategory: (category: ICategory) => void
-  selectAllQuestions: (categoryId: string, statebuttonAllQuestions: boolean) => void
-  questions: IQuestion[]
-  selectQuestions: (questionId: string, questionCategory: ICategory) => void
-  checkedIdQuestions: string[]
   dragDropElement: (sourceId: string, destinationId: string, func: any) => void
   setCategories: React.Dispatch<React.SetStateAction<ICategory[]>>
-  setQuestions: React.Dispatch<React.SetStateAction<IQuestion[]>>
 }
 
 export function CategoryRightSide({
   category,
-  activeCategoriesName,
+  activeCategory,
   showQuestions,
   removeStoreCategory,
   addStoreCategory,
-  selectAllQuestions,
-  questions,
-  selectQuestions,
-  checkedIdQuestions,
   dragDropElement,
   setCategories,
-  setQuestions,
 }: Props) {
 
-  const [checked, setChecked] = useState<boolean>(true); //чекобокс выбрать все
+  const [hoverBlockVisible, setHoverBlockVisible] = useState(false);
+  const [isChoosen, setChoosen] = useState(false);
   const { t } = useTranslation();
   const storeCategories = useAppSelector((state) => state.categories);
 
@@ -47,60 +40,67 @@ export function CategoryRightSide({
     dragDropElement,
     func: setCategories
   })
+  const hasThisCategory = storeCategories.find(item => item.id === category.id)
+  const styles = getCategoryRightSideStyles({ isDragging, hoverBlockVisible, isChoosen, hasThisCategory });
 
-  const selectCurrentAllQuestions = (id: string) => {
-    setChecked(!checked)
-    selectAllQuestions(id, !checked)
-  }
+  useEffect(() => {
+    if (activeCategory) {
+      activeCategory.id === category.id ? setChoosen(true) : setChoosen(false);
+    }
+  }, [activeCategory])
+
+  useEffect(() => {
+    storeCategories.find(item => item.id === category.id) ? setHoverBlockVisible(true) : setHoverBlockVisible(false);
+  }, [storeCategories])
+
+  const handleAddCategory = useCallback((e: React.SyntheticEvent, category: ICategory) => {
+    e.stopPropagation();
+    addStoreCategory(category);
+    setHoverBlockVisible(true);
+  }, [category])
+
+  const handleRemoveCategory = useCallback((e: React.SyntheticEvent, category: ICategory) => {
+    e.stopPropagation();
+    removeStoreCategory(category);
+    setHoverBlockVisible(false);
+  }, [category])
 
   return (
-    <div className={classnames('questions__technology', { 'dragging': isDragging })} ref={ref}>
-      <div className='questions__technology-wrapper1'>
+    <Box sx={{ margin: '0 auto' }}>
 
-        <div className='questions__technology-wrapper2'>
-          <button
-            className={classnames(
-              'questions__technology-name',
-              { 'active': activeCategoriesName.includes(category.title) },
-              { 'isChoosen': storeCategories.find(item => item.id === category.id) },
-              { 'dragging': isDragging }
-            )}
-            onClick={() => showQuestions(category.title)}
+      <Box
+        ref={ref}
+        sx={styles}
+        onClick={() => showQuestions(category)}
+        onMouseEnter={() => setHoverBlockVisible(true)}
+        onMouseLeave={() => setHoverBlockVisible(false)}
+      >
+        <Typography sx={{ paddingTop: '17px' }}>{category.title}</Typography>
+
+        <Box sx={{
+          width: '150px',
+          height: '40px',
+          padding: '22px 10px 8px 10px',
+          opacity: hoverBlockVisible || hasThisCategory ? '1' : '0',
+          transition: 'all 0.3s ease-in-out',
+        }}>
+          <Button variant="outlined"
+            sx={{
+              minWidth: '125px',
+              height: '30px',
+              border: hasThisCategory ? `1px solid ${сolorWhite}` : `1px solid ${сolorBtn}`,
+              borderRadius: '5px',
+              color: 'inherit',
+            }}
+            onClick={(e) => hasThisCategory ? handleRemoveCategory(e, category) : handleAddCategory(e, category)}
           >
-            {category.title}
-          </button>
-          <p className="questions__technology-name-shadow"></p>
-        </div>
+            <Typography sx={{ fontSize: '12px' }}>
+              {hasThisCategory ? t('cancel') : t('add')}
+            </Typography>
+          </Button>
 
-        {storeCategories.find(item => item.id === category.id)
-          ? <button className='questions__technology-btn questions__technology btn' onClick={() => removeStoreCategory(category)}>{t('cancel')}</button>
-          : <button className='questions__technology-btn isChoosen btn' onClick={() => addStoreCategory(category)}>{t('add')}</button>}
-      </div>
-
-      {activeCategoriesName.includes(category.title) &&
-        <>
-          <div className='questions__technology-questions-wrapper'>
-            <input id={category.id} type="checkbox" className="checkbox"
-              onChange={() => selectCurrentAllQuestions(category.id)}
-              checked={checked} />
-            <label htmlFor={category.id} className='questions__technology-questions'>
-              <p className={classnames('selectAll', { 'isSelected': !checked })}>{t('selectAll')}</p>
-            </label>
-          </div>
-          <div>
-            {questions.map((item, index) => (
-              <InputQuestion key={item.id}
-                item={item}
-                index={index}
-                category={category}
-                selectQuestions={selectQuestions}
-                checkedIdQuestions={checkedIdQuestions}
-                dragDropElement={dragDropElement}
-                setQuestions={setQuestions}
-              />
-            ))}
-          </div>
-        </>}
-    </div>
-  )
+        </Box>
+      </Box>
+    </Box>
+  );
 }

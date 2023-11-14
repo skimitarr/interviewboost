@@ -24,12 +24,16 @@ export function InputQuestion({
 }: Props) {
   const categoriesFromStore = useAppSelector((state) => state.categories);
 
+  const set = new Set(checkedIdQuestions.filter((item) => category.questions.includes(item)));
+  const arrayFromSet: string[] = [];
+  set.forEach((item) => arrayFromSet.push(item));
+
   const { ref, isDragging } = DragDropHooks({
     type: 'inputRightSide',
     item,
     category,
     categoriesFromStore,
-    checked: checkedIdQuestions.includes(item.id),
+    checkedIdQuestions: arrayFromSet,
     dragDropElement,
     func: setQuestions
   })
