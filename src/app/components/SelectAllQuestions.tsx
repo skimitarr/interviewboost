@@ -1,6 +1,9 @@
-import classnames from "classnames";
 import { useTranslation } from "react-i18next";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
+
 import { ICategory } from "./Types";
+import { StyledInput } from "./InputQuestion/style";
 
 type Props = {
   category: ICategory
@@ -10,17 +13,16 @@ type Props = {
 
 export function SelectAllQuestions({ category, selectAllQuestions, checkedIdAllQuestions }: Props) {
   const { t } = useTranslation();
-
   const checked = checkedIdAllQuestions.includes(category.id);
 
   return (
-    <div className='questions__technology-questions-wrapper'>
-      <input id={category.id} type="checkbox" className="checkbox"
+    <StyledInput $isChecked={checked}>
+      <FormControlLabel
+        control={<Checkbox />}
+        label={t('selectAll')}
+        checked={checked}
         onChange={() => selectAllQuestions(category.id, !checked)}
-        checked={checked} />
-      <label htmlFor={category.id} className='questions__technology-questions'>
-        <p className={classnames('selectAll', { 'isSelected': !checked })}>{t('selectAll')}</p>
-      </label>
-    </div>
+      />
+    </StyledInput>
   )
 }

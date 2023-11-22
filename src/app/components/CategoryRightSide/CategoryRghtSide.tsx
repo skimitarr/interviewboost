@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import applySpec from 'ramda/es/applySpec';
@@ -7,11 +7,12 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from "@mui/material/Button";
 
-import { сolorBtn, сolorWhite, getCategoryRightSideStyles } from '@/css/styled';
-import { ICategory } from './Types';
-import { DragDropHooks } from './Drag&DropHooks';
+import { сolorBtn, colorWhite } from '@/css/variables';
+import { ICategory } from '../Types';
+import { DragDropHooks } from '../Drag&DropHooks';
 import { selectFromAppData } from '@/app/store/selectors/data';
 import { StoreState } from '@/app/store/types';
+import { StyledCategoryCard } from "./styles";
 
 type Selector = {
   storeCategories: ICategory[],
@@ -52,59 +53,57 @@ export function CategoryRightSide({
     dragDropElement,
     func: setCategories
   })
-  const hasThisCategory = storeCategories.find(item => item.id === category.id)
-  const styles = getCategoryRightSideStyles({ isDragging, hoverBlockVisible, isChoosen, hasThisCategory });
 
   useEffect(() => {
-    if (activeCategory) {
-      setChoosen(activeCategory.id === category.id)
-    }
+    activeCategory && setChoosen(activeCategory.id === category.id)
   }, [activeCategory])
 
   useEffect(() => {
     setHoverBlockVisible(storeCategories.some(item => item.id === category.id));
   }, [storeCategories])
 
-  const handleAddCategory = useCallback((e: React.SyntheticEvent, category: ICategory) => {
+  const handleCategoryAction = (e: React.SyntheticEvent, category: ICategory, hasThisCategory: boolean) => {
     e.stopPropagation();
-    addStoreCategory(category);
-    setHoverBlockVisible(true);
-  }, [category])
+    hasThisCategory ? removeStoreCategory(category) : addStoreCategory(category);
+    setHoverBlockVisible(hasThisCategory);
+  };
 
-  const handleRemoveCategory = useCallback((e: React.SyntheticEvent, category: ICategory) => {
-    e.stopPropagation();
-    removeStoreCategory(category);
-    setHoverBlockVisible(false);
-  }, [category])
+  const hasThisCategory = useMemo(() => storeCategories.some(item => item.id === category.id),
+    [storeCategories, category.id]);
 
   return (
     <Box sx={{ margin: '0 auto' }}>
 
-      <Box
+      <StyledCategoryCard
         ref={ref}
-        sx={styles}
+        $isDragging={isDragging}
+        $hoverBlockVisible={hoverBlockVisible}
+        $isChoosen={isChoosen}
+        $hasThisCategory={hasThisCategory}
         onClick={() => showQuestions(category)}
         onMouseEnter={() => setHoverBlockVisible(true)}
         onMouseLeave={() => setHoverBlockVisible(false)}
       >
-        <Typography sx={{ paddingTop: '17px' }}>{category.title}</Typography>
+        <Typography sx={{ paddingTop: '19px' }}>{category.title}</Typography>
 
-        <Box sx={{
-          width: '150px',
-          height: '40px',
-          padding: '22px 10px 8px 10px',
-          opacity: hoverBlockVisible || hasThisCategory ? '1' : '0',
-          transition: 'all 0.3s ease-in-out',
-        }}>
+        <Box
+          sx={{
+            width: '150px',
+            height: '40px',
+            padding: '22px 10px 8px 10px',
+            opacity: hoverBlockVisible || hasThisCategory ? '1' : '0',
+            transition: 'all 0.3s ease-in-out',
+          }}
+        >
           <Button variant="outlined"
             sx={{
               minWidth: '125px',
               height: '30px',
-              border: hasThisCategory ? `1px solid ${сolorWhite}` : `1px solid ${сolorBtn}`,
+              border: hasThisCategory ? `1px solid ${colorWhite}` : `1px solid ${сolorBtn}`,
               borderRadius: '5px',
               color: 'inherit',
             }}
-            onClick={(e) => hasThisCategory ? handleRemoveCategory(e, category) : handleAddCategory(e, category)}
+            onClick={(e) => handleCategoryAction(e, category, hasThisCategory)}
           >
             <Typography sx={{ fontSize: '12px' }}>
               {hasThisCategory ? t('cancel') : t('add')}
@@ -112,7 +111,7 @@ export function CategoryRightSide({
           </Button>
 
         </Box>
-      </Box>
+      </StyledCategoryCard>
     </Box>
   );
 }

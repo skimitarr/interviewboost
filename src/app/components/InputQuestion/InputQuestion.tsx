@@ -1,11 +1,14 @@
-import classnames from 'classnames';
-import { ICategory, IQuestion } from './Types';
-import { DragDropHooks } from './Drag&DropHooks';
+import { useSelector } from "react-redux";
 import applySpec from 'ramda/es/applySpec';
+import fastDeepEqual from "fast-deep-equal";
+import Checkbox from '@mui/material/Checkbox';
+import FormControlLabel from '@mui/material/FormControlLabel';
+
+import { DragDropHooks } from '../Drag&DropHooks';
+import { ICategory, IQuestion } from '../Types';
 import { selectFromAppData } from '@/app/store/selectors/data';
 import { StoreState } from "@/app/store/types";
-import fastDeepEqual from "fast-deep-equal";
-import { useSelector } from "react-redux";
+import { StyledInput } from "./style";
 
 type Selector = {
   categoriesFromStore: ICategory[],
@@ -36,6 +39,8 @@ export function InputQuestion({
 }: Props) {
   const { categoriesFromStore } = useSelector<StoreState, Selector>(selector, fastDeepEqual);
 
+  const isChecked = checkedIdQuestions.includes(item.id); // useMemo будет неправильно передавать данные в род. компонент
+
   const set = new Set(checkedIdQuestions.filter((item) => category.questions.includes(item)));
   const arrayFromSet: string[] = [];
   set.forEach((item) => arrayFromSet.push(item));
@@ -51,18 +56,14 @@ export function InputQuestion({
   })
 
   return (
-    <div className='questions__technology-questions-wrapper'>
-      <input id={`question-${item.id}`} className="checkbox" type="checkbox" onChange={() => selectQuestions(item.id, category)}
-        checked={checkedIdQuestions.includes(item.id)} />
-      <label htmlFor={`question-${item.id}`} className='questions__technology-questions'>
-        <p ref={ref}
-          className={classnames(
-            'questions__technology-questions-text',
-            { 'dragging': isDragging },
-            { 'isSelected': !checkedIdQuestions.includes(item.id) }
-          )}
-        >{index + 1}. {item.text}</p>
-      </label>
-    </div>
+    <StyledInput $isDragging={isDragging} $isChecked={isChecked}>
+      <FormControlLabel
+        ref={ref}
+        control={<Checkbox />}
+        label={`${index + 1}. ${item.text}`}
+        checked={isChecked}
+        onChange={() => selectQuestions(item.id, category)}
+      />
+    </StyledInput>
   )
 }

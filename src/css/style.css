@@ -359,7 +359,7 @@ body {
   display: flex;
   align-items: center;
   margin-bottom: 10px;
-  padding: 0 0 0 25px;
+  padding: 0 0 0 23px;
   color: #FFF;
   letter-spacing: 0.5px;
   line-height: 1.5;
@@ -380,27 +380,6 @@ body {
 }
 .questions__technology-questions.isSelected {
   color: gray;
-}
-.questions__technology-questions-text {
-  width: 100%;
-  min-height: 30px;
-  padding: 10px 15px;
-  color: #FFF;
-  letter-spacing: 0.5px;
-  line-height: 1.5;
-  border-radius: 4px;
-  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-  cursor: pointer;
-}
-.questions__technology-questions-text.isSelected {
-  color: gray;
-}
-.questions__technology-questions-text:active {
-  opacity: 1;
-}
-.questions__technology-questions-text.dragging {
-  cursor: grabbing;
-  opacity: 0;
 }
 .questions__nextPage-wrapper {
   position: fixed;
@@ -641,11 +620,12 @@ body {
 }
 .answers__textarea-wrapper {
   position: absolute;
-  bottom: 53px;
+  bottom: 57px;
   left: 22px;
   padding: 7px 12px;
   border-radius: 10px;
   background-color: #242526;
+  font-size: 14px;
 }
 .answers__textarea-title {
   color: #FFF;
@@ -790,7 +770,6 @@ body {
 }
 .report__container {
   position: relative;
-  background-color: #3C3E49;
 }
 .report__wrapper {
   padding: 25px;

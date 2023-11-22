@@ -1,16 +1,21 @@
 'use client'
 import { useEffect, useState } from "react";
-import { nanoid } from 'nanoid';
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useTranslation } from "react-i18next";
+import { nanoid } from 'nanoid';
 import html2canvas from 'html2canvas';
 import pdfMake from 'pdfmake/build/pdfmake';
-import classnames from "classnames";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
 
-import { Search } from "../components/Search";
+import { Search } from "../components/Search/Search";
 import { DataReport } from "../components/Types";
+import { MixinBtn, MixinFlexCenter, MixinGridContainer, colorBlack3 } from "@/css/variables";
+import { StyledLeftContainer as Report, StyledLeftContainer } from "../interview/style";
+import { StyledNameBtn, StyledRow, StyledRowItem, StyledTextConclusion, StyledTitle, StyledBtnWrapper } from "./style";
+import { StyledLink, StyledRightSide } from "../components/PageFormRightSide/style";
 
 export default function Reports() {
   const [allData, setAllData] = useState<DataReport[]>([]); // все отчеты в левой части экрана
@@ -34,7 +39,7 @@ export default function Reports() {
   }, [])
 
   useEffect(() => { //обновляем все отчеты в localStorage
-    localStorage.setItem('allDatas', JSON.stringify(allData))
+    allData.length && localStorage.setItem('allDatas', JSON.stringify(allData))
   }, [allData])
 
   useEffect(() => { // открываем первый отчет
@@ -48,23 +53,21 @@ export default function Reports() {
   }, [allData])
 
   useEffect(() => { //если не зареган, переходим на окно регистрации
-    if (session.status === 'unauthenticated') {
-      router.push('/signin');
-    }
+    session.status === 'unauthenticated' && router.push('/signin');
   }, [session]);
 
   const getCurrentReport = (item: DataReport, id: string) => {
     setCurrentReport(Object.entries(item));
-    setCurrentName(item.name)
+    setCurrentName(item.name);
     setCurrentIdReport(id)
   }
 
   const downloadFile = async () => { //сохраняем отчет в pdf и скачиваем его
-    const rightSideElement = document.querySelector('.report__container') as HTMLElement;
-    const titles = document.querySelectorAll('.report__block-text') as NodeListOf<HTMLElement>;
-    const textsColor = document.querySelectorAll('.report__text') as NodeListOf<HTMLElement>;
-    const titlesColor = document.querySelectorAll('.report__block-title') as NodeListOf<HTMLElement>;
-    const borders = document.querySelectorAll('.report__block-row') as NodeListOf<HTMLElement>;
+    const rightSideElement = document.querySelector('[data-report="report"]') as HTMLElement;
+    const titles = document.querySelectorAll('[data-titles="titles"]') as NodeListOf<HTMLElement>;
+    const textsColor = document.querySelectorAll('[data-text="text"]') as NodeListOf<HTMLElement>;
+    const titlesColor = document.querySelectorAll('[data-tilescolor="titlescolor"]') as NodeListOf<HTMLElement>;
+    const borders = document.querySelectorAll('[data-borders="borders"]') as NodeListOf<HTMLElement>;
 
     titles.forEach((title) => {
       title.style.marginTop = '-10px';
@@ -114,104 +117,127 @@ export default function Reports() {
     });
   };
 
-
   return (
-    <div className='container container__form'>
-      <div className='questions__leftSide'>
+    <Box sx={{ ...MixinGridContainer }}>
+      <StyledLeftContainer>
         <Search pageName='reports' getCurrentReport={getCurrentReport} />
         {allData && allData.map((item) => {
           const itemWithoutId = { ...item }; // Создаем копию объекта item без поля id, чтобы онo не отрисовывалась
           delete itemWithoutId.id;
           return (
-            <div className='questions__leftSide-div' key={item.id}>
-              <button className={classnames('questions__choosenQuestions-reports', { 'active': currentIdReport === item.id })}
-                onClick={() => getCurrentReport(itemWithoutId, item.id as string)}>{item.name}</button>
-            </div>
+            <Box sx={{ padding: '0 27px', marginBottom: '5px' }} key={item.id}>
+              <StyledNameBtn
+                onClick={() => getCurrentReport(itemWithoutId, item.id as string)}
+                $isActive={currentIdReport === item.id}
+              >
+                {item.name}
+              </StyledNameBtn>
+            </Box>
           );
         })}
-      </div>
+      </StyledLeftContainer>
 
       {allData.length > 0
-        ? <div className='report'>
-          <div className='report__container'>
-            <div className='report__wrapper'>
-              {currentReport.length > 0 && currentReport.map(([sectionName, sectionData]) => {
-                return <div className='report__block' key={nanoid()}>
-                  {sectionName === 'name'
-                    && <div className='report__block-title'>
-                      <p className='report__block-text report__text'>{sectionData}</p>
-                    </div>
-                  }
+        ? <Report sx={{ backgroundColor: colorBlack3, paddingBottom: '0' }}>
+          <Box sx={{ position: 'relative' }} data-report="report">
+            <Box sx={{ padding: '25px' }}>
+              {currentReport.length > 0 &&
+                currentReport.map(([sectionName, sectionData]) => (
+                  <Box
+                    key={nanoid()}
+                    sx={{
+                      '&:not(:last-child)': {
+                        marginBottom: '40px',
+                      }
+                    }}
+                  >
+                    {sectionName === 'name' &&
+                      <StyledTitle data-tilescolor="titlescolor">
+                        <Typography sx={{ fontSize: '16px' }} data-titles="titles" data-text="text">{sectionData}</Typography>
+                      </StyledTitle>
+                    }
 
-                  {sectionName === 'conclusion'
-                    && Array.isArray(sectionData) && sectionData.map((el: string[]) => {
-                      return (
-                        <div key={nanoid()} className="test">
-                          {el.map(el => {
-                            return el === 'Общий вывод'
-                              ? <div key={nanoid()}>
-                                <div className='report__block-title'>
-                                  <p className='report__block-text report__text'>
-                                    {el}
-                                  </p>
-                                </div>
-                                <div className='report__conclusion'>
-                                  <span className='report__block-item report__comments report__text' style={{ marginLeft: '50px' }}>{t('comment')}</span>
-                                  <span className='report__block-item report__marks report__text'>{t('rating')}</span>
-                                </div>
-                              </div>
-                              : <span key={nanoid()} className='report__conclusion-item report__text'>
-                                {el}
-                              </span>
-                          })}
-                        </div>
-                      )
-                    })
-                  }
+                    {sectionName === 'conclusion' && Array.isArray(sectionData) &&
+                      sectionData.map((el: string[]) => (
+                        <Box key={nanoid()}>
+                          {el.map(el => (
+                            el === 'Общий вывод'
+                              ? <Box key={nanoid()}>
+                                <StyledTitle data-tilescolor="titlescolor">
+                                  <Typography sx={{ fontSize: '16px' }} data-titles="titles" data-text="text">{el}</Typography>
+                                </StyledTitle>
+                                <Box
+                                  sx={{
+                                    display: 'grid',
+                                    gridTemplateColumns: '80% 20%',
+                                    marginBottom: '20px'
+                                  }}
+                                >
+                                  <Typography sx={{ textAlign: 'center' }} data-text="text">{t('comment')}</Typography>
+                                  <Typography sx={{ textAlign: 'center' }} data-text="text">{t('rating')}</Typography>
+                                </Box>
+                              </Box>
+                              : <StyledTextConclusion key={nanoid()} data-text="text">{el}</StyledTextConclusion>
+                          ))}
+                        </Box>
+                      ))
+                    }
 
-                  {sectionName !== 'name' && sectionName !== 'conclusion' &&
-                    <>
-                      <div className='report__block-title'>
-                        <p className='report__block-text report__text'>{sectionName}</p>
-                      </div>
-                      <div className='report__block-wrapper'>
-                        <div className='report__block-row'>
-                          <span className='report__block-item report__questions report__text'>{t('questions')}</span>
-                          <span className='report__block-item report__marks report__text'>{t('rating')}</span>
-                          <span className='report__block-item report__comments report__text'>{t('comment')}</span>
-                        </div>
-                        {Array.isArray(sectionData) && sectionData.map((elements: string[], index1) => {
-                          return <div className='report__block-row' key={nanoid()}>
-                            {elements.map((el, index: number) => {
-                              return (
-                                index % 2 === 0
-                                  ? el !== 'Итого' && index === 0
-                                    ? <p key={nanoid()} className='report__block-item report__text' style={{ textAlign: 'left', marginLeft: '20px' }}>{index1 + 1}. {el}</p>
-                                    : <p key={nanoid()} className='report__block-item report__text' style={{ textAlign: 'left', marginLeft: '20px' }}>{el}</p>
-                                  : <p key={nanoid()} className='report__block-item report__text'>{el}</p>
-                              )
-                            })}
-                          </div>
-                        })}</div>
-                    </>
-                  }
+                    {sectionName !== 'name' && sectionName !== 'conclusion' &&
+                      <>
+                        <StyledTitle data-tilescolor="titlescolor">
+                          <Typography sx={{ fontSize: '16px' }} data-titles="titles" data-text="text">{sectionName}</Typography>
+                        </StyledTitle>
+                        <Box>
+                          <StyledRow data-borders="borders">
+                            <StyledRowItem data-text="text">{t('questions')}</StyledRowItem>
+                            <StyledRowItem data-text="text">{t('rating')}</StyledRowItem>
+                            <StyledRowItem data-text="text">{t('comment')}</StyledRowItem>
+                          </StyledRow>
+                          {Array.isArray(sectionData) &&
+                            sectionData.map((elements: string[], index1) => (
+                              <StyledRow data-borders="borders" key={nanoid()}>
+                                {elements.map((el, index: number) => (
+                                  index % 2 === 0
+                                    ? <StyledRowItem
+                                      key={nanoid()}
+                                      data-text="text"
+                                      sx={{ textAlign: 'left', marginLeft: '20px' }}
+                                    >
+                                      {el !== 'Итого' && index === 0 ? `${index1 + 1}. ${el}` : el}
+                                    </StyledRowItem>
+                                    : <StyledRowItem key={nanoid()} data-text="text">
+                                      {el}
+                                    </StyledRowItem>
+                                ))}
+                              </StyledRow>
+                            ))
+                          }
+                        </Box>
+                      </>
+                    }
+                  </Box>
+                ))}
+            </Box>
+          </Box>
 
-                </div>
-              })}
-            </div>
-          </div>
-
-          <div className='questions__nextPage-wrapper'>
-            <button className='questions__nextPage-btn btn' onClick={downloadFile}>{t('downloadReport')}</button>
-          </div>
-        </div>
-
-        : <div className='questions__rightSide'>
-          <div className='questions__noData'>
-            <Link className='questions__noData-btn btn' href='/'><p>{t('letsGetStarted')}</p></Link>
-          </div>
-        </div>}
-
-    </div>
+          <StyledBtnWrapper>
+            <Button sx={{ ...MixinBtn }} onClick={downloadFile}>{t('downloadReport')}</Button>
+          </StyledBtnWrapper>
+        </Report>
+        : <StyledRightSide>
+          <Box
+            sx={{
+              marginTop: '140px',
+              ...MixinFlexCenter,
+              flexDirection: 'column',
+            }}>
+            <Typography sx={{ marginBottom: '45px', fontSize: '18px' }}>
+              {t('selectSpecialization')}
+            </Typography>
+            <StyledLink href='/'>{t('letsGetStarted')}</StyledLink>
+          </Box>
+        </StyledRightSide>}
+    </Box>
   )
 }

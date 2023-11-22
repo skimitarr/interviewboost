@@ -1,4 +1,4 @@
-import { Navigation } from "./Navigation"
+import { Navigation } from "./Navigation/Navigation"
 
 const navItems = [
   { label: 'home', href: '/' },

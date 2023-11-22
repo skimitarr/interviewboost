@@ -1,6 +1,11 @@
 'use client'
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import { StyledForm, StyledTextarea } from "./style";
+import { colorBlack1, MixinFlexCenter, MixinBtn } from '@/css/variables';
 
 export default function Feedback() {
   const [message, setMessage] = useState('');
@@ -8,9 +13,7 @@ export default function Feedback() {
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
 
   useEffect(() => { // Устанавливаем фокус на элемент inputRef после загрузки компонента
-    if (inputRef.current) {
-      inputRef.current.focus();
-    }
+    inputRef.current && inputRef.current.focus();
   }, []);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -45,12 +48,28 @@ export default function Feedback() {
   };
 
   return (
-    <div className='feedback'>
-      <form className='feedback__form' onSubmit={handleSubmit}>
-        <h1 className='feedback__title'>{t('sendFeedback')}</h1>
-        <textarea name="message" value={message} onChange={(e) => setMessage(e.target.value)} ref={inputRef} className="feedback__textarea" ></textarea>
-        <button className='feedback__btn btn' type="submit">{t('send')}</button>
-      </form>
-    </div>
+    <Box
+      sx={{
+        ...MixinFlexCenter,
+        height: 'calc(100vh - 80px)',
+        backgroundColor: colorBlack1,
+      }}>
+      <StyledForm onSubmit={handleSubmit}>
+        <Typography variant="h1" sx={{ marginBottom: '50px', fontSize: '36px' }}>{t('sendFeedback')}</Typography>
+        <StyledTextarea
+          name="message"
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          ref={inputRef}
+        />
+        <Button
+          type="submit"
+          variant="contained"
+          sx={{ ...MixinBtn }}
+        >
+          {t('send')}
+        </Button>
+      </StyledForm>
+    </Box>
   )
 }

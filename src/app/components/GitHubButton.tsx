@@ -2,8 +2,12 @@
 import { signIn } from "next-auth/react"
 import { useSearchParams } from 'next/navigation'
 import { useTranslation } from "react-i18next";
+import Avatar from "@mui/material/Avatar";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
+import { colorBlack2, colorWhite } from "@/css/variables";
 
-const GitHubButton = () => {
+export const GitHubButton = () => {
   // получаем данные из URL используя useSearchParams()
   const searchParams = useSearchParams();
   const callbackUrl = searchParams?.get('callbackUrl') || '/interview';
@@ -13,12 +17,20 @@ const GitHubButton = () => {
     // signIn встроенная функция, она принимает провайдер из встроенного списка
     // мы можем указать как именно логиниться через созданную переменную (callbackUrl),
     // которую мы можем получать через адресную строку используя useSearchParams()
-    <button onClick={() => signIn('github', { callbackUrl })} className="signIn__btn btn">
-      <div className="signIn__text">
-        <img src="/icon-github.svg" alt="logo github" className="signIn__img" />
-        <p className="signIn__desc">{t('signInWithGitHub')}</p>
-      </div>
-    </button>
+    <Button
+      variant="outlined"
+      onClick={() => signIn('github', { callbackUrl })}
+      startIcon={<Avatar alt="GitHub Logo" src="/icon-github.svg" sx={{ width: '24px', height: '24px', }} />}
+      sx={{
+        width: '400px',
+        height: '30px',
+        borderRadius: '5px',
+        marginBottom: '10px',
+        border: `1px solid ${colorWhite}`,
+        background: colorBlack2,
+      }}
+    >
+      <Typography>{t('signInWithGitHub')}</Typography>
+    </Button>
   )
 }
-export { GitHubButton }

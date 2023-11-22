@@ -1,7 +1,7 @@
 import { ICategory } from "@/app/components/Types";
 import { SxProps, Theme } from "@mui/system";
 
-interface CategoryRightSideStylesProps {
+type CategoryRightSideStylesProps = {
   isDragging: boolean;
   hoverBlockVisible: boolean;
   isChoosen: boolean;
@@ -10,6 +10,7 @@ interface CategoryRightSideStylesProps {
 
 export const сolorBtn = '#557CFC';
 export const сolorWhite = '#FFF';
+export const colorBlack2 = '#242526';
 export const colorBlack3 = '#3C3E49';
 export const colorMainGradient = 'linear-gradient(180deg, #557CFC 0%, rgba(85, 124, 252, 0.09) 100%)';
 
@@ -23,8 +24,7 @@ export const getCategoryRightSideStyles = ({ isDragging, hoverBlockVisible, isCh
   marginBottom: hoverBlockVisible || hasThisCategory ? '5px' : '45px',
   border: 'none',
   borderRadius: '4px',
-  backgroundColor: isChoosen ? 'transparent' : colorBlack3,
-  backgroundImage: isChoosen ? colorMainGradient : 'none',
+  background: isChoosen ? colorMainGradient : colorBlack3,
   color: 'white',
   cursor: 'pointer',
   opacity: isDragging ? '0' : '1',

@@ -400,16 +400,6 @@ body {
       opacity: 0;
     }
 
-    // &-wrapper1 {
-    //   display: flex;
-    // }
-    // &-wrapper2 {
-    //   position: relative;
-    //   display: flex;
-    //   flex-direction: column;
-    //   width: 100%;
-    //   margin-right: 10px;
-    // }
     &-btn {
       min-width: 125px;
       padding: 0;
@@ -428,63 +418,13 @@ body {
       border: 1px solid $colorYellow2;
       color: $colorWhite1;
     }
-    // &-name {
-    //   position: relative;
-    //   width: 100%;
-    //   height: 30px;
-    //   margin: 0 10px 15px 0;
-    //   border: none;
-    //   border-radius: 0;
-    //   border-bottom: 1px solid $colorPurple1;
-    //   background-color: transparent;
-    //   color: $colorWhite1;
-    //   cursor: pointer;
 
-      // &::before {
-      //   content: '';
-      //   position: absolute;
-      //   right: 20px;
-      //   top: 9px;
-      //   border-left: 6px solid transparent; /* Левая граница (нулевая ширина) */
-      //   border-right: 6px solid transparent; /* Правая граница (нулевая ширина) */
-      //   border-bottom: 9px solid $colorWhite1; /* Нижняя граница (создает треугольник) */
-      // }
-
-      // &.isChoosen::before {
-      //   border-bottom: 9px solid $colorWhite1;
-      // }
-
-      // &.active::before{
-      //   content: '';
-      //   position: absolute;
-      //   right: 20px;
-      //   top: 9px;
-      //   border-left: 0;
-      //   border-right: 0;
-      //   border-top: 0;
-      // }
-
-      // &.active::after{
-      //   content: '';
-      //   position: absolute;
-      //   right: 20px;
-      //   top: 9px;
-      //   border-left: 6px solid transparent; /* Левая граница (нулевая ширина) */
-      //   border-right: 6px solid transparent; /* Правая граница (нулевая ширина) */
-      //   border-top: 9px solid $colorWhite1; /* верхняя граница (создает треугольник) */
-      // }
-
-      // &.active.isChoosen::after {
-      //   border-top: 9px solid $colorWhite1;
-      // }
-    // }
 
     &-questions {
       display: flex;
       align-items: center;
       margin-bottom: 10px;
-      // width: calc(100% - 135px);
-      padding: 0 0 0 25px;
+      padding: 0 0 0 23px;
       color: $colorWhite1;
       letter-spacing: 0.5px;
       line-height: 1.5;
@@ -510,30 +450,6 @@ body {
         color: gray;
       }
 
-      &-text {
-        width: 100%;
-        min-height: 30px;
-        padding: 10px 15px;
-        color: $colorWhite1;
-        letter-spacing: 0.5px;
-        line-height: 1.5;
-        border-radius: 4px;
-        box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-        cursor: pointer;
-
-        &.isSelected {
-          color: gray;
-        }
-
-        &:active {
-          opacity: 1;
-        }
-
-        &.dragging {
-          cursor: grabbing;
-          opacity: 0;
-        }
-      }
     }
   }
 
@@ -810,11 +726,12 @@ body {
     position: relative;
     &-wrapper {
       position: absolute;
-      bottom: 53px;
+      bottom: 57px;
       left: 22px;
       padding: 7px 12px;
       border-radius: 10px;
       background-color: $colorBlack2;
+      font-size: 14px
     }
 
     &-title {
@@ -977,7 +894,7 @@ body {
 
   &__container {
     position: relative;
-    background-color: $colorBlack3;
+    // background-color: $colorBlack3;
   }
 
   &__wrapper {
