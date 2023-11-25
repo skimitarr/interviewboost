@@ -46,6 +46,9 @@ const themeOptions: ThemeOptions = {
           color: '#fff', // белый цвет текста для всех элементов
           // fontSize: '14px', // размер шрифта 14px для всех элементов
         },
+        a: {
+          textDecoration: 'none',
+        },
       },
     },
   },

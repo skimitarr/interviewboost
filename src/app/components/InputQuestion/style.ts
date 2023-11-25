@@ -27,6 +27,7 @@ export const StyledInput = styled('div')<Props>(({ $isDragging, $isChecked }) =>
     display: 'inline-block',
     width: '24px',
     height: '24px',
+    paddingTop: '2px',
     margin: '3px 30px 3px 0',
     border: `1px inset ${colorWhite}`,
     borderRadius: '5px',

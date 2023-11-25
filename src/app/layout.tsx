@@ -2,7 +2,6 @@ import { Providers } from './components/Providers'
 import { TheHeader } from './components/TheHeader'
 import ThemeRegistry from "@/theme/ThemeRegistry";
 import type { Metadata } from 'next'
-import '@/css/style.css'
 
 export const metadata: Metadata = {
   title: 'Легкость собеседований и автоматические отчеты с ИИ',
