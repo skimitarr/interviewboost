@@ -17,8 +17,7 @@ import Button from "@mui/material/Button";
 import { Search } from '../components/Search/Search';
 import { PageFormLeftSide } from '../components/PageFormLeftSide/PageFormLeftSide';
 import { DataReport, IQuestion, IAnswer, ICategory, IProffesion } from "../components/Types";
-import { addReport, getDbAllAnswers, getDbAllQuestions } from "@/services/DatabaseService";
-import { getAnswers, getQuestions } from "../store/slices/app-data.slice";
+import { addReport } from "@/services/DatabaseService";
 import { selectFromAppData } from '@/app/store/selectors/data';
 import { StoreState } from "@/app/store/types";
 import { MixinBtn, MixinFlexCenter, MixinGridContainer } from "@/css/variables";
@@ -78,25 +77,6 @@ export default function MyQuestions() {
   const isBrowser = typeof window !== 'undefined'; // Проверяем, что код выполняется в браузерной среде
   const local = isBrowser ? localStorage.getItem('choosenCategories') ?? '' : '';
 
-  const fetchQuestions = async () => {
-    try {
-      const questionsData = await getDbAllQuestions();
-      const sortedQuestionsData = questionsData.sort((a: IQuestion, b: IQuestion) => +a.id - +b.id);
-      dispatch(getQuestions(sortedQuestionsData));
-    } catch (error) {
-      console.error('Error getting documents:', error);
-    }
-  };
-
-  const fetchAnswers = async () => {
-    try {
-      const answersData = await getDbAllAnswers();
-      dispatch(getAnswers(answersData));
-    } catch (error) {
-      console.error('Error getting documents:', error);
-    }
-  };
-
   useEffect(() => { //если не зареган, переходим на окно регистрации
     session.status === 'unauthenticated' && router.push('/signin');
   }, [session]);
@@ -111,8 +91,8 @@ export default function MyQuestions() {
 
   useEffect(() => {
     if (localData && storeQuestions.length <= 0) {
-      fetchQuestions();
-      fetchAnswers();
+      dispatch({ type: 'actionType/getAllQuestions' });
+      dispatch({ type: 'actionType/getAllAnswers' });
     }
   }, [localData])
 

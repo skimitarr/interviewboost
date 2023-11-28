@@ -8,6 +8,7 @@ export type UserState = {
 };
 
 export type AppDataState = {
+    allProfessions: IProffesion[];
     profession: IProffesion | null;
     grades: IGrade[];
     allCategories: ICategory[];
