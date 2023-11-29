@@ -1,6 +1,6 @@
 import { db } from '@/firebase'
 import { QuerySnapshot, DocumentData, collection,  getDocs,} from "firebase/firestore";
-import { call, put, takeEvery } from 'redux-saga/effects';
+import { call, put, takeLatest } from 'redux-saga/effects';
 import { PayloadAction } from '@reduxjs/toolkit';
 
 import { getAllProfessions, getProfession, getGrades, getAllCategories, getQuestions, getAnswers, } from '../slices/app-data.slice';
@@ -103,11 +103,11 @@ function* handleGetAllAnswers() {
 
 export function* appDataSaga() {
   // TODO: add action creators
-  yield takeEvery('actionType/getAllQuestions', handleGetAllQuestions);
-  yield takeEvery('actionType/getAllCategories', handleGetAllCategories);
-  yield takeEvery('actionType/getAllGrades', handleGetAllGrades);
-  yield takeEvery('actionType/getAllAnswers', handleGetAllAnswers);
-  yield takeEvery('actionType/getProfession', handleGetProfession);
-  yield takeEvery('actionType/getAllProfessions', handleGetAllProfessions);
+  yield takeLatest('actionType/getAllQuestions', handleGetAllQuestions);
+  yield takeLatest('actionType/getAllCategories', handleGetAllCategories);
+  yield takeLatest('actionType/getAllGrades', handleGetAllGrades);
+  yield takeLatest('actionType/getAllAnswers', handleGetAllAnswers);
+  yield takeLatest('actionType/getProfession', handleGetProfession);
+  yield takeLatest('actionType/getAllProfessions', handleGetAllProfessions);
 }
 
