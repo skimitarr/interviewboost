@@ -3,6 +3,6 @@ import { appDataSaga } from './app-data.saga';
 
 export function* rootSaga() {
     yield all([
-        appDataSaga
+        appDataSaga()
     ]);
 }

@@ -1,6 +1,6 @@
 import { db } from '@/firebase'
-import { collection,  getDocs,} from "firebase/firestore";
-import { all, call, put, takeEvery } from 'redux-saga/effects';
+import { QuerySnapshot, DocumentData, collection,  getDocs,} from "firebase/firestore";
+import { call, put, takeEvery } from 'redux-saga/effects';
 import { PayloadAction } from '@reduxjs/toolkit';
 
 import { getAllProfessions, getProfession, getGrades, getAllCategories, getQuestions, getAnswers, } from '../slices/app-data.slice';
@@ -8,7 +8,7 @@ import { IAnswer, ICategory, IGrade, IProffesion, IQuestion } from '@/app/compon
 
 function* handleGetAllProfessions() {
   try {
-    const querySnapshot = yield call(getDocs,collection(db, "professions"));
+    const querySnapshot: QuerySnapshot<DocumentData> = yield call(getDocs,collection(db, 'professions'));
     const professions: IProffesion[] = [];
     querySnapshot.forEach((item) => {
       professions.push({
@@ -31,7 +31,7 @@ function* handleGetProfession(action: PayloadAction<IProffesion>) {
 
 function* handleGetAllGrades() {
   try {
-    const querySnapshot = yield call(getDocs, collection(db, 'grades'));
+    const querySnapshot: QuerySnapshot<DocumentData> = yield call(getDocs, collection(db, 'grades'));
     const grades: IGrade[] = [];
     querySnapshot.forEach((item) => {
       grades.push({
@@ -48,7 +48,7 @@ function* handleGetAllGrades() {
 
 function* handleGetAllCategories() {
   try {
-    const querySnapshot = yield call(getDocs, collection(db, 'categories'));
+    const querySnapshot: QuerySnapshot<DocumentData> = yield call(getDocs, collection(db, 'categories'));
     const categories: ICategory[] = [];
     querySnapshot.forEach((item) => {
       categories.push({
@@ -66,7 +66,7 @@ function* handleGetAllCategories() {
 
 function* handleGetAllQuestions() {
   try {
-    const querySnapshot = yield call(getDocs,collection(db, 'questions'));
+    const querySnapshot: QuerySnapshot<DocumentData> = yield call(getDocs,collection(db, 'questions'));
     const questions: IQuestion[] = [];
     querySnapshot.forEach((item) => {
       questions.push({
@@ -84,7 +84,7 @@ function* handleGetAllQuestions() {
 
 function* handleGetAllAnswers() {
   try {
-    const querySnapshot = yield call(getDocs, collection(db, 'answers'));
+    const querySnapshot: QuerySnapshot<DocumentData> = yield call(getDocs, collection(db, 'answers'));
     const answers: IAnswer[] = [];
     querySnapshot.forEach((item) => {
       answers.push({
