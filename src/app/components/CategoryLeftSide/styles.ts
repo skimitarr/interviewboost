@@ -2,21 +2,21 @@ import styled from '@mui/material/styles/styled';
 import { colorBlack3, colorMainGradient, colorWhite } from '@/css/variables';
 
 type Props = {
-  $isActive: boolean;
-  $isDragging: boolean;
+  isActive: boolean;
+  isDragging: boolean;
 }
 
-export const StyledLeftSide = styled('div')<Props>(({ $isActive, $isDragging }) => ({
+export const StyledLeftSide = styled('div')<Props>(({ isActive, isDragging }) => ({
   position: 'relative',
   width: '100%',
   height: '20px',
   padding: '0',
-  marginBottom: $isActive ? `5px` : '0',
-  background: $isActive ? colorMainGradient : colorBlack3,
+  marginBottom: isActive ? `5px` : '0',
+  background: isActive ? colorMainGradient : colorBlack3,
   textAlign: 'center',
   border: 'none',
   cursor: 'pointer',
-  opacity: $isDragging ? '0' : '1',
+  opacity: isDragging ? '0' : '1',
 
   '&::before': {
     content: '""',
@@ -27,7 +27,7 @@ export const StyledLeftSide = styled('div')<Props>(({ $isActive, $isDragging }) 
     borderRight: '4px solid transparent',
     borderBottom: `6px solid ${colorWhite}`,
   },
-  ...($isActive
+  ...(isActive
     ? {
       '&::before': {
           borderLeft: '0',

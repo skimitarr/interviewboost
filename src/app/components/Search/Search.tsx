@@ -8,12 +8,17 @@ import fastDeepEqual from 'fast-deep-equal';
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 
-import { DataReport, ICategory, IProffesion, IQuestion } from '../Types';
 import { getCurrentIdQuestion } from '../../store/slices/app-data.slice'
 import { selectFromAppData } from '@/app/store/selectors/data';
 import { StoreState } from '@/app/store/types';
 import { colorBlack3, сolorBtn } from '@/css/variables';
 import { StyledInput, StyledInputClear } from "./style";
+import {
+  DataReport,
+  ICategory,
+  IProffesion,
+  IQuestion
+} from '../Types';
 
 type Selector = {
   storeProfession: IProffesion | null,
@@ -116,7 +121,7 @@ export function Search({ pageName, getCurrentReport }: Props) {
           type="text"
           value={searchText}
           onChange={searchInQuestion}
-          $showIcon={!searchText}
+          showIcon={!searchText}
         />
         {searchText && <StyledInputClear onClick={clearSearch}></StyledInputClear>}
       </Box>

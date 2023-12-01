@@ -1,5 +1,10 @@
 import styled from '@mui/material/styles/styled';
-import { сolorBtn, colorMainGradient, colorBlack4, colorBlack2, MixinFlexCenter } from '@/css/variables';
+import { сolorBtn,
+  colorMainGradient,
+  colorBlack4,
+  colorBlack2,
+  MixinFlexCenter
+} from '@/css/variables';
 
 export const StyledHeader = styled('header')(() => ({
   ...MixinFlexCenter,
@@ -8,12 +13,12 @@ export const StyledHeader = styled('header')(() => ({
   background: colorBlack2,
 }))
 
-export const StyledLinkNavigation = styled('a')<{$isPathname: boolean}>(({$isPathname}) => ({
+export const StyledLinkNavigation = styled('a')<{isPathname: boolean}>(({isPathname}) => ({
   display: 'flex',
   height: '80px',
   padding: '0 6px',
   fontSize: '16px',
-  background: $isPathname ? colorMainGradient : 'none',
+  background: isPathname ? colorMainGradient : 'none',
   '&:not(:last-child)': {
     marginRight: '38px',
   }

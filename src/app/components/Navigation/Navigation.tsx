@@ -7,7 +7,12 @@ import Box from "@mui/material/Box"
 import Typography from "@mui/material/Typography"
 import Button from "@mui/material/Button"
 import Avatar from "@mui/material/Avatar"
-import { StyledHeader, StyledLinkNavigation, StyledLinkSignIn, StyledLinkSignOut } from "./style"
+import {
+  StyledHeader,
+  StyledLinkNavigation,
+  StyledLinkSignIn,
+  StyledLinkSignOut
+} from "./style"
 
 export function Navigation({ navLinks }: {
   navLinks: {
@@ -53,7 +58,7 @@ export function Navigation({ navLinks }: {
           <StyledLinkNavigation
             key={link.label}
             href={link.href}
-            $isPathname={pathname === link.href}
+            isPathname={pathname === link.href}
           >
             <Typography sx={{ display: 'flex', alignItems: 'center' }}>
               {t(link.label)}

@@ -12,10 +12,22 @@ import Button from "@mui/material/Button";
 
 import { Search } from "../components/Search/Search";
 import { DataReport } from "../components/Types";
-import { MixinBtn, MixinFlexCenter, MixinGridContainer, colorBlack3 } from "@/css/variables";
-import { StyledLeftContainer as Report, StyledLeftContainer } from "../interview/style";
-import { StyledNameBtn, StyledRow, StyledRowItem, StyledTextConclusion, StyledTitle, StyledBtnWrapper } from "./style";
 import { StyledLink, StyledRightSide } from "../components/PageFormRightSide/style";
+import { StyledLeftContainer as Report, StyledLeftContainer } from "../interview/style";
+import {
+  MixinBtn,
+  MixinFlexCenter,
+  MixinGridContainer,
+  colorBlack3
+} from "@/css/variables";
+import {
+  StyledNameBtn,
+  StyledRow,
+  StyledRowItem,
+  StyledTextConclusion,
+  StyledTitle,
+  StyledBtnWrapper
+} from "./style";
 
 export default function Reports() {
   const [allData, setAllData] = useState<DataReport[]>([]); // все отчеты в левой части экрана
@@ -128,7 +140,7 @@ export default function Reports() {
             <Box sx={{ padding: '0 27px', marginBottom: '5px' }} key={item.id}>
               <StyledNameBtn
                 onClick={() => getCurrentReport(itemWithoutId, item.id as string)}
-                $isActive={currentIdReport === item.id}
+                isActive={currentIdReport === item.id}
               >
                 {item.name}
               </StyledNameBtn>

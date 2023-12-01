@@ -1,5 +1,10 @@
 import styled from '@mui/material/styles/styled';
-import { colorBlack3, сolorBtn, colorMainGradient, colorBlack2 } from '@/css/variables';
+import {
+  colorBlack2,
+  colorBlack3,
+  сolorBtn,
+  colorMainGradient,
+} from '@/css/variables';
 
 export const StyledRightSide = styled('div')(() => ({
   position: 'relative',

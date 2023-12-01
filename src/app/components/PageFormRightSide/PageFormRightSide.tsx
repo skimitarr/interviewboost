@@ -9,7 +9,6 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 
 import { addCategory, removeCategory } from '@/app/store/slices/app-data.slice';
-import { IGrade, ICategory, IQuestion, IProffesion, CheckedQuestionDragDrop } from '../Types';
 import { selectFromAppData } from '@/app/store/selectors/data';
 import { StoreState } from '@/app/store/types';
 import { CategoryRightSide } from '@/app/components/CategoryRightSide/CategoryRghtSide';
@@ -17,6 +16,13 @@ import { InputQuestion } from "../InputQuestion/InputQuestion";
 import { SelectAllQuestions } from "../SelectAllQuestions";
 import { MixinFlexCenter, colorBackgroundGradient, colorBlack3 } from '@/css/variables';
 import { StyledCategories, StyledLink, StyledRightSide } from './style';
+import {
+  IGrade,
+  ICategory,
+  IQuestion,
+  IProffesion,
+  CheckedQuestionDragDrop
+} from '../Types';
 
 type Selector = {
   storeProfession: IProffesion | null,

@@ -45,8 +45,8 @@ export function CategoryLeftSide({
     <Box sx={{ paddingBottom: '5px', fontSize: '14px', }} ref={ref}>
       <StyledLeftSide
         onClick={() => showQuestions(category.title)}
-        $isActive={isActiveCategoryHandler(category.title)}
-        $isDragging={isDragging}
+        isActive={isActiveCategoryHandler(category.title)}
+        isDragging={isDragging}
       >
         {category.title}
       </StyledLeftSide>

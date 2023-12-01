@@ -1,5 +1,10 @@
 import styled from '@mui/material/styles/styled';
-import { сolorBtn, MixinFlexCenter, colorBlack3, colorMainGradient } from '@/css/variables';
+import {
+  MixinFlexCenter,
+  сolorBtn,
+  colorBlack3,
+  colorMainGradient
+} from '@/css/variables';
 
 export const StyledCard = styled('div')(() => ({
   maxWidth: '440px',

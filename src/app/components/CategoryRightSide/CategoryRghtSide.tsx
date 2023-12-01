@@ -64,7 +64,11 @@ export function CategoryRightSide({
 
   const handleCategoryAction = (e: React.SyntheticEvent, category: ICategory, hasThisCategory: boolean) => {
     e.stopPropagation();
-    hasThisCategory ? removeStoreCategory(category) : addStoreCategory(category);
+    if (hasThisCategory) {
+      removeStoreCategory(category);
+    } else {
+      addStoreCategory(category);
+    };
     setHoverBlockVisible(hasThisCategory);
   };
 
@@ -76,10 +80,10 @@ export function CategoryRightSide({
 
       <StyledCategoryCard
         ref={ref}
-        $isDragging={isDragging}
-        $hoverBlockVisible={hoverBlockVisible}
-        $isChoosen={isChoosen}
-        $hasThisCategory={hasThisCategory}
+        isDragging={isDragging}
+        hoverBlockVisible={hoverBlockVisible}
+        isChoosen={isChoosen}
+        hasThisCategory={hasThisCategory}
         onClick={() => showQuestions(category)}
         onMouseEnter={() => setHoverBlockVisible(true)}
         onMouseLeave={() => setHoverBlockVisible(false)}

@@ -1,7 +1,7 @@
 import createSagaMiddleware from 'redux-saga';
 import { configureStore } from '@reduxjs/toolkit';
 import { rootReducer } from './reducers';
-import { rootSaga } from './sagas/app-dataSaga';
+import { rootSaga } from './sagas/index';
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -11,7 +11,7 @@ const store = configureStore({
   middleware: [sagaMiddleware],
 });
 
-sagaMiddleware.run(rootSaga); // Запуск саг
+sagaMiddleware.run(rootSaga);
 
 export default store;
 

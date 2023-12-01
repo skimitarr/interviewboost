@@ -1,14 +1,14 @@
 import styled from '@mui/material/styles/styled';
 import { colorBlack3 } from '@/css/variables';
 
-export const StyledInput = styled('input')<{$showIcon: boolean}>(({$showIcon}) => ({
+export const StyledInput = styled('input')<{showIcon: boolean}>(({showIcon}) => ({
   width: '100%',
   height: '40px',
   marginBottom: '16px',
   padding: '0 20px',
-  paddingLeft: $showIcon ? '50px' : '20px',
+  paddingLeft: showIcon ? '50px' : '20px',
   backgroundColor: colorBlack3,
-  backgroundImage: $showIcon ? `url('../../../Vector.svg')` : 'none',
+  backgroundImage: showIcon ? `url('../../../Vector.svg')` : 'none',
   backgroundSize: '20px',
   backgroundRepeat: 'no-repeat',
   backgroundPosition: '20px center',

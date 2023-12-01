@@ -1,9 +1,16 @@
 import styled from '@mui/material/styles/styled';
-import { MixinFlexCenter, colorWhite, сolorBtn, colorBlack3, colorBlack1, colorBlack2, } from '@/css/variables';
+import {
+  MixinFlexCenter,
+  colorWhite,
+  сolorBtn,
+  colorBlack1,
+  colorBlack2,
+  colorBlack3,
+} from '@/css/variables';
 
-export const StyledNameBtn = styled('div')<{$isActive: boolean}>(({$isActive}) => ({
+export const StyledNameBtn = styled('div')<{isActive: boolean}>(({isActive}) => ({
   height: '20px',
-  color: $isActive ? сolorBtn : colorWhite,
+  color: isActive ? сolorBtn : colorWhite,
   backgroundColor: colorBlack3,
   textAlign: 'center',
   lineHeight: '1.1',

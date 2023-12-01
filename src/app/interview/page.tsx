@@ -1,5 +1,10 @@
 'use client'
-import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import {
+  ChangeEvent,
+  FormEvent,
+  useEffect,
+  useState
+} from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useSelector } from "react-redux";
@@ -15,21 +20,37 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 
 import { Search } from '../components/Search/Search';
+import { StyledLink, StyledRightSide } from "../components/PageFormRightSide/style";
 import { PageFormLeftSide } from '../components/PageFormLeftSide/PageFormLeftSide';
-import { DataReport, IQuestion, IAnswer, ICategory, IProffesion } from "../components/Types";
 import { addReport } from "@/services/DatabaseService";
 import { selectFromAppData } from '@/app/store/selectors/data';
 import { StoreState } from "@/app/store/types";
 import { MixinBtn, MixinFlexCenter, MixinGridContainer } from "@/css/variables";
 import {
-  StyledBtnWrapper, StyledForm, StyledLeftContainer, StyledModalWindow,
-  StyledModalWindowClear, StyledModalWindowContainer, StyledModalWindowInput,
-  StyledModalWindowLoader, StyledModalWindowLoading, StyledRadioLabel,
-  StyledRightContainer, StyledTextarea, StyledTextareaLabel
+  StyledBtnWrapper,
+  StyledForm,
+  StyledLeftContainer,
+  StyledModalWindow,
+  StyledModalWindowClear,
+  StyledModalWindowContainer,
+  StyledModalWindowInput,
+  StyledModalWindowLoader,
+  StyledModalWindowLoading,
+  StyledRadioLabel,
+  StyledRightContainer,
+  StyledTextarea,
+  StyledTextareaLabel
 } from "./style";
-import { StyledLink, StyledRightSide } from "../components/PageFormRightSide/style";
+import {
+  DataReport,
+  IQuestion,
+  IAnswer,
+  ICategory,
+  IProffesion
+} from "../components/Types";
 
-const arrMarks = ['0', '5', '10', '15', '20', '25', '30', '35', '40', '45', '50', '55', '60', '65', '70', '75', '80', '85', '90', '95', '100',]
+const arrMarks = ['0', '5', '10', '15', '20', '25', '30', '35', '40', '45', '50', '55',
+  '60', '65', '70', '75', '80', '85', '90', '95', '100',]
 
 type Selector = {
   storeProfession: IProffesion | null,
@@ -451,8 +472,8 @@ export default function MyQuestions() {
                       <StyledRadioLabel
                         htmlFor={`mark${mark}`}
                         tabIndex={0}
-                        $mark={mark}
-                        $isChecked={form.mark === mark}
+                        mark={mark}
+                        isChecked={form.mark === mark}
                       >
                         {mark}
                       </StyledRadioLabel>

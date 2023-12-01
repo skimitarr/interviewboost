@@ -1,6 +1,17 @@
 import styled from '@mui/material/styles/styled';
-import { MixinFlexCenter, colorWhite, сolorBtn, colorBlack2, colorBlack4,
-  сolorMark55, сolorMark65, сolorMark75, сolorMark85, сolorMark100, colorBlack3 } from '@/css/variables';
+import {
+  MixinFlexCenter,
+  colorWhite,
+  сolorBtn,
+  colorBlack2,
+  colorBlack3,
+  colorBlack4,
+  сolorMark55,
+  сolorMark65,
+  сolorMark75,
+  сolorMark85,
+  сolorMark100,
+} from '@/css/variables';
 
 export const StyledLeftContainer= styled('div')(() => ({
   height: 'calc(100vh - 160px)',
@@ -57,7 +68,7 @@ export const StyledForm = styled('form')(() => ({
   backgroundColor: colorBlack2,
 }))
 
-export const StyledRadioLabel= styled('label')<{$mark: string, $isChecked: boolean}>(({$mark, $isChecked}) => ({
+export const StyledRadioLabel= styled('label')<{mark: string, isChecked: boolean}>(({mark, isChecked}) => ({
   width: '100%',
   height: '30px',
   padding: '2px 0',
@@ -70,24 +81,24 @@ export const StyledRadioLabel= styled('label')<{$mark: string, $isChecked: boole
   transition: 'all 0.2s ease-in-out',
   '&:hover': {
     backgroundColor:
-      +$mark <= 55 ? сolorMark55 :
-      (+$mark >= 60 && +$mark <= 65 ? сolorMark65 :
-      (+$mark >= 70 && +$mark <= 75 ? сolorMark75 :
-      (+$mark >= 80 && +$mark <= 85 ? сolorMark85 :
-      (+$mark >= 90 && +$mark <= 100 ? сolorMark100 : 'none')))),
+      +mark <= 55 ? сolorMark55 :
+      (+mark >= 60 && +mark <= 65 ? сolorMark65 :
+      (+mark >= 70 && +mark <= 75 ? сolorMark75 :
+      (+mark >= 80 && +mark <= 85 ? сolorMark85 :
+      (+mark >= 90 && +mark <= 100 ? сolorMark100 : 'none')))),
     height: '40px',
     margin: '0',
     padding: '10px 0',
     border: 'none',
   },
-  ...($isChecked
+  ...(isChecked
     ?  {
       backgroundColor:
-        +$mark <= 55 ? сolorMark55 :
-        (+$mark >= 60 && +$mark <= 65 ? сolorMark65 :
-        (+$mark >= 70 && +$mark <= 75 ? сolorMark75 :
-        (+$mark >= 80 && +$mark <= 85 ? сolorMark85 :
-        (+$mark >= 90 && +$mark <= 100 ? сolorMark100 : 'none')))),
+        +mark <= 55 ? сolorMark55 :
+        (+mark >= 60 && +mark <= 65 ? сolorMark65 :
+        (+mark >= 70 && +mark <= 75 ? сolorMark75 :
+        (+mark >= 80 && +mark <= 85 ? сolorMark85 :
+        (+mark >= 90 && +mark <= 100 ? сolorMark100 : 'none')))),
       height: '40px',
       margin: '0',
       padding: '10px 0',

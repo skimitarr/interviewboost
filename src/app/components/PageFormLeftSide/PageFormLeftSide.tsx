@@ -92,7 +92,9 @@ export function PageFormLeftSide({ getQuestionText, getCategoryTitle, pageName }
     const category = storeCategories.find(item => item.questions.includes(currentIdQuestion))
     if (category?.title) {
       if (pageName !== 'interview') {
-        setActiveCategoriesName([...activeCategoriesName, category.title]) // добавляем categoryTitle в массив открытых категорий для страницы questions
+        if (!activeCategoriesName.includes(category.title)) {
+          setActiveCategoriesName([...activeCategoriesName, category.title])  // добавляем categoryTitle в массив открытых категорий для страницы questions
+        }
       } else {
         if (activeCategoriesName.length <= 1 && category.title !== activeCategoriesName[0]) { // заменяем categoryTitle в массиве открытых категорий для страницы interview
           setActiveCategoriesName([category.title])
@@ -115,22 +117,8 @@ export function PageFormLeftSide({ getQuestionText, getCategoryTitle, pageName }
     }
   }
 
-  const getQuestion = (questionId: string) => { // открываем вопрос по клику из результата поиска через handleQuestion
-    storeCategories.find((category: ICategory) => {
-      if (category.questions.includes(questionId) && activeCategoriesName.includes(category.title)) {
-        return //если вопросы открыты, ничего не делаем
-      } else {
-        setActiveCategoriesName(pageName !== 'interview'  //если вопросы закрыты, откываем их
-          ? [...activeCategoriesName, category.title]
-          : [category.title]
-        )
-      }
-    })
-  }
-
   const handleQuestion = (questionText: string, questionId: string) => { //передаем данные question в стор
     setCurrentIdQuestion(questionId) // получаем currentIdQuestion
-    getQuestion(questionId) // запускаем предыдущую функцию
     setShowHighliting(false) // на странице форм по клику убираем подсветку
     dispatch(getCurrentIdQuestion(questionId)) //передаем данные questionId в стор
     getQuestionText && getQuestionText(questionText); //передаем questionText в родит. компонент

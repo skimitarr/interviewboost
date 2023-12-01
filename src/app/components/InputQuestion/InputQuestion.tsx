@@ -56,7 +56,7 @@ export function InputQuestion({
   })
 
   return (
-    <StyledInput $isDragging={isDragging} $isChecked={isChecked}>
+    <StyledInput isDragging={isDragging} isChecked={isChecked}>
       <FormControlLabel
         ref={ref}
         control={<Checkbox />}

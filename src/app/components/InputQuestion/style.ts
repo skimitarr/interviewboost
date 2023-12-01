@@ -2,19 +2,19 @@ import styled from '@mui/material/styles/styled';
 import { colorWhite, сolorBtn } from '@/css/variables';
 
 type Props = {
-  $isDragging?: boolean;
-  $isChecked: boolean;
+  isDragging?: boolean;
+  isChecked: boolean;
 }
 
-export const StyledInput = styled('div')<Props>(({ $isDragging, $isChecked }) => ({
+export const StyledInput = styled('div')<Props>(({ isDragging, isChecked }) => ({
   width: ' 100%',
   minHeight: '30px',
   marginBottom: '10px',
   padding: '10px 15px',
-  color: $isChecked ? colorWhite : `gray`,
+  color: isChecked ? colorWhite : `gray`,
   letterSpacing: '0.5px',
   boxShadow: '0px 4px 4px 0px rgba(0, 0, 0, 0.25)',
-  opacity: $isDragging ? '0' : '1',
+  opacity: isDragging ? '0' : '1',
 
   '& .MuiTypography-root': {
     fontSize: '14px',
