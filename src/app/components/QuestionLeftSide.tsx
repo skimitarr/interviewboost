@@ -1,6 +1,7 @@
-import classnames from "classnames";
+import Typography from "@mui/material/Typography"
 import { IQuestion } from "./Types";
 import { DragDropHooks } from "./Drag&DropHooks";
+import { colorWhite, сolorBtn } from '@/css/variables';
 
 type Props = {
   item: IQuestion
@@ -32,15 +33,20 @@ export function QuestionLeftSide({
   })
 
   return (
-    <p ref={ref} onClick={() => handleQuestion(item.text, item.id)}
-      className={classnames(
-        'questions__technology-questions questions__leftQustions',
-        { 'highlited': item.id === currentIdQuestion && showHighliting },
-        { 'cursor': pageName === 'interview' },
-        { 'dragging': isDragging }
-      )}
+    <Typography
+      ref={ref}
+      onClick={() => handleQuestion(item.text, item.id)}
+      sx={{
+        marginBottom: '10px',
+        paddingLeft: item.id === currentIdQuestion && showHighliting ? '40px' : '20px',
+        color: item.id === currentIdQuestion && showHighliting ? сolorBtn : colorWhite,
+        letterSpacing: '0.5px',
+        fontSize: '14px',
+        cursor: pageName === 'interview' ? 'pointer' : 'grab',
+        opacity: isDragging ? '0' : '1',
+      }}
     >
       {index + 1}. {item.text}
-    </p>
+    </Typography>
   )
 }

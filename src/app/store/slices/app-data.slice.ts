@@ -5,6 +5,7 @@ import { AppDataState } from '../types';
 export const name = 'appData';
 
 const userInitialState: AppDataState = {
+  allProfessions: [],
   profession: null,
   grades: [],
   allCategories: [],
@@ -12,13 +13,16 @@ const userInitialState: AppDataState = {
   questions: [],
   answers: [],
   currentIdQuestion: '',
-  checkedQuestionDragDrop: ''
+  checkedQuestionDragDrop: {id: '', timestamp: 0}
 };
 
 export const appDataSlice = createSlice({
   name,
   initialState: userInitialState,
   reducers: {
+    getAllProfessions(state, action) {
+      state.allProfessions = action.payload;
+    },
     getProfession(state, action) {
       state.profession = action.payload;
     },
@@ -60,5 +64,5 @@ export const appDataSlice = createSlice({
   },
 });
 
-export const { getProfession, getGrades, getAllCategories, getCategories, addCategory, removeCategory,
+export const { getAllProfessions, getProfession, getGrades, getAllCategories, getCategories, addCategory, removeCategory,
   getQuestions, getAnswers, getCurrentIdQuestion, getCheckedQuestionDragDrop } = appDataSlice.actions;

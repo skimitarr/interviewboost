@@ -1,18 +1,28 @@
 'use client'
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { useAppDispatch } from '../hooks';
-import Link from 'next/link';
-import { useTranslation } from 'react-i18next';
-
-import { addCategory, removeCategory } from '../store/slices/app-data.slice';
-import { IGrade, ICategory, IQuestion, IProffesion } from '../components/Types';
-import { selectFromAppData } from '@/app/store/selectors/data';
-import applySpec from 'ramda/es/applySpec';
 import { useSelector } from 'react-redux';
-import { StoreState } from '@/app/store/types';
+import { useAppDispatch } from '@/app/hooks';
+import { useTranslation } from 'react-i18next';
+import applySpec from 'ramda/es/applySpec';
 import fastDeepEqual from 'fast-deep-equal';
-import {CategoryRightSide} from '@/app/components/CategoryRghtSide';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+
+import { addCategory, removeCategory } from '@/app/store/slices/app-data.slice';
+import { selectFromAppData } from '@/app/store/selectors/data';
+import { StoreState } from '@/app/store/types';
+import { CategoryRightSide } from '@/app/components/CategoryRightSide/CategoryRghtSide';
+import { InputQuestion } from "../InputQuestion/InputQuestion";
+import { SelectAllQuestions } from "../SelectAllQuestions";
+import { MixinFlexCenter, colorBackgroundGradient, colorBlack3 } from '@/css/variables';
+import { StyledCategories, StyledLink, StyledRightSide } from './style';
+import {
+  IGrade,
+  ICategory,
+  IQuestion,
+  IProffesion,
+  CheckedQuestionDragDrop
+} from '../Types';
 
 type Selector = {
   storeProfession: IProffesion | null,
@@ -20,7 +30,7 @@ type Selector = {
   storeAllCategories: ICategory[],
   storeCategories: ICategory[],
   storeQuestions: IQuestion[],
-  checkedIdQuestionDragDrop: string,
+  checkedIdQuestionDragDrop: CheckedQuestionDragDrop,
 };
 
 const selector = applySpec<Selector>({
@@ -29,12 +39,11 @@ const selector = applySpec<Selector>({
   storeAllCategories: selectFromAppData('allCategories', []),
   storeCategories: selectFromAppData('categories', []),
   storeQuestions: selectFromAppData('questions', []),
-  checkedIdQuestionDragDrop:  selectFromAppData('checkedQuestionDragDrop', ''),
+  checkedIdQuestionDragDrop: selectFromAppData('checkedQuestionDragDrop', { id: '', timestamp: 0 }),
 });
 
 export function PageFormRightSide() {
   const { t } = useTranslation();
-  const router = useRouter();
   const dispatch = useAppDispatch()
 
   const {
@@ -50,14 +59,19 @@ export function PageFormRightSide() {
   const [activeGradeName, setActiveGradeName] = useState<string>('Junior'); // определяем активую кнопку (junior middle) для стилизации
   const [categories, setCategories] = useState<ICategory[]>([]); // массив (html css) с базы данных
   const [categoriesForStore, setCategoriesForStore] = useState<ICategory[]>([]); // тут убираем/добавляем вопросы
-  const [activeCategoriesName, setActiveCategoriesName] = useState<string[]>([]); // определяем активные(раскрытые) категории (html css)
+  const [activeCategory, setActiveCategory] = useState<ICategory | null>(null); // определяем активные(раскрытые) категории (html css)
   const [questions, setQuestions] = useState<IQuestion[]>([]); // массив всех вопросов с базы данных
   const [checkedIdQuestions, setCheckedIdQuestions] = useState<string[]>([]); // массив id вопросов которые checked
+  const [checkedIdAllQuestions, setCheckedIdAllQuestions] = useState<string[]>([]); // массив категорий id выбрать все
+
+  useEffect(() => {
+    setActiveCategory(storeAllCategories[0]);
+    const ids = storeAllCategories.map(item => item.id);
+    setCheckedIdAllQuestions(ids);
+  }, [storeAllCategories])
 
   useEffect(() => { // получаем grades
-    if (storeGrades) {
-      setGrades(storeGrades);
-    }
+    setGrades(storeGrades);
   }, [storeGrades])
 
   useEffect(() => { // получаем categories
@@ -97,34 +111,34 @@ export function PageFormRightSide() {
     }
   }, [categories])
 
-  const showQuestions = (categoryTitle: string) => {
-    if (activeCategoriesName.includes(categoryTitle)) { //если вопросы открыты, скрываем их
-      const result = activeCategoriesName.filter(item => item !== categoryTitle)
-      setActiveCategoriesName(result)
-    } else {
-      setActiveCategoriesName([...activeCategoriesName, categoryTitle]) //и наоборот
-    }
+  const showQuestions = (category: ICategory) => {
+    setActiveCategory(
+      activeCategory && activeCategory.id === category.id
+        ? { id: '', title: '', questions: [] }
+        : category
+    )
   }
 
   const addStoreCategory = (category: ICategory) => {
-    const currentCategoriesForStore = categoriesForStore.filter(item => item.id === category.id);
-    dispatch(addCategory(currentCategoriesForStore[0]))
+    const updatedQuestions: string[] = [];
+    category.questions.forEach(element => {
+      if (checkedIdQuestions.includes(element)) {
+        updatedQuestions.push(element)
+      }
+    });
+    const updatedCategory = { ...category, questions: updatedQuestions };
+    dispatch(addCategory(updatedCategory));
   }
 
   const removeStoreCategory = (category: ICategory) => {
     dispatch(removeCategory(category))
   }
 
-  const saveQuestions = () => {
-    localStorage.setItem('choosenCategories', JSON.stringify(storeCategories));
-    router.push('/interview');
-  }
-
   useEffect(() => { // получаем id вопроса, который перетащили в левую часть и он станет checked
-    setCheckedIdQuestions(prev => [...prev, checkedIdQuestionDragDrop]);
-    const currentCategoriesForStore = categoriesForStore.find(item => item.id === checkedIdQuestionDragDrop);
+    setCheckedIdQuestions(prev => [...prev, checkedIdQuestionDragDrop.id]);
+    const currentCategoriesForStore = categoriesForStore.find(item => item.id === checkedIdQuestionDragDrop.id);
     if (currentCategoriesForStore) {
-      selectQuestions(checkedIdQuestionDragDrop, currentCategoriesForStore);
+      selectQuestions(checkedIdQuestionDragDrop.id, currentCategoriesForStore);
     }
   }, [checkedIdQuestionDragDrop])
 
@@ -165,16 +179,22 @@ export function PageFormRightSide() {
 
   // TODO: на рефактор selectAllQuestions
   const selectAllQuestions = (categoryId: string, statebuttonAllQuestions: boolean) => { // добавляем/убираем все вопросы
+    setCheckedIdAllQuestions(checkedIdAllQuestions.includes(categoryId) // меняем состояние самой кнопки
+      ? checkedIdAllQuestions.filter((item) => item !== categoryId)
+      : [...checkedIdAllQuestions, categoryId])
+
     let currentCategoriesForStore = categories.find(item => item.id === categoryId); // нужная категория
     const restCategoriesForStore = categoriesForStore.filter(item => item.id !== categoryId); // остальные категории
 
     if (currentCategoriesForStore) {
       if (statebuttonAllQuestions) {
+        const temp = checkedIdQuestions;
         currentCategoriesForStore.questions.forEach(item => {
           if (!checkedIdQuestions.includes(item)) {
-            setCheckedIdQuestions(prev => [...prev, item])
+            temp.push(item)
           }
         })
+        setCheckedIdQuestions(temp)
       } else {
         const copy = checkedIdQuestions;
         currentCategoriesForStore.questions.forEach(item => {
@@ -217,49 +237,80 @@ export function PageFormRightSide() {
 
   return (
     storeProfession
-      ? <div className='questions__rightSide'>
-        {/* <div className='questions__chooseGrade'> //TODO: добавить кнопки джун мидл сеньйор
+      ? <StyledRightSide>
+        {/* TODO: добавить кнопки джун мидл сеньйор */}
+        {/* <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr' }}>
           {grades && grades.map(item => {
-            return <button key={item.id}
+            return <StyledBtn
+              key={item.id}
               onClick={() => setActiveGradeName(item.title)}
-              className={`questions__chooseGrade-btn ${activeGradeName === item.title ? 'active' : ''}`}>
+              $active={activeGradeName === item.title}
+            >
               {item.title}
-            </button>
+            </StyledBtn>
           })}
-        </div> */}
+        </Box> */}
 
-        <h2 className='questions__title'>{t('selectATechnologyStack')}</h2>
+        <Typography
+          sx={{
+            padding: '20px 0',
+            backgroundColor: colorBlack3,
+            textAlign: 'center',
+            fontSize: '16px',
+          }}
+        >{t('selectATechnologyStack')}</Typography>
 
-        <div className="questions">
-          {categories && categories.map(category =>
-            <CategoryRightSide
-              key={category.id}
-              category={category}
-              activeCategoriesName={activeCategoriesName}
-              showQuestions={showQuestions}
-              removeStoreCategory={removeStoreCategory}
-              addStoreCategory={addStoreCategory}
+        <StyledCategories>
+          {categories &&
+            categories.map(category =>
+              <CategoryRightSide
+                key={category.id}
+                category={category}
+                activeCategory={activeCategory}
+                showQuestions={showQuestions}
+                removeStoreCategory={removeStoreCategory}
+                addStoreCategory={addStoreCategory}
+                dragDropElement={dragDropElement}
+                setCategories={setCategories}
+              />
+            )}
+        </StyledCategories>
+
+        {activeCategory &&
+          <Box sx={{ padding: ' 25px 0 0 35px', backgroundImage: colorBackgroundGradient }}>
+            <SelectAllQuestions
+              category={activeCategory}
               selectAllQuestions={selectAllQuestions}
-              questions={questions.filter((item) => category.questions.includes(item.id))}
-              selectQuestions={selectQuestions}
-              checkedIdQuestions={checkedIdQuestions}
-              dragDropElement={dragDropElement}
-              setCategories={setCategories}
-              setQuestions={setQuestions}
+              checkedIdAllQuestions={checkedIdAllQuestions}
             />
-          )}
-        </div>
+            {questions.filter((item) => activeCategory.questions.includes(item.id))
+              .map((item, index) => (
+                <InputQuestion
+                  key={item.id}
+                  item={item}
+                  index={index}
+                  category={activeCategory}
+                  selectQuestions={selectQuestions}
+                  checkedIdQuestions={checkedIdQuestions}
+                  dragDropElement={dragDropElement}
+                  setQuestions={setQuestions}
+                />
+              ))}
+          </Box>}
 
-        <div className='questions__nextPage-wrapper right'>
-          <button className='questions__nextPage-btn btn' onClick={saveQuestions}>{t('save')}</button>
-        </div>
-
-      </div>
-      : <div className='questions__rightSide'>
-        <div className='questions__noData'>
-          <p className='questions__noData-desc'>{t('selectSpecialization')}</p>
-          <Link className='questions__noData-btn btn' href='/'><p>{t('letsGetStarted')}</p></Link>
-        </div>
-      </div>
+      </StyledRightSide>
+      : <StyledRightSide>
+        <Box
+          sx={{
+            marginTop: '140px',
+            ...MixinFlexCenter,
+            flexDirection: 'column',
+          }}>
+          <Typography sx={{ marginBottom: '45px', fontSize: '18px' }}>
+            {t('selectSpecialization')}
+          </Typography>
+          <StyledLink href='/'>{t('letsGetStarted')}</StyledLink>
+        </Box>
+      </StyledRightSide>
   )
 }

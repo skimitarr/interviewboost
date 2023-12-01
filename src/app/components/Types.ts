@@ -6,7 +6,7 @@ export type DataState = {
   questions: IQuestion[];
   answers: IAnswer[];
   currentIdQuestion: string;
-  checkedQuestionDragDrop: string;
+  checkedQuestionDragDrop: {id: string, timestamp: number};
 }
 
 export type IProffesion = {
@@ -49,3 +49,7 @@ type AdditionalData = {
   conclusion?: [string, string];
 };
 
+export type CheckedQuestionDragDrop = {
+  id: string,
+  timestamp: number
+};

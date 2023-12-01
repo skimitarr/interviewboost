@@ -7,7 +7,7 @@ type Props = {
   item: ICategory | IQuestion
   category?: ICategory
   categoriesFromStore?: ICategory[]
-  checked?: boolean
+  checkedIdQuestions?: string[]
   dragDropElement: (sourceId: string, destinationId: string, func: any) => void
   // func: React.Dispatch<React.SetStateAction<IQuestion[]>>
   func: any
@@ -18,7 +18,7 @@ export function DragDropHooks({
   item,
   category,
   categoriesFromStore,
-  checked,
+  checkedIdQuestions,
   dragDropElement,
   func
 }: Props) {
@@ -26,7 +26,7 @@ export function DragDropHooks({
 
   const [{ isDragging }, drag] = useDrag({
     type: type,
-    item: { id: item.id, category, categoriesFromStore, checked },
+    item: { id: item.id, category, categoriesFromStore, checkedIdQuestions },
     collect: (monitor) => ({
       isDragging: !!monitor.isDragging(),
     }),
@@ -34,8 +34,8 @@ export function DragDropHooks({
 
   const [, drop] = useDrop(() => ({
     accept: type, // Тип элемента, который этот контейнер может принимать
-    drop({ id: sourceId, category, categoriesFromStore, checked }: // category, categoriesFromStore, checked передаем в PageFormLeftSide из-за ассинхронщины там не получить актуальные данные
-      { id: string; type: string; category: ICategory, categoriesFromStore: ICategory[], checked: boolean }) {
+    drop({ id: sourceId, category, categoriesFromStore, checkedIdQuestions }: // category, categoriesFromStore, checked передаем в PageFormLeftSide из-за ассинхронщины там не получить актуальные данные
+      { id: string; type: string; category: ICategory, categoriesFromStore: ICategory[], checkedIdQuestions: string[] }) {
       if (sourceId !== item.id) {
         dragDropElement(sourceId, item.id, func)
       }

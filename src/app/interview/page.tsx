@@ -1,29 +1,56 @@
 'use client'
-import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import {
+  ChangeEvent,
+  FormEvent,
+  useEffect,
+  useState
+} from "react";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { useSelector } from "react-redux";
 import { polyfill } from 'interweave-ssr'; // interweave для того чтобы прочитать HTML из объекта
 import { Markup } from 'interweave'; // interweave для того чтобы прочитать HTML из объекта
 import { useAppDispatch } from '../hooks';
 import { nanoid } from 'nanoid';
-import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { useSession } from "next-auth/react";
 import { useTranslation } from "react-i18next";
-
-import { DataReport, IQuestion, IAnswer, ICategory, IProffesion } from "../components/Types";
-import { Search } from '../components/Search';
-import { PageFormLeftSide } from '../components/PageFormLeftSide';
-import { addReport, getDbAllAnswers, getDbAllQuestions } from "@/services/DatabaseService";
-import { getAnswers, getQuestions } from "../store/slices/app-data.slice";
-import classnames from "classnames";
-
-const arrMarks = ['0', '5', '10', '15', '20', '25', '30', '35', '40', '45', '50', '55', '60', '65', '70', '75', '80', '85', '90', '95', '100',]
-
-import fastDeepEqual from 'fast-deep-equal';
-
-import { selectFromAppData } from '@/app/store/selectors/data';
 import applySpec from 'ramda/es/applySpec';
-import { useSelector } from "react-redux";
+import fastDeepEqual from 'fast-deep-equal';
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+
+import { Search } from '../components/Search/Search';
+import { StyledLink, StyledRightSide } from "../components/PageFormRightSide/style";
+import { PageFormLeftSide } from '../components/PageFormLeftSide/PageFormLeftSide';
+import { addReport } from "@/services/DatabaseService";
+import { selectFromAppData } from '@/app/store/selectors/data';
 import { StoreState } from "@/app/store/types";
+import { MixinBtn, MixinFlexCenter, MixinGridContainer } from "@/css/variables";
+import {
+  StyledBtnWrapper,
+  StyledForm,
+  StyledLeftContainer,
+  StyledModalWindow,
+  StyledModalWindowClear,
+  StyledModalWindowContainer,
+  StyledModalWindowInput,
+  StyledModalWindowLoader,
+  StyledModalWindowLoading,
+  StyledRadioLabel,
+  StyledRightContainer,
+  StyledTextarea,
+  StyledTextareaLabel
+} from "./style";
+import {
+  DataReport,
+  IQuestion,
+  IAnswer,
+  ICategory,
+  IProffesion
+} from "../components/Types";
+
+const arrMarks = ['0', '5', '10', '15', '20', '25', '30', '35', '40', '45', '50', '55',
+  '60', '65', '70', '75', '80', '85', '90', '95', '100',]
 
 type Selector = {
   storeProfession: IProffesion | null,
@@ -71,51 +98,27 @@ export default function MyQuestions() {
   const isBrowser = typeof window !== 'undefined'; // Проверяем, что код выполняется в браузерной среде
   const local = isBrowser ? localStorage.getItem('choosenCategories') ?? '' : '';
 
-  const fetchQuestions = async () => {
-    try {
-      const questionsData = await getDbAllQuestions();
-      const sortedQuestionsData = questionsData.sort((a: IQuestion, b: IQuestion) => +a.id - +b.id);
-      dispatch(getQuestions(sortedQuestionsData));
-    } catch (error) {
-      console.error('Error getting documents:', error);
-    }
-  };
-
-  const fetchAnswers = async () => {
-    try {
-      const answersData = await getDbAllAnswers();
-      dispatch(getAnswers(answersData));
-    } catch (error) {
-      console.error('Error getting documents:', error);
-    }
-  };
-
   useEffect(() => { //если не зареган, переходим на окно регистрации
-    if (session.status === 'unauthenticated') {
-      router.push('/signin');
-    }
+    session.status === 'unauthenticated' && router.push('/signin');
   }, [session]);
 
   useEffect(() => { // получаем выбранные категории из localstorage
-    if (local) {
-      setLocalData(JSON.parse(local))
-    }
+    local && setLocalData(JSON.parse(local))
   }, [local])
 
   useEffect(() => { // при получении первой оценки активируем кнопку отчет
-    if (form.mark) setIsActiveBtn(true)
+    form.mark && setIsActiveBtn(true)
   }, [form])
 
   useEffect(() => {
     if (localData && storeQuestions.length <= 0) {
-      fetchQuestions();
-      fetchAnswers();
+      dispatch({ type: 'actionType/getAllQuestions' });
+      dispatch({ type: 'actionType/getAllAnswers' });
     }
   }, [localData])
 
   useEffect(() => { // nameBlock для первого вопроса
-    if (localData.length > 0)
-      setNameBlock(localData[0]?.title)
+    localData.length > 0 && setNameBlock(localData[0]?.title)
   }, [localData])
 
   useEffect(() => { // nameQuestion для первого вопроса
@@ -261,12 +264,8 @@ export default function MyQuestions() {
       body: JSON.stringify(requestData),
     })
       .then((response) => response.json())
-      .then((data) => {
-        conclusion = data.choices[0].message.content
-      })
-      .catch((error) => {
-        console.error('Error:', error);
-      })
+      .then((data) => conclusion = data.choices[0].message.content)
+      .catch((error) => console.error('Error:', error))
       .finally(() => setLoading(!loading));
 
     dataToGoogleSheets.push([`${conclusion}`, averageMark]);
@@ -396,89 +395,145 @@ export default function MyQuestions() {
         }
       }
     });
-  }, [dataReport, currentIdQuestion])
+  }, [currentIdQuestion])
 
   return (
-    <div className='container container__form'>
-      <div className='questions__leftSide'>
+    <Box sx={{ ...MixinGridContainer }}>
+      <StyledLeftContainer>
         <Search />
         <PageFormLeftSide getQuestionText={getQuestionText} getCategoryTitle={getCategoryTitle} pageName="interview" />
-        <div className='questions__nextPage-wrapper left'>
-          <button disabled={!isActiveBtn} className='questions__nextPage-btn btn' onClick={() => setIsOpenModal(!isOpenModal)}>{t('report')}</button>
-        </div>
-      </div>
+        <StyledBtnWrapper>
+          <Button
+            disabled={!isActiveBtn}
+            onClick={() => setIsOpenModal(!isOpenModal)}
+            sx={{ ...MixinBtn }}
+          >
+            {t('report')}
+          </Button>
+        </StyledBtnWrapper>
+      </StyledLeftContainer>
 
       {storeProfession || localData
-        ? <div className="answers">
-          <div className='answers__container'>
+        ? <StyledRightContainer>
+          <Box sx={{ position: 'relative', padding: '25px 90px 10px 90px' }}>
 
             {currentIdQuestion
               ? filteredAnswers.filter((item: IAnswer) => item.id === currentIdQuestion) // фильтруем Answers, берем только те что есть в currentIdQuestion
-                .map((item: IAnswer) => {
-                 return <Markup content={item.text} className="answers__content" key={item.id} />
-                })
-             : <p className="answers__preload">{t('chooseDirection')}</p>}
+                .map((item: IAnswer) => (
+                  <Markup
+                    key={item.id}
+                    content={item.text}
+                  // TODO: добавить стили, когда появятся ответы
+                  // sx={{
+                  //   display: 'block',
+                  //   maxHeight: 'calc(100vh - 285px)',
+                  //   overflow: 'auto',
+                  //   paddingBottom: '20px',
+                  // }}
+                  />
+                ))
+              : <Typography sx={{ marginTop: '80px', textAlign: 'center' }}>
+                {t('chooseDirection')}
+              </Typography>
+            }
 
-           {currentIdQuestion && <form className="answers__form" onSubmit={submitForm}>
+            {currentIdQuestion &&
+              <StyledForm onSubmit={submitForm}>
 
-              <div className="answers__title">{t('rateAnswerFrom0To100')}</div>
-              <div className="answers__marks">
-                {arrMarks.map(mark => {
-                  return (
-                    <div className="answers__wrapper-mark" key={mark}>
-                      <input type="radio" className="answers__mark" id={`mark${mark}`} name="mark" value={mark} checked={form.mark === mark}
-                        onChange={handleChange} />
-                      <label htmlFor={`mark${mark}`} tabIndex={0}
-                        className={classnames(
-                          'answers__label',
-                          { 'mark_0-55': +mark <= 55 },
-                          { 'mark_60-65': +mark >= 60 && +mark <= 65 },
-                          { 'mark_70-75': +mark >= 70 && +mark <= 75 },
-                          { 'mark_80-85': +mark >= 80 && +mark <= 85 },
-                          { 'mark_90-100': +mark >= 90 && +mark <= 100 },
-                        )}
-                      >{mark}</label>
-                    </div>
-                  )
-                })}
-              </div>
+                <Typography sx={{ marginTop: '20px', paddingLeft: '30px' }}>
+                  {t('rateAnswerFrom0To100')}
+                </Typography>
+                <Box
+                  sx={{
+                    ...MixinFlexCenter,
+                    justifyContent: 'space-around',
+                    margin: '12px auto 40px auto',
+                  }}>
+                  {arrMarks.map(mark => (
+                    <Box
+                      key={mark}
+                      sx={{
+                        display: 'flex',
+                        width: '50px',
+                        '&:not(:last-child)': {
+                          marginRight: '10px',
+                        }
+                      }}
+                    >
+                      <input
+                        type="radio"
+                        id={`mark${mark}`}
+                        name="mark"
+                        value={mark}
+                        checked={form.mark === mark}
+                        onChange={handleChange}
+                        style={{ display: 'none' }}
+                      />
+                      <StyledRadioLabel
+                        htmlFor={`mark${mark}`}
+                        tabIndex={0}
+                        mark={mark}
+                        isChecked={form.mark === mark}
+                      >
+                        {mark}
+                      </StyledRadioLabel>
+                    </Box>
+                  ))}
+                </Box>
 
-              <label className="answers__textarea">
-                <div className="answers__textarea-wrapper">
-                  <p className="answers__textarea-title">{t('addComment')}</p>
-                </div>
-                <textarea
-                  name="comment"
-                  className="answers__textarea-body"
-                  placeholder="Комментарий"
-                  value={form.comment}
-                  onChange={handleChange}
-                />
-              </label>
+                <Box sx={{ position: 'relative' }}>
+                  <StyledTextareaLabel>{t('addComment')}</StyledTextareaLabel>
+                  <StyledTextarea
+                    name="comment"
+                    placeholder="Комментарий"
+                    value={form.comment}
+                    onChange={handleChange}
+                  />
+                </Box>
 
-              {isOpenModal && <div className="modalWindow">
-                <div className="modalWindow__container">
-                  {<div className="search__clear modalWindow__close" onClick={() => setIsOpenModal(!isOpenModal)}></div>}
-                  <input type="text" name="name" value={form.name} onChange={handleChange} placeholder="Введите имя претендента" className="answers__textarea-body" required />
-                  <button className='questions__nextPage-btn btn' type="submit">{t('goToReport')}</button>
-                  {loading && <div className="modalWindow__loading">
-                    <p className="modalWindow__loading-text">{t('generatingReport')}</p>
-                    <div className="modalWindow__loading-loader"></div>
-                  </div>}
-                </div>
-              </div>}
-            </form>}
+                {isOpenModal &&
+                  <StyledModalWindow>
+                    <StyledModalWindowContainer>
+                      <StyledModalWindowClear onClick={() => setIsOpenModal(!isOpenModal)} />
+                      <StyledModalWindowInput
+                        type="text"
+                        name="name"
+                        value={form.name}
+                        onChange={handleChange}
+                        placeholder="Введите имя претендента"
+                        required
+                      />
+                      <Button sx={{ ...MixinBtn }} type="submit">{t('goToReport')}</Button>
+                      {loading &&
+                        <StyledModalWindowLoading>
+                          <Typography>{t('generatingReport')}</Typography>
+                          <StyledModalWindowLoader />
+                        </StyledModalWindowLoading>
+                      }
+                    </StyledModalWindowContainer>
+                  </StyledModalWindow>
+                }
+              </StyledForm>}
 
-          </div>
-        </div>
+          </Box>
+        </StyledRightContainer>
+
         :
-        <div className='questions__rightSide'>
-          <div className='questions__noData'>
-            <p className='questions__noData-desc'>{t('selectSpecialization')}</p>
-            <Link className='questions__noData-btn btn' href='/'><p>{t('letsGetStarted')}</p></Link>
-          </div>
-        </div>
+        <StyledRightSide>
+          <Box
+            sx={{
+              marginTop: '140px',
+              ...MixinFlexCenter,
+              flexDirection: 'column',
+            }}>
+            <Typography sx={{ marginBottom: '45px', fontSize: '18px' }}>
+              {t('selectSpecialization')}
+            </Typography>
+            <StyledLink href='/'>{t('letsGetStarted')}</StyledLink>
+          </Box>
+        </StyledRightSide>
       }
-    </div>
+    </Box>
   )
 }
+
