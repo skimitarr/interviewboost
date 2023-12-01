@@ -16,7 +16,7 @@ export function SelectAllQuestions({ category, selectAllQuestions, checkedIdAllQ
   const checked = checkedIdAllQuestions.includes(category.id);
 
   return (
-    <StyledInput $isChecked={checked}>
+    <StyledInput isChecked={checked}>
       <FormControlLabel
         control={<Checkbox />}
         label={t('selectAll')}
