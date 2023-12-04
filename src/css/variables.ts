@@ -13,6 +13,7 @@ export const сolorMark75 = '#D3BE5D';
 export const сolorMark85 = '#1583EC';
 export const сolorMark100 = '#37A77B';
 
+// TODO: mixins to MUI and remove
 export const MixinFlexCenter = {
   display: 'flex',
   alignItems: 'center',
