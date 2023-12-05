@@ -5,7 +5,6 @@ import { useTranslation } from "react-i18next";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import { colorBlack2, colorWhite } from "@/css/variables";
 
 export const GoogleButton = () => {
   // получаем данные из URL используя useSearchParams()
@@ -20,14 +19,14 @@ export const GoogleButton = () => {
       variant="outlined"
       onClick={() => signIn('google', { callbackUrl })}
       startIcon={<Avatar alt="logo google" src="/icon-google.svg" sx={{ width: '24px', height: '24px', }} />}
-      sx={{
+      sx={({ custom }) => ({
         width: '400px',
         height: '30px',
         borderRadius: '5px',
         marginBottom: '10px',
-        border: `1px solid ${colorWhite}`,
-        background: colorBlack2,
-      }}
+        border: `1px solid ${custom.colorSnowWhite}`,
+        background: custom.colorGraphiteGray,
+      })}
     >
       <Typography>{t('signInWithGoogle')}</Typography>
     </Button>

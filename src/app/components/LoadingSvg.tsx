@@ -1,13 +1,14 @@
-import { MixinFlexCenter, colorBlack1 } from "@/css/variables";
+'use client' //TODO убрать, добавлено из-за  sx={({ custom }) => ({
+import { MixinFlexCenter } from "@/css/variables";
 import Box from "@mui/material/Box";
 
 export default function LoadingSvg() {
   return (
-    <Box sx={{
+    <Box sx={({ custom }) => ({
       width: '100%',
       height: 'calc(100vh - 80px)',
       ...MixinFlexCenter,
-      backgroundColor: colorBlack1,
+      backgroundColor: custom.colorMidnightCoal,
       opacity: '0.9',
       '& svg': {
         animation: 'rotation 2.5s cubic-bezier(0.455, 0.03, 0.515, 0.955) infinite'
@@ -17,7 +18,7 @@ export default function LoadingSvg() {
           transform: 'rotate(3turn)',
         }
       }
-    }}>
+    })}>
       <svg width="76" height="76" viewBox="0 0 76 76" fill="none" xmlns="http://www.w3.org/2000/svg">
         <mask id="path-1-inside-1_842_2" fill="white">
           <path d="M38 72.2C38 74.2987 36.2944 76.0197 34.2062 75.8102C27.5313 75.1405 21.1279 72.7123 15.6642 68.7426C9.17194 64.0258 4.33964 57.3747 1.85985 49.7426C-0.619954 42.1106 -0.619948 33.8894 1.85986 26.2573C3.94684 19.8343 7.70001 14.106 12.7065 9.6408C14.2728 8.24389 16.6642 8.63372 17.8978 10.3316C19.1313 12.0295 18.7352 14.3899 17.2044 15.8256C13.4793 19.319 10.6786 23.7102 9.08789 28.6059C7.10404 34.7115 7.10404 41.2885 9.08788 47.3941C11.0717 53.4997 14.9376 58.8206 20.1313 62.5941C24.2959 65.6198 29.1427 67.5261 34.2098 68.1628C36.2921 68.4245 38 70.1013 38 72.2Z" />

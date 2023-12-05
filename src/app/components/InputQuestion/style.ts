@@ -1,17 +1,16 @@
 import styled from '@mui/material/styles/styled';
-import { colorWhite, сolorBtn } from '@/css/variables';
 
 type Props = {
   isDragging?: boolean;
   isChecked: boolean;
 }
 
-export const StyledInput = styled('div')<Props>(({ isDragging, isChecked }) => ({
+export const StyledInput = styled('div')<Props>(({ isDragging, isChecked, theme: { custom } }) => ({
   width: ' 100%',
   minHeight: '30px',
   marginBottom: '10px',
   padding: '10px 15px',
-  color: isChecked ? colorWhite : `gray`,
+  color: isChecked ? custom.colorSnowWhite : `gray`,
   letterSpacing: '0.5px',
   boxShadow: '0px 4px 4px 0px rgba(0, 0, 0, 0.25)',
   opacity: isDragging ? '0' : '1',
@@ -29,12 +28,12 @@ export const StyledInput = styled('div')<Props>(({ isDragging, isChecked }) => (
     height: '24px',
     paddingTop: '2px',
     margin: '3px 30px 3px 0',
-    border: `1px inset ${colorWhite}`,
+    border: `1px inset ${custom.colorSnowWhite}`,
     borderRadius: '5px',
     textAlign: 'center',
   },
   '& .Mui-checked + .MuiTypography-root::before': {
     content: '"\\2713"',
-    border: `1px inset ${сolorBtn}`,
+    border: `1px inset ${custom.colorAzureBlue}`,
   },
 }));

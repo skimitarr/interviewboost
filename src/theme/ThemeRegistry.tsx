@@ -1,16 +1,23 @@
 "use client";
-
 import * as React from "react";
 import CssBaseline from "@mui/material/CssBaseline";
-import { createTheme, ThemeOptions, ThemeProvider } from "@mui/material/styles";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { NextAppDirEmotionCacheProvider } from "./EmotionCache";
 
 // Todo: add type and add mode later
 // const customization: any = mode === 'dark' ? getDarkColors() : getLightColors();
 
+declare module '@mui/material/styles' { //расширяем модуль для TS
+  interface Theme {
+    custom: {
+      [key: string]: string;
+    };
+  }
+}
+
 const customization = {
   colorAzureBlue: '#557CFC', //сolorBtn
-  colorSnowWhite : '#FFF', //colorWhite
+  colorSnowWhite: '#FFF', //colorWhite
   colorMidnightCoal: '#202123', //colorBlack1
   colorGraphiteGray: '#242526', //colorBlack2
   colorTwilightSlate: '#3C3E49', //colorBlack3
@@ -19,12 +26,12 @@ const customization = {
   colorBackgroundGradient: 'linear-gradient(180deg, #3F4852 0%, #272A2D 100%)',
   colorCoralBlush: '#EB6C66', //сolorMark55
   colorAmberGlow: '#E9A469', //сolorMark65
-  colorHoneydewGold :'#D3BE5D', //сolorMark75
+  colorHoneydewGold: '#D3BE5D', //сolorMark75
   colorSapphireSky: '#1583EC', //сolorMark85
-  colorJadeTeal : '#37A77B', //сolorMark100
+  colorJadeTeal: '#37A77B', //сolorMark100
 };
 
-const themeOptions: ThemeOptions = {
+const themeOptions = {
   custom: customization,
   typography: {
     fontSize: 14,
@@ -32,7 +39,6 @@ const themeOptions: ThemeOptions = {
   },
   palette: {
     background: {
-      // pink
       default: "#f8bbd0",
     },
     primary: {
@@ -63,8 +69,7 @@ const themeOptions: ThemeOptions = {
         ],
         '*': {
           textTransform: 'none',
-          color: '#fff', // белый цвет текста для всех элементов
-          // fontSize: '14px', // размер шрифта 14px для всех элементов
+          color: '#fff',
         },
         a: {
           textDecoration: 'none',
@@ -76,11 +81,7 @@ const themeOptions: ThemeOptions = {
 
 const theme = createTheme(themeOptions);
 
-export default function ThemeRegistry({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function ThemeRegistry({ children }: { children: React.ReactNode }) {
   return (
     <NextAppDirEmotionCacheProvider options={{ key: "mui" }}>
       <ThemeProvider theme={theme}>

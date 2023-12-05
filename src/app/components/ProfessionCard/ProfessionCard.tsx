@@ -6,7 +6,6 @@ import Box from "@mui/material/Box"
 import Typography from "@mui/material/Typography"
 
 import { IProffesion } from '../Types'
-import { colorBlack3 } from '@/css/variables';
 import { StyledCard, StyledComingSoon, StyledTitle } from './style'
 
 export function ProfessionCard({ profession }: { profession: IProffesion }) {
@@ -46,12 +45,12 @@ export function ProfessionCard({ profession }: { profession: IProffesion }) {
             minHeight: '120px',
           }}>
           <Box
-            sx={{
+            sx={({ custom }) => ({
               padding: '25px 38px 14px',
-              background: colorBlack3,
+              background: custom.colorTwilightSlate,
               borderRadius: '5px',
               opacity: '0.3',
-            }}>
+            })}>
             <StyledTitle>{profession.title}</StyledTitle>
             <Typography>{profession.desc}</Typography>
           </Box>

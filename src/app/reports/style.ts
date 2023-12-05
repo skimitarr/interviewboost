@@ -1,17 +1,11 @@
 import styled from '@mui/material/styles/styled';
-import {
-  MixinFlexCenter,
-  colorWhite,
-  сolorBtn,
-  colorBlack1,
-  colorBlack2,
-  colorBlack3,
-} from '@/css/variables';
+import { MixinFlexCenter } from '@/css/variables';
 
-export const StyledNameBtn = styled('div')<{isActive: boolean}>(({isActive}) => ({
+export const StyledNameBtn = styled('div')<{isActive: boolean}>(({isActive, theme: { custom }}) => ({
   height: '20px',
-  color: isActive ? сolorBtn : colorWhite,
-  backgroundColor: colorBlack3,
+  paddingTop: '2px',
+  color: isActive ? custom.colorAzureBlue : custom.colorSnowWhite,
+  backgroundColor: custom.colorTwilightSlate,
   textAlign: 'center',
   lineHeight: '1.1',
   cursor: 'pointer',
@@ -22,13 +16,13 @@ export const StyledNameBtn = styled('div')<{isActive: boolean}>(({isActive}) => 
   }
 }))
 
-export const StyledTitle = styled('div')(() => ({
+export const StyledTitle = styled('div')(({ theme: { custom } }) => ({
   ...MixinFlexCenter,
   width: '100%',
   height: '40px',
   marginBottom: '15px',
   borderRadius: '10px',
-  backgroundColor: colorBlack1,
+  backgroundColor: custom.colorMidnightCoal,
 }))
 
 export const StyledTextConclusion = styled('span')(() => ({
@@ -45,7 +39,7 @@ export const StyledTextConclusion = styled('span')(() => ({
   }
 }))
 
-export const StyledRow = styled('div')(() => ({
+export const StyledRow = styled('div')(({ theme: { custom } }) => ({
   display: 'grid',
   gridTemplateColumns: '40% 10% 50%',
   position: 'relative',
@@ -56,7 +50,7 @@ export const StyledRow = styled('div')(() => ({
     top: '0',
     bottom: '0',
     width: '1px',
-    backgroundColor: colorWhite,
+    backgroundColor: custom.colorSnowWhite,
   },
   '&::before': {
     left: '40%',
@@ -82,12 +76,12 @@ export const StyledRowItem = styled('div')(() => ({
   textAlign: 'center'
 }))
 
-export const StyledBtnWrapper = styled('div')(() => ({
+export const StyledBtnWrapper = styled('div')(({ theme: { custom } }) => ({
   position: 'fixed',
   ...MixinFlexCenter,
   width: 'calc(100% * 2 / 3)',
   height: '80px',
   bottom: '0',
   padding: '0 25px',
-  backgroundColor: colorBlack2,
+  backgroundColor: custom.colorGraphiteGray,
 }));

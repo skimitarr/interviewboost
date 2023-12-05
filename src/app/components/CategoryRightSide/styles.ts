@@ -1,5 +1,4 @@
 import styled from '@mui/material/styles/styled';
-import { colorBlack3, colorMainGradient } from '@/css/variables';
 
 type Props = {
   isDragging: boolean;
@@ -8,7 +7,7 @@ type Props = {
   hasThisCategory: boolean;
 }
 
-export const StyledCategoryCard = styled('div')<Props>(({
+export const StyledCategoryCard = styled('div')<Props>(({  theme: { custom } }) => ({
   isDragging,
   hoverBlockVisible,
   isChoosen,
@@ -23,7 +22,7 @@ export const StyledCategoryCard = styled('div')<Props>(({
   marginBottom: hoverBlockVisible || hasThisCategory ? '5px' : '45px',
   border: 'none',
   borderRadius: '4px',
-  background: isChoosen ? colorMainGradient : colorBlack3,
+  background: isChoosen ? custom.colorMainGradient : custom.colorTwilightSlate,
   cursor: 'pointer',
   opacity: isDragging ? '0' : '1',
   transition: 'all 0.3s ease-in-out',

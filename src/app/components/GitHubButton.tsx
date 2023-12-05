@@ -5,7 +5,6 @@ import { useTranslation } from "react-i18next";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import { colorBlack2, colorWhite } from "@/css/variables";
 
 export const GitHubButton = () => {
   // получаем данные из URL используя useSearchParams()
@@ -21,14 +20,14 @@ export const GitHubButton = () => {
       variant="outlined"
       onClick={() => signIn('github', { callbackUrl })}
       startIcon={<Avatar alt="GitHub Logo" src="/icon-github.svg" sx={{ width: '24px', height: '24px', }} />}
-      sx={{
+      sx={({ custom }) => ({
         width: '400px',
         height: '30px',
         borderRadius: '5px',
         marginBottom: '10px',
-        border: `1px solid ${colorWhite}`,
-        background: colorBlack2,
-      }}
+        border: `1px solid ${custom.colorSnowWhite}`,
+        background: custom.colorGraphiteGray,
+      })}
     >
       <Typography>{t('signInWithGitHub')}</Typography>
     </Button>

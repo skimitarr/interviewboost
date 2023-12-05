@@ -7,7 +7,6 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from "@mui/material/Button";
 
-import { сolorBtn, colorWhite } from '@/css/variables';
 import { ICategory } from '../Types';
 import { DragDropHooks } from '../Drag&DropHooks';
 import { selectFromAppData } from '@/app/store/selectors/data';
@@ -100,13 +99,13 @@ export function CategoryRightSide({
           }}
         >
           <Button variant="outlined"
-            sx={{
+            sx={({ custom }) => ({
               minWidth: '125px',
               height: '30px',
-              border: hasThisCategory ? `1px solid ${colorWhite}` : `1px solid ${сolorBtn}`,
+              border: hasThisCategory ? `1px solid ${custom.colorSnowWhite}` : `1px solid ${custom.colorAzureBlue}`,
               borderRadius: '5px',
               color: 'inherit',
-            }}
+            })}
             onClick={(e) => handleCategoryAction(e, category, hasThisCategory)}
           >
             <Typography sx={{ fontSize: '12px' }}>
