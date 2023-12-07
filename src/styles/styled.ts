@@ -1,6 +1,7 @@
 import { ICategory } from "@/app/components/Types";
 import { SxProps, Theme } from "@mui/system";
 
+// TODO: Do we need this file?
 type CategoryRightSideStylesProps = {
   isDragging: boolean;
   hoverBlockVisible: boolean;
