@@ -1,5 +1,5 @@
 import styled from '@mui/material/styles/styled';
-import { MixinFlexCenter } from '@/css/variables';
+import { MixinFlexCenter } from '@/styles/mixins';
 
 export const StyledBtnWrapper = styled('div')(({ theme: { custom } }) => ({
   position: 'fixed',

@@ -4,7 +4,7 @@ import Typography from "@mui/material/Typography";
 import { useTranslation } from "react-i18next";
 import { GitHubButton } from "../components/GitHubButton";
 import { GoogleButton } from "../components/GoogleButton";
-import { MixinFlexCenter } from "@/css/variables";
+import { MixinFlexCenter } from "@/styles/mixins";
 
 export default async function Signin() {
   const { t } = useTranslation();

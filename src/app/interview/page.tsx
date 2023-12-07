@@ -25,7 +25,7 @@ import { PageFormLeftSide } from '../components/PageFormLeftSide/PageFormLeftSid
 import { addReport } from "@/services/DatabaseService";
 import { selectFromAppData } from '@/app/store/selectors/data';
 import { StoreState } from "@/app/store/types";
-import { MixinBtn, MixinFlexCenter, MixinGridContainer } from "@/css/variables";
+import { MixinBtn, MixinFlexCenter, MixinGridContainer } from "@/styles/mixins";
 import {
   StyledBtnWrapper,
   StyledForm,

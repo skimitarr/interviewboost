@@ -14,7 +14,7 @@ import { Search } from "../components/Search/Search";
 import { DataReport } from "../components/Types";
 import { StyledLink, StyledRightSide } from "../components/PageFormRightSide/style";
 import { StyledLeftContainer as Report, StyledLeftContainer } from "../interview/style";
-import { MixinBtn, MixinFlexCenter, MixinGridContainer } from "@/css/variables";
+import { MixinBtn, MixinFlexCenter, MixinGridContainer } from "@/styles/mixins";
 import {
   StyledNameBtn,
   StyledRow,

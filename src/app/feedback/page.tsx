@@ -10,7 +10,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import { StyledForm, StyledTextarea } from "./style";
-import { MixinFlexCenter, MixinBtn } from '@/css/variables';
+import { MixinFlexCenter, MixinBtn } from '@/styles/mixins';
 
 export default function Feedback() {
   const [message, setMessage] = useState('');
