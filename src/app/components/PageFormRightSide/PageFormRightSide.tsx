@@ -313,7 +313,7 @@ export function PageFormRightSide() {
           <Typography sx={{ marginBottom: '45px', fontSize: '18px' }}>
             {t('selectSpecialization')}
           </Typography>
-          <StyledLink href='/'>{t('letsGetStarted')}</StyledLink>
+          <StyledLink href='/position'>{t('letsGetStarted')}</StyledLink>
         </Box>
       </StyledRightSide>
   )
