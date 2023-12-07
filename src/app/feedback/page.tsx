@@ -10,7 +10,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import { StyledForm, StyledTextarea } from "./style";
-import { colorBlack1, MixinFlexCenter, MixinBtn } from '@/css/variables';
+import { MixinFlexCenter, MixinBtn } from '@/styles/mixins';
 
 export default function Feedback() {
   const [message, setMessage] = useState('');
@@ -54,11 +54,11 @@ export default function Feedback() {
 
   return (
     <Box
-      sx={{
+      sx={({ custom }) => ({
         ...MixinFlexCenter,
         height: 'calc(100vh - 80px)',
-        backgroundColor: colorBlack1,
-      }}>
+        backgroundColor: custom.colorMidnightCoal,
+      })}>
       <StyledForm onSubmit={handleSubmit}>
         <Typography variant="h1" sx={{ marginBottom: '50px', fontSize: '36px' }}>{t('sendFeedback')}</Typography>
         <StyledTextarea

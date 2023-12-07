@@ -1,12 +1,12 @@
 import styled from '@mui/material/styles/styled';
-import { MixinFlexCenter, colorBlack3 } from '@/css/variables';
+import { MixinFlexCenter } from '@/styles/mixins';
 
 export const StyledForm= styled('form')(() => ({
   ...MixinFlexCenter,
   flexDirection: 'column',
 }))
 
-export const StyledTextarea = styled('textarea')(() => ({
+export const StyledTextarea = styled('textarea')(({ theme: { custom } }) => ({
   width: '900px',
   height: '200px',
   marginBottom: '33px',
@@ -14,7 +14,7 @@ export const StyledTextarea = styled('textarea')(() => ({
   outline: 'none',
   border: 'none',
   borderRadius: '5px',
-  backgroundColor: colorBlack3,
+  backgroundColor: custom.colorTwilightSlate,
   resize: 'none',
   fontSize: '16px',
 }))

@@ -1,91 +1,79 @@
 import styled from '@mui/material/styles/styled';
-import {
-  MixinFlexCenter,
-  colorWhite,
-  сolorBtn,
-  colorBlack2,
-  colorBlack3,
-  colorBlack4,
-  сolorMark55,
-  сolorMark65,
-  сolorMark75,
-  сolorMark85,
-  сolorMark100,
-} from '@/css/variables';
+import { MixinFlexCenter } from '@/styles/mixins';
 
-export const StyledLeftContainer= styled('div')(() => ({
+export const StyledLeftContainer= styled('div')(({ theme: { custom } }) => ({
   height: 'calc(100vh - 160px)',
   paddingBottom: '20px',
   overflowY: 'auto',
   scrollbarWidth: 'thin',          /* "auto" или "thin" */
-  scrollbarColor: `${сolorBtn} transparent`,   /* цвет бегунка и зоны отслеживания */
+  scrollbarColor: `${custom.colorAzureBlue} transparent`,   /* цвет бегунка и зоны отслеживания */
 
   '&::-webkit-scrollbar': {
     width: '4px',               /* ширина всей полосы прокрутки */
     '&-thumb': {
-      backgroundColor: сolorBtn,    /* цвет бегунка */
+      backgroundColor: custom.colorAzureBlue,    /* цвет бегунка */
       borderRadius: '10px',       /* округлось бегунка */
       height: '300px',
     }
   }
 }))
 
-export const StyledBtnWrapper = styled('div')(() => ({
+export const StyledBtnWrapper = styled('div')(({ theme: { custom } }) => ({
   position: 'fixed',
   ...MixinFlexCenter,
   width: 'calc(100% * 1 / 3)',
   height: '80px',
   bottom: '0',
   padding: '0 25px',
-  backgroundColor: colorBlack2,
-  borderTop: `1px solid ${colorWhite}`,
+  backgroundColor: custom.colorGraphiteGray,
+  borderTop: `1px solid ${custom.colorSnowWhite}`,
 }));
 
-export const StyledRightContainer= styled('div')(() => ({
+export const StyledRightContainer= styled('div')(({ theme: { custom } }) => ({
   height: 'calc(100vh - 280px)',
-  backgroundColor: colorBlack4,
+  backgroundColor: custom.colorShadowCharcoal,
   overflowY: 'auto',
   scrollbarWidth: 'thin',          /* "auto" или "thin" */
-  scrollbarColor: `${сolorBtn} transparent`,   /* цвет бегунка и зоны отслеживания */
+  scrollbarColor: `${custom.colorAzureBlue} transparent`,   /* цвет бегунка и зоны отслеживания */
 
   '&::-webkit-scrollbar': {
     width: '4px',               /* ширина всей полосы прокрутки */
     '&-thumb': {
-      backgroundColor: сolorBtn,    /* цвет бегунка */
+      backgroundColor: custom.colorAzureBlue,    /* цвет бегунка */
       borderRadius: '10px',       /* округлось бегунка */
       height: '300px',
     }
   }
 }))
 
-export const StyledForm = styled('form')(() => ({
+export const StyledForm = styled('form')(({ theme: { custom } }) => ({
   position: 'fixed',
   width: 'calc(100% *2 / 3)',
   height: '220px',
   bottom: '0',
   right: '0',
   padding: '0 10px',
-  backgroundColor: colorBlack2,
+  backgroundColor: custom.colorGraphiteGray,
 }))
 
-export const StyledRadioLabel= styled('label')<{mark: string, isChecked: boolean}>(({mark, isChecked}) => ({
+export const StyledRadioLabel= styled('label')<{mark: string, isChecked: boolean}>(({mark, isChecked, theme: { custom }}) => ({
   width: '100%',
   height: '30px',
   padding: '2px 0',
   margin: '10px 0',
   textAlign: 'center',
   borderRadius: '5px',
-  border: `1px solid ${colorWhite}`,
-  backgroundColor: colorBlack4,
+  border: `1px solid ${custom.colorSnowWhite}`,
+  backgroundColor: custom.colorShadowCharcoal,
   cursor: 'pointer',
   transition: 'all 0.2s ease-in-out',
   '&:hover': {
     backgroundColor:
-      +mark <= 55 ? сolorMark55 :
-      (+mark >= 60 && +mark <= 65 ? сolorMark65 :
-      (+mark >= 70 && +mark <= 75 ? сolorMark75 :
-      (+mark >= 80 && +mark <= 85 ? сolorMark85 :
-      (+mark >= 90 && +mark <= 100 ? сolorMark100 : 'none')))),
+      +mark <= 55 ? custom.colorCoralBlush :
+      (+mark >= 60 && +mark <= 65 ? custom.colorAmberGlow :
+      (+mark >= 70 && +mark <= 75 ? custom.colorHoneydewGold :
+      (+mark >= 80 && +mark <= 85 ? custom.colorSapphireSky :
+      (+mark >= 90 && +mark <= 100 ? custom.colorJadeTeal : 'none')))),
     height: '40px',
     margin: '0',
     padding: '10px 0',
@@ -94,11 +82,11 @@ export const StyledRadioLabel= styled('label')<{mark: string, isChecked: boolean
   ...(isChecked
     ?  {
       backgroundColor:
-        +mark <= 55 ? сolorMark55 :
-        (+mark >= 60 && +mark <= 65 ? сolorMark65 :
-        (+mark >= 70 && +mark <= 75 ? сolorMark75 :
-        (+mark >= 80 && +mark <= 85 ? сolorMark85 :
-        (+mark >= 90 && +mark <= 100 ? сolorMark100 : 'none')))),
+        +mark <= 55 ? custom.colorCoralBlush :
+        (+mark >= 60 && +mark <= 65 ? custom.colorAmberGlow :
+        (+mark >= 70 && +mark <= 75 ? custom.colorHoneydewGold :
+        (+mark >= 80 && +mark <= 85 ? custom.colorSapphireSky :
+        (+mark >= 90 && +mark <= 100 ? custom.colorJadeTeal : 'none')))),
       height: '40px',
       margin: '0',
       padding: '10px 0',
@@ -107,29 +95,29 @@ export const StyledRadioLabel= styled('label')<{mark: string, isChecked: boolean
   : {})
 }))
 
-export const StyledTextareaLabel= styled('div')(() => ({
+export const StyledTextareaLabel= styled('div')(({ theme: { custom } }) => ({
   position: 'absolute',
   bottom: '53px',
   left: '22px',
   padding: '7px 20px',
   borderRadius: '10px',
-  backgroundColor: colorBlack2,
+  backgroundColor: custom.colorGraphiteGray,
   fontSize: '14px',
   letterSpacing: '0.5px',
   lineHeight: '1.5',
 }))
 
-export const StyledTextarea= styled('textarea')(() => ({
+export const StyledTextarea= styled('textarea')(({ theme: { custom } }) => ({
   width: '100%',
   height: '60px',
   padding: '17px 25px',
   outline: 'none',
   border: 'none',
   borderRadius: '10px',
-  backgroundColor: colorBlack3,
+  backgroundColor: custom.colorTwilightSlate,
   resize: 'none',
   '&::placeholder': {
-    color: colorWhite,
+    color: custom.colorSnowWhite,
   }
 }))
 
@@ -142,7 +130,7 @@ export const StyledModalWindow= styled('div')(() => ({
   backgroundColor: 'rgba(0, 0, 0, 0.7)',
 }))
 
-export const StyledModalWindowContainer= styled('div')(() => ({
+export const StyledModalWindowContainer= styled('div')(({ theme: { custom } }) => ({
   position: 'fixed',
   top: '50%',
   left: '50%',
@@ -152,7 +140,7 @@ export const StyledModalWindowContainer= styled('div')(() => ({
   flexDirection: 'column',
   justifyContent: 'space-between',
   padding: '40px 20px 30px 20px',
-  background: colorBlack4,
+  background: custom.colorShadowCharcoal,
   transform: 'translate(-50%, -50%)',
 }))
 
@@ -166,16 +154,16 @@ export const StyledModalWindowClear = styled('div')(() => ({
   cursor: 'pointer',
 }))
 
-export const StyledModalWindowInput = styled('input')(() => ({
+export const StyledModalWindowInput = styled('input')(({ theme: { custom } }) => ({
   width: '100%',
   height: '60px',
   padding: '21px 25px',
   outline: 'none',
   border: 'none',
   borderRadius: '10px',
-  backgroundColor: colorBlack3,
+  backgroundColor: custom.colorTwilightSlate,
   '&::placeholder': {
-    color: colorWhite,
+    color: custom.colorSnowWhite,
   }
 }))
 
@@ -192,10 +180,10 @@ export const StyledModalWindowLoading = styled('div')(() => ({
   zIndex: '2',
 }))
 
-export const StyledModalWindowLoader = styled('div')(() => ({
+export const StyledModalWindowLoader = styled('div')(({ theme: { custom } }) => ({
     width: '400px',
     height: '20px',
-    backgroundColor: colorBlack3,
+    backgroundColor: custom.colorTwilightSlate,
     position: 'relative',
     overflow: 'hidden',
 

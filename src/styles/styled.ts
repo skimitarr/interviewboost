@@ -1,6 +1,7 @@
 import { ICategory } from "@/app/components/Types";
 import { SxProps, Theme } from "@mui/system";
 
+// TODO: Do we need this file?
 type CategoryRightSideStylesProps = {
   isDragging: boolean;
   hoverBlockVisible: boolean;
@@ -8,9 +9,6 @@ type CategoryRightSideStylesProps = {
   hasThisCategory: ICategory | undefined;
 }
 
-export const сolorBtn = '#557CFC';
-export const сolorWhite = '#FFF';
-export const colorBlack2 = '#242526';
 export const colorBlack3 = '#3C3E49';
 export const colorMainGradient = 'linear-gradient(180deg, #557CFC 0%, rgba(85, 124, 252, 0.09) 100%)';
 

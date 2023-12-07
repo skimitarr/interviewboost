@@ -11,7 +11,6 @@ import Typography from "@mui/material/Typography";
 import { getCurrentIdQuestion } from '../../store/slices/app-data.slice'
 import { selectFromAppData } from '@/app/store/selectors/data';
 import { StoreState } from '@/app/store/types';
-import { colorBlack3, сolorBtn } from '@/css/variables';
 import { StyledInput, StyledInputClear } from "./style";
 import {
   DataReport,
@@ -128,12 +127,12 @@ export function Search({ pageName, getCurrentReport }: Props) {
 
       {searchResult.length > 0 &&
         <Box
-          sx={{
+          sx={({ custom }) => ({
             margin: '-11px 0 16px 0',
             padding: '15px 20px 5px 20px',
             borderRadius: '5px',
-            backgroundColor: `${colorBlack3}`,
-          }}>
+            backgroundColor: custom.colorTwilightSlate,
+          })}>
           {searchResult.map(question => {
             const parts = question.text.split(new RegExp(`(${searchText})`, 'gi')); //разбиваем текст чтобы выделить searchText
             return (
@@ -144,7 +143,13 @@ export function Search({ pageName, getCurrentReport }: Props) {
               >
                 {parts.map((part, index) =>
                   part.toLowerCase() === searchText.toLowerCase()
-                    ? <Typography key={index} component="span" sx={{ color: `${сolorBtn}` }}>{part}</Typography>
+                    ? <Typography
+                      key={index}
+                      component="span"
+                      sx={({ custom }) => ({ color: custom.colorAzureBlue })}
+                    >
+                      {part}
+                    </Typography>
                     : <Typography key={index} component="span">{part}</Typography>
                 )}
               </Typography>
@@ -155,12 +160,12 @@ export function Search({ pageName, getCurrentReport }: Props) {
 
       {searchResultReports.length > 0 &&
         <Box
-          sx={{
+          sx={({ custom }) => ({
             margin: '-11px 0 16px 0',
             padding: '15px 20px 5px 20px',
             borderRadius: '5px',
-            backgroundColor: colorBlack3,
-          }}>
+            backgroundColor: custom.colorTwilightSlate,
+          })}>
           {searchResultReports.map(report => {
             const parts = report.name.split(new RegExp(`(${searchText})`, 'gi')); //разбиваем текст чтобы выделить searchText
             const reportWithoutId = { ...report }; // Создаем копию объекта report без поля id, чтобы онo не отрисовывалась
@@ -173,7 +178,13 @@ export function Search({ pageName, getCurrentReport }: Props) {
               >
                 {parts.map((part, index) =>
                   part.toLowerCase() === searchText.toLowerCase()
-                    ? <Typography key={index} component="span" sx={{ color: сolorBtn }}>{part}</Typography>
+                    ? <Typography
+                      key={index}
+                      component="span"
+                      sx={({ custom }) => ({ color: custom.colorAzureBlue })}
+                    >
+                      {part}
+                    </Typography>
                     : <Typography key={index} component="span">{part}</Typography>
                 )}
               </Typography>

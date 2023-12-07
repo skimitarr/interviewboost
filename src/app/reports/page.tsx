@@ -14,12 +14,7 @@ import { Search } from "../components/Search/Search";
 import { DataReport } from "../components/Types";
 import { StyledLink, StyledRightSide } from "../components/PageFormRightSide/style";
 import { StyledLeftContainer as Report, StyledLeftContainer } from "../interview/style";
-import {
-  MixinBtn,
-  MixinFlexCenter,
-  MixinGridContainer,
-  colorBlack3
-} from "@/css/variables";
+import { MixinBtn, MixinFlexCenter, MixinGridContainer } from "@/styles/mixins";
 import {
   StyledNameBtn,
   StyledRow,
@@ -150,7 +145,7 @@ export default function Reports() {
       </StyledLeftContainer>
 
       {allData.length > 0
-        ? <Report sx={{ backgroundColor: colorBlack3, paddingBottom: '0' }}>
+        ? <Report sx={({ custom }) => ({ backgroundColor: custom.colorTwilightSlate, paddingBottom: '0' })}>
           <Box sx={{ position: 'relative' }} data-report="report">
             <Box sx={{ padding: '25px' }}>
               {currentReport.length > 0 &&

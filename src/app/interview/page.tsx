@@ -25,7 +25,7 @@ import { PageFormLeftSide } from '../components/PageFormLeftSide/PageFormLeftSid
 import { addReport } from "@/services/DatabaseService";
 import { selectFromAppData } from '@/app/store/selectors/data';
 import { StoreState } from "@/app/store/types";
-import { MixinBtn, MixinFlexCenter, MixinGridContainer } from "@/css/variables";
+import { MixinBtn, MixinFlexCenter, MixinGridContainer } from "@/styles/mixins";
 import {
   StyledBtnWrapper,
   StyledForm,
@@ -194,9 +194,9 @@ export default function MyQuestions() {
     }
   }
 
-  const submitForm = async (e: FormEvent<HTMLFormElement>) => { // отправляем данные в гугл таблицу (и не только)
+  const submitForm = async (e: FormEvent<HTMLFormElement>) => { //отправляем данные на страницу отчетов + вывод чатаГПТ
     e.preventDefault();
-    const dataToGoogleSheets: any = []; // отправляем данные в гугл таблицу
+    const dataToGoogleSheets: any = []; // формируем отчет, такой формат из-за изначальной отправки в гугл таблицу
     const averageMark = calculateAverageMark();
     for (const blockName in dataReport) {
       if (dataReport.hasOwnProperty(blockName)) {

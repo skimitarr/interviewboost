@@ -14,7 +14,7 @@ import { StoreState } from '@/app/store/types';
 import { CategoryRightSide } from '@/app/components/CategoryRightSide/CategoryRghtSide';
 import { InputQuestion } from "../InputQuestion/InputQuestion";
 import { SelectAllQuestions } from "../SelectAllQuestions";
-import { MixinFlexCenter, colorBackgroundGradient, colorBlack3 } from '@/css/variables';
+import { MixinFlexCenter } from '@/styles/mixins';
 import { StyledCategories, StyledLink, StyledRightSide } from './style';
 import {
   IGrade,
@@ -252,12 +252,12 @@ export function PageFormRightSide() {
         </Box> */}
 
         <Typography
-          sx={{
+          sx={({ custom }) => ({
             padding: '20px 0',
-            backgroundColor: colorBlack3,
+            backgroundColor: custom.colorTwilightSlate,
             textAlign: 'center',
             fontSize: '16px',
-          }}
+          })}
         >{t('selectATechnologyStack')}</Typography>
 
         <StyledCategories>
@@ -277,7 +277,11 @@ export function PageFormRightSide() {
         </StyledCategories>
 
         {activeCategory &&
-          <Box sx={{ padding: ' 25px 0 0 35px', backgroundImage: colorBackgroundGradient }}>
+          <Box sx={({ custom }) => ({
+            padding: ' 25px 0 0 35px',
+            backgroundImage: custom.colorBackgroundGradient
+          })}
+          >
             <SelectAllQuestions
               category={activeCategory}
               selectAllQuestions={selectAllQuestions}
