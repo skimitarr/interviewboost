@@ -3,17 +3,10 @@ import * as React from "react";
 import CssBaseline from "@mui/material/CssBaseline";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { NextAppDirEmotionCacheProvider } from "./EmotionCache";
+import { THEME_CUSTOMIZATION } from "@/theme/ThemeCustomizations";
 
-// Todo: add type and add mode later
+// Todo: add type and de later
 // const customization: any = mode === 'dark' ? getDarkColors() : getLightColors();
-
-declare module '@mui/material/styles' { //расширяем модуль для TS
-  interface Theme {
-    custom: {
-      [key: string]: string;
-    };
-  }
-}
 
 const customization = {
   colorAzureBlue: '#557CFC', //сolorBtn
@@ -32,7 +25,7 @@ const customization = {
 };
 
 const themeOptions = {
-  custom: customization,
+  custom: THEME_CUSTOMIZATION,
   typography: {
     fontSize: 14,
     fontFamily: '"Lato", "Roboto", "Helvetica", "Arial", sans-serif',
