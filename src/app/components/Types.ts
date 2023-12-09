@@ -1,4 +1,4 @@
-export interface DataState {
+export type DataState = {
   profession: IProffesion | null;
   grades: IGrade[];
   allCategories: ICategory[];
@@ -6,49 +6,37 @@ export interface DataState {
   questions: IQuestion[];
   answers: IAnswer[];
   currentIdQuestion: string;
+  checkedQuestionDragDrop: {id: string, timestamp: number};
 }
 
-export interface IProffesion {
+export type IProffesion = {
   id: string;
   desc: string;
   title: string;
   grades: string[]
 }
 
-export interface IGrade {
+export type IGrade = {
   id: string
   title: string
   categories: string[]
 }
 
-export interface ICategory {
+export type ICategory = {
   id: string
   title: string
   questions: string[]
 }
 
-export interface IQuestion {
+export type IQuestion = {
   id: string
   text: string
   answers: string[]
 }
 
-export interface IAnswer {
+export type IAnswer = {
   id: string
   text: string
-}
-
-export interface ILeftPart {
-  // id: string
-  // getId: (id: string) => void;
-  getQuestionText?: (title: string) => void;
-  getCategoryTitle?: (title: string) => void;
-  pageName?: string
-}
-
-export interface ISearchReport {
-  getCurrentReport?: (item: DataReport, id: string) => void;
-  pageName?: string
 }
 
 export type DataReport = {
@@ -61,3 +49,7 @@ type AdditionalData = {
   conclusion?: [string, string];
 };
 
+export type CheckedQuestionDragDrop = {
+  id: string,
+  timestamp: number
+};

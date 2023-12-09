@@ -1,24 +1,28 @@
+'use client'
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import { useTranslation } from "react-i18next";
 import { GitHubButton } from "../components/GitHubButton";
 import { GoogleButton } from "../components/GoogleButton";
-// import { LinkedinButton } from "../components/LinkedinButton";
-// import { SignInForm } from "../components/SignInForm";
-// import { GitLabButton } from "../components/GitLabButton";
+import { MixinFlexCenter } from "@/styles/mixins";
 
 export default async function Signin() {
+  const { t } = useTranslation();
 
   return (
-    <div className="signIn">
-      <div className="signIn__container">
-        <h1 className="signIn__title">Log in your account</h1>
+    <Box
+      sx={({ custom }) => ({
+        ...MixinFlexCenter,
+        height: 'calc(100vh - 80px)',
+        backgroundColor: custom.colorMidnightCoal,
+      })}>
+      <Box sx={{ ...MixinFlexCenter, flexDirection: 'column' }}>
+        <Typography variant="h1" sx={{ marginBottom: '50px', fontSize: '48px' }}>
+          {t('logInYourAccount')}
+        </Typography>
         <GoogleButton />
         <GitHubButton />
-        {/* <div>or</div>
-      <GitLabButton /> */}
-        {/* <LinkedinButton />  */}
-        {/* <div>or</div> */}
-        {/* <SignInForm /> */}
-      </div>
-
-    </div>
+      </Box>
+    </Box>
   )
 }

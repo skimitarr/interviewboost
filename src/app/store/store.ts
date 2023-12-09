@@ -1,9 +1,17 @@
+import createSagaMiddleware from 'redux-saga';
 import { configureStore } from '@reduxjs/toolkit';
-import dataSlice from './DataSlice';
+import { rootReducer } from './reducers';
+import { rootSaga } from './sagas/index';
+
+const sagaMiddleware = createSagaMiddleware();
 
 const store = configureStore({
-  reducer: dataSlice,
-})
+  reducer: rootReducer,
+  devTools: true,
+  middleware: [sagaMiddleware],
+});
+
+sagaMiddleware.run(rootSaga);
 
 export default store;
 

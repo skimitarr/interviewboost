@@ -1584,7 +1584,7 @@ export { getDbProfessions, getDbAllGrades, getDbAllCategories, getDbAllQuestions
 //   {
 //     id: "420",
 //     answers: ["420"],
-//     text: "Accessibility: Что такое WCAG?",
+//     text: "Что такое WCAG?",
 //   },
 //   {
 //     id: "421",

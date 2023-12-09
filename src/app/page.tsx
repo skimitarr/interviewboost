@@ -1,34 +1,59 @@
-import { getDbProfessions } from '../services/DatabaseService'
-import ProfessionCard from './components/ProfessionCard';
-// setDocs()
+'use client'
+import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { selectFromAppData } from '@/app/store/selectors/data';
+import { useAppDispatch } from './hooks'
+import applySpec from 'ramda/es/applySpec';
+import fastDeepEqual from 'fast-deep-equal';
+import Box from '@mui/material/Box';
 
-export default async function Home() {
+import { ProfessionCard } from './components/ProfessionCard/ProfessionCard';
+import { StoreState } from '@/app/store/types';
+import { IProffesion } from './components/Types';
+import { MixinFlexCenter } from '@/styles/mixins';
 
-  const professions = await getDbProfessions()
+type Selector = {
+  allProfessions: IProffesion[],
+};
 
+const selector = applySpec<Selector>({
+  allProfessions: selectFromAppData('allProfessions', []),
+});
+
+export default function Home() {
+  const { allProfessions } = useSelector<StoreState, Selector>(selector, fastDeepEqual);
+  const [professions, setProfessions] = useState<IProffesion[]>([]);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch({ type: 'actionType/getAllProfessions' });
+  }, []);
+
+  useEffect(() => {
+    setProfessions(allProfessions)
+  }, [allProfessions]);
 
   return (
-    <div className='container container__home'>
-      <div className='card__wrapper'>
+    <Box
+      sx={({ custom }) => ({
+        ...MixinFlexCenter,
+        minHeight: 'calc(100vh - 80px)',
+        backgroundColor: custom.colorMidnightCoal,
+      })}
+    >
+      <Box
+        sx={{
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr 1fr',
+          gridGap: '10px',
+          margin: '0 auto',
+          padding: '20px',
+        }}
+      >
         {professions && professions.map((profession) =>
           <ProfessionCard profession={profession} key={profession.id} />
         )}
-      </div>
-    </div>
+      </Box>
+    </Box>
   )
 }
-
-// Вопросы Роме:
-// ; 1. как работает переход по адресу? у нас должны быть созданы статические страницы для этого?
-// ;    как их создать, проверить это? через npm run build?
-
-// ; 2. У меня сейчас нигде нет полной загрузки всех вопросов, поэтому получается что не для всех ссылок будут страницы?
-// ;    Может нужно скачать с базы данных все вопросы, чтобы создать для них статические страницы?
-
-// ; 3. страница мои вопросы будет при каждом клике на вопрос перерендириваться? как этого можно избежать?
-
-
-// 3. убрать any
-// 8. Оптимизация
-// 9. Проверить лицензии
-// 10. сделать роботtxt и сайтмап

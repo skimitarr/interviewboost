@@ -1,23 +1,35 @@
 'use client'
 import { useEffect, useState } from "react";
-import { nanoid } from 'nanoid'
 import { useRouter } from "next/navigation";
-import Link from "next/link"
-import { useSession } from "next-auth/react"
-import { DataReport } from "../components/Types";
-
+import { useSession } from "next-auth/react";
+import { useTranslation } from "react-i18next";
+import { nanoid } from 'nanoid';
 import html2canvas from 'html2canvas';
 import pdfMake from 'pdfmake/build/pdfmake';
-import Search from "../components/Search";
-// import pdfFonts from "pdfmake/build/vfs_fonts";
-// pdfMake.vfs = pdfFonts.pdfMake.vfs;
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+
+import { Search } from "../components/Search/Search";
+import { DataReport } from "../components/Types";
+import { StyledLink, StyledRightSide } from "../components/PageFormRightSide/style";
+import { StyledLeftContainer as Report, StyledLeftContainer } from "../interview/style";
+import { MixinBtn, MixinFlexCenter, MixinGridContainer } from "@/styles/mixins";
+import {
+  StyledNameBtn,
+  StyledRow,
+  StyledRowItem,
+  StyledTextConclusion,
+  StyledTitle,
+  StyledBtnWrapper
+} from "./style";
 
 export default function Reports() {
   const [allData, setAllData] = useState<DataReport[]>([]); // все отчеты в левой части экрана
   const [currentReport, setCurrentReport] = useState<any[]>([]); // отображение текущего отчета в правой части экрана
   const [currentName, setCurrentName] = useState(''); // для названия сохраняемого файла
   const [currentIdReport, setCurrentIdReport] = useState(''); // для выделения отчета цветом
-
+  const { t } = useTranslation();
   const session = useSession();
   const router = useRouter();
 
@@ -34,7 +46,7 @@ export default function Reports() {
   }, [])
 
   useEffect(() => { //обновляем все отчеты в localStorage
-    localStorage.setItem('allDatas', JSON.stringify(allData))
+    allData.length && localStorage.setItem('allDatas', JSON.stringify(allData))
   }, [allData])
 
   useEffect(() => { // открываем первый отчет
@@ -48,124 +60,23 @@ export default function Reports() {
   }, [allData])
 
   useEffect(() => { //если не зареган, переходим на окно регистрации
-    if (session.status === 'unauthenticated') {
-      router.push('/signin');
-    }
+    session.status === 'unauthenticated' && router.push('/signin');
   }, [session]);
 
   const getCurrentReport = (item: DataReport, id: string) => {
     setCurrentReport(Object.entries(item));
-    setCurrentName(item.name)
+    setCurrentName(item.name);
     setCurrentIdReport(id)
   }
 
-  // const downloadFile = async () => { // скачиваем данные из гугл таблицы, превращаем в файл и загружаем его
-  //   try {
-  //     // Отправить запрос к api/submit, чтобы получить данные из Google Таблиц
-  //     const responseFromGoogleSheets = await fetch('/api/getData', {
-  //       method: 'GET',
-  //       headers: {
-  //         'Accept': 'application/json',
-  //         'Content-Type': 'application/json'
-  //       },
-  //     });
-
-  //     if (responseFromGoogleSheets.ok) {
-  //       // Если запрос к Google Таблицам успешен, получите данные
-  //       const dataFromGoogleSheets = await responseFromGoogleSheets.json();
-
-  //       // Теперь у вас есть данные из Google Таблицам
-  //       console.log(dataFromGoogleSheets.data[2][1]);
-  //       let data = dataFromGoogleSheets.data[2][1]
-
-  //       // Создайте новый массив для данных CSV
-  //       const csvData = [];
-  //       // Идем по каждому элементу в исходных данных
-  //       for (let i = 0; i < data.length; i++) {
-  //         // Если текущий элемент и следующий существуют, объедините их в одну строку CSV
-  //         if (data[i].length > 0) {
-  //           const csvRow = data[i].map((cell: any) => cell.replace(/ /g, '_')).join(' ');
-  //           // Замените запятые на пробелы
-  //           const csvRowWithSpaces = csvRow.replace(/,/g, ' ');
-  //           csvData.push(csvRowWithSpaces);
-  //         } else if (i > 0 && data[i - 1].length > 0) {
-  //           // Если текущий элемент пустой, но предыдущий элемент был заполнен, добавьте пустую строку в CSV
-  //           csvData.push('');
-  //         }
-  //       }
-  //       // Преобразуйте данные в формат CSV
-  //       const csvContent = csvData.join('\n');
-
-  //       // Затем выполните логику для скачивания файла и прочие действия
-  //       // Создайте Blob из данных (csvContent), Создайте ссылку для скачивания
-  //       // const blob = new Blob([data]);
-  //       // обычно хватает предыдущей строчки, но на следующей учтена поддержка русского языка
-  //       const blob = new Blob([new Uint8Array([0xEF, 0xBB, 0xBF]), csvContent], { type: "text/csv; charset=UTF-8" });
-  //       const link = document.createElement('a');
-  //       link.href = window.URL.createObjectURL(blob);
-  //       link.setAttribute('download', `${currentName}.csv`);
-
-  //       // Добавьте ссылку на страницу и симулируйте клик для скачивания
-  //       document.body.appendChild(link);
-  //       link.click();
-
-  //       // Удалите ссылку после скачивания
-  //       link.remove();
-  //     } else {
-  //       // Если запрос к Google Таблицам не удался, обработайте ошибку
-  //       console.error('Ошибка при получении данных из Google Таблиц');
-  //     }
-  //   } catch (error) {
-  //     console.error('Ошибка:', error);
-  //   }
-  // };
-
-
-  // const downloadFile = async () => { // скачиваем сам файл из гугл таблицы и загружаем его (пока что данные вунтри таблицы почемуто отсутствуют)
-  //   try {
-  //     // Отправить запрос к роуту /api/downloadFile, чтобы получить файл "downloaded_file.xlsx" с сервера
-  //     const responseFromServer = await fetch('/api/downloadFile', {
-  //       method: 'GET',
-  //       headers: {
-  //         'Accept': 'application/octet-stream', // Указываем тип данных, что это бинарный файл
-  //       },
-  //     });
-
-  //     console.log(responseFromServer)
-
-  //     if (responseFromServer) {
-  //       // Если запрос к серверу успешен, получите файл
-  //       const fileBlob = await responseFromServer.blob();
-
-  //       console.log(fileBlob)
-
-  //       // Создайте ссылку для скачивания и симулируйте клик для скачивания файла
-  //       const link = document.createElement('a');
-  //       link.href = window.URL.createObjectURL(fileBlob);
-  //       link.setAttribute('download', 'downloaded_file.csv'); // Установите имя файла
-  //       document.body.appendChild(link);
-  //       link.click();
-
-  //       // Удалите ссылку после скачивания
-  //       link.remove();
-  //     } else {
-  //       // Если запрос не удался, обработайте ошибку
-  //       console.error('Ошибка при получении файла с сервера.');
-  //     }
-  //   } catch (error) {
-  //     console.error('Ошибка:', error);
-  //   }
-  // };
-
   const downloadFile = async () => { //сохраняем отчет в pdf и скачиваем его
-    const rightSideElement = document.querySelector('.report__container') as HTMLElement;
-    const titles = document.querySelectorAll('.report__block-text') as NodeListOf<HTMLElement>; //из-за ошибки меняем выравнивание текста
-    const textsColor = document.querySelectorAll('.report__text') as NodeListOf<HTMLElement>;
-    const titlesColor = document.querySelectorAll('.report__block-title') as NodeListOf<HTMLElement>;
-    const borders = document.querySelectorAll('.report__block-row') as NodeListOf<HTMLElement>;
+    const rightSideElement = document.querySelector('[data-report="report"]') as HTMLElement;
+    const titles = document.querySelectorAll('[data-titles="titles"]') as NodeListOf<HTMLElement>;
+    const textsColor = document.querySelectorAll('[data-text="text"]') as NodeListOf<HTMLElement>;
+    const titlesColor = document.querySelectorAll('[data-tilescolor="titlescolor"]') as NodeListOf<HTMLElement>;
+    const borders = document.querySelectorAll('[data-borders="borders"]') as NodeListOf<HTMLElement>;
 
     titles.forEach((title) => {
-      // title.style.alignItems = 'flex-start';
       title.style.marginTop = '-10px';
     });
     rightSideElement.style.backgroundColor = 'white';
@@ -176,83 +87,29 @@ export default function Reports() {
       title.style.backgroundColor = '#b8b5b5';
     });
     borders.forEach((border) => {
-      border.classList.add('blackBorder1', 'blackBorder2'); // Добавляем класс для изменения стилей
+      border.classList.add('blackBorder1', 'blackBorder2');
     });
 
-    // const canvas = await html2canvas(rightSideElement); // Создаем скриншот элемента
-    // const pdfDoc = pdfMake.createPdf({ // Создаем PDF-документ
-    //   content: [ // Добавляем изображение скриншота в PDF
-    //     { image: canvas.toDataURL('image/jpeg'), width: 500 }, // Вы можете настроить размер изображения по своему усмотрению
-    //   ],
-    // });
-    // pdfDoc.download(`${currentName}.pdf`); // Скачиваем PDF-файл
-    // // pdfDoc.open({}, window); // открываем тут же PDF-файл (для тестирования)
-
-    const elementsToCapture = [rightSideElement]; // Создайте массив элементов для захвата скриншотов
-    // const pageWidth = 810; // Ширина страницы в пикселях
-    // const pageHeight = 1200; // Высота страницы в пикселях
-    // const pageWidth = window.innerWidth * 2 / 3; // Ширина страницы в пикселях
-    // const pageHeight = window.innerHeight; // Высота страницы в пикселях, равная высоте окна браузера
-    // const pageWidth = rightSideElement.offsetWidth; // Добавьте небольшой запас
-    // const pageHeight = rightSideElement.offsetHeight; // Добавьте небольшой запас
-
-    // Получите плотность пикселей устройства
-    const devicePixelRatio = window.devicePixelRatio || 1;
-    // Определите размеры страницы динамически на основе размеров rightSideElement и плотности пикселей
-    const pageWidth = (rightSideElement.offsetWidth) * devicePixelRatio;
-    const pageHeight = (rightSideElement.offsetHeight) * devicePixelRatio;
     const pdfContent: any[] = [];
 
-    // Функция для создания и добавления скриншотов в PDF
     async function addScreenshotsToPDF(element: HTMLElement) {
-      const canvas = await html2canvas(element); // Создаем скриншот элемента
-      const totalHeight = canvas.height;
-      let yOffset = 0;
+      const canvas = await html2canvas(element);
+      const pageImage = canvas.toDataURL('image/jpeg');
 
-      while (yOffset < totalHeight) {
-        // Создаем скриншот, обрезанный до размеров страницы A4
-        const pageCanvas = document.createElement('canvas');
-        const pageContext = pageCanvas.getContext('2d');
-        pageCanvas.width = pageWidth;
-
-        // Вычисляем высоту отрисовываемой области для этой страницы
-        const pageContentHeight = Math.min(pageHeight, totalHeight - yOffset);
-        pageCanvas.height = pageContentHeight;
-
-        // Рисуем скриншот с учетом смещения
-        pageContext?.drawImage(
-          canvas,
-          0,
-          yOffset,
-          pageWidth,
-          pageContentHeight,
-          0,
-          0,
-          pageWidth,
-          pageContentHeight
-        );
-
-        // Преобразуем скриншот в изображение и добавляем в массив для PDF
-        const pageImage = pageCanvas.toDataURL('image/jpeg');
-        pdfContent.push({ image: pageImage, width: 500 });
-
-        // Увеличиваем yOffset для следующего скриншота
-        yOffset += pageHeight;
-      }
+      // Установите размеры страницы PDF равными размерам скриншота
+      pdfContent.push({ image: pageImage, width: canvas.width, height: canvas.height });
     }
 
-    // Обходим все элементы и создаем скриншоты
-    for (const element of elementsToCapture) {
-      await addScreenshotsToPDF(element);
-    }
-    // Создаем PDF-документ с содержимым
+    await addScreenshotsToPDF(rightSideElement);
+
     const pdfDoc = pdfMake.createPdf({
       content: pdfContent,
+      pageSize: { width: pdfContent[0].width + 70, height: pdfContent[0].height + 70 }
     });
+
     pdfDoc.download(`${currentName}.pdf`);
 
-    titles.forEach((title) => { //возвращаем выравнивание текста
-      // title.style.alignItems = 'center'
+    titles.forEach((title) => {
       title.style.marginTop = '0';
     });
     rightSideElement.style.backgroundColor = '#3C3E49';
@@ -268,102 +125,126 @@ export default function Reports() {
   };
 
   return (
-    <div className='container container__form'>
-      <div className='questions__leftSide'>
+    <Box sx={{ ...MixinGridContainer }}>
+      <StyledLeftContainer>
         <Search pageName='reports' getCurrentReport={getCurrentReport} />
         {allData && allData.map((item) => {
           const itemWithoutId = { ...item }; // Создаем копию объекта item без поля id, чтобы онo не отрисовывалась
           delete itemWithoutId.id;
           return (
-            <div className='questions__leftSide-div' key={item.id}>
-              <button className={`questions__choosenQuestions-reports ${currentIdReport === item.id ? 'active' : ''}`}
-                onClick={() => getCurrentReport(itemWithoutId, item.id as string)}>{item.name}</button>
-            </div>
+            <Box sx={{ padding: '0 27px', marginBottom: '5px' }} key={item.id}>
+              <StyledNameBtn
+                onClick={() => getCurrentReport(itemWithoutId, item.id as string)}
+                isActive={currentIdReport === item.id}
+              >
+                {item.name}
+              </StyledNameBtn>
+            </Box>
           );
         })}
-      </div>
+      </StyledLeftContainer>
 
       {allData.length > 0
-        ? <div className='report'>
-          <div className='report__container'>
-            <div className='report__wrapper'>
-              {currentReport.length > 0 && currentReport.map(([sectionName, sectionData]) => {
-                return <div className='report__block' key={nanoid()}>
-                  {sectionName === 'name'
-                    ? <div className='report__block-title'>
-                      <p className='report__block-text report__text'>{sectionData}</p>
-                    </div>
-                    : ''}
+        ? <Report sx={({ custom }) => ({ backgroundColor: custom.colorTwilightSlate, paddingBottom: '0' })}>
+          <Box sx={{ position: 'relative' }} data-report="report">
+            <Box sx={{ padding: '25px' }}>
+              {currentReport.length > 0 &&
+                currentReport.map(([sectionName, sectionData]) => (
+                  <Box
+                    key={nanoid()}
+                    sx={{
+                      '&:not(:last-child)': {
+                        marginBottom: '40px',
+                      }
+                    }}
+                  >
+                    {sectionName === 'name' &&
+                      <StyledTitle data-tilescolor="titlescolor">
+                        <Typography sx={{ fontSize: '16px' }} data-titles="titles" data-text="text">{sectionData}</Typography>
+                      </StyledTitle>
+                    }
 
-                  {sectionName === 'conclusion'
-                    ? Array.isArray(sectionData) && sectionData.map((el: string[]) => {
-                      return (
-                        <div key={nanoid()} className="test">
-                          {el.map(el => {
-                            return el === 'Общий вывод'
-                              ? <div key={nanoid()}>
-                                <div className='report__block-title'>
-                                  <p className='report__block-text report__text'>
-                                    {el}
-                                  </p>
-                                </div>
-                                <div className='report__conclusion'>
-                                  <span className='report__block-item report__comments report__text' style={{ marginLeft: '50px' }}>Комментарий</span>
-                                  <span className='report__block-item report__marks report__text'>Оценка</span>
-                                </div>
-                              </div>
-                              : <span key={nanoid()} className='report__conclusion-item report__text'>
-                                {el}
-                              </span>
-                          })}
-                        </div>
-                      )
-                    })
-                    : ''}
+                    {sectionName === 'conclusion' && Array.isArray(sectionData) &&
+                      sectionData.map((el: string[]) => (
+                        <Box key={nanoid()}>
+                          {el.map(el => (
+                            el === 'Общий вывод'
+                              ? <Box key={nanoid()}>
+                                <StyledTitle data-tilescolor="titlescolor">
+                                  <Typography sx={{ fontSize: '16px' }} data-titles="titles" data-text="text">{el}</Typography>
+                                </StyledTitle>
+                                <Box
+                                  sx={{
+                                    display: 'grid',
+                                    gridTemplateColumns: '80% 20%',
+                                    marginBottom: '20px'
+                                  }}
+                                >
+                                  <Typography sx={{ textAlign: 'center' }} data-text="text">{t('comment')}</Typography>
+                                  <Typography sx={{ textAlign: 'center' }} data-text="text">{t('rating')}</Typography>
+                                </Box>
+                              </Box>
+                              : <StyledTextConclusion key={nanoid()} data-text="text">{el}</StyledTextConclusion>
+                          ))}
+                        </Box>
+                      ))
+                    }
 
-                  {sectionName !== 'name' && sectionName !== 'conclusion'
-                    ? <>
-                      <div className='report__block-title'>
-                        <p className='report__block-text report__text'>{sectionName}</p>
-                      </div>
-                      <div className='report__block-wrapper'>
-                        <div className='report__block-row'>
-                          <span className='report__block-item report__questions report__text'>Вопросы</span>
-                          <span className='report__block-item report__marks report__text'>Оценка</span>
-                          <span className='report__block-item report__comments report__text'>Комментарий</span>
-                        </div>
-                        {Array.isArray(sectionData) && sectionData.map((elements: string[], index1) => {
-                          return <div className='report__block-row' key={nanoid()}>
-                            {elements.map((el, index: number) => {
-                              return (
-                                index % 2 === 0
-                                  ? el !== 'Итого' && index === 0
-                                    ? <p key={nanoid()} className='report__block-item report__text' style={{ textAlign: 'left', marginLeft: '20px' }}>{index1 + 1}. {el}</p>
-                                    : <p key={nanoid()} className='report__block-item report__text' style={{ textAlign: 'left', marginLeft: '20px' }}>{el}</p>
-                                  : <p key={nanoid()} className='report__block-item report__text'>{el}</p>
-                              )
-                            })}
-                          </div>
-                        })}</div>
-                    </>
-                    : ''}
+                    {sectionName !== 'name' && sectionName !== 'conclusion' &&
+                      <>
+                        <StyledTitle data-tilescolor="titlescolor">
+                          <Typography sx={{ fontSize: '16px' }} data-titles="titles" data-text="text">{sectionName}</Typography>
+                        </StyledTitle>
+                        <Box>
+                          <StyledRow data-borders="borders">
+                            <StyledRowItem data-text="text">{t('questions')}</StyledRowItem>
+                            <StyledRowItem data-text="text">{t('rating')}</StyledRowItem>
+                            <StyledRowItem data-text="text">{t('comment')}</StyledRowItem>
+                          </StyledRow>
+                          {Array.isArray(sectionData) &&
+                            sectionData.map((elements: string[], index1) => (
+                              <StyledRow data-borders="borders" key={nanoid()}>
+                                {elements.map((el, index: number) => (
+                                  index % 2 === 0
+                                    ? <StyledRowItem
+                                      key={nanoid()}
+                                      data-text="text"
+                                      sx={{ textAlign: 'left', marginLeft: '20px' }}
+                                    >
+                                      {el !== 'Итого' && index === 0 ? `${index1 + 1}. ${el}` : el}
+                                    </StyledRowItem>
+                                    : <StyledRowItem key={nanoid()} data-text="text">
+                                      {el}
+                                    </StyledRowItem>
+                                ))}
+                              </StyledRow>
+                            ))
+                          }
+                        </Box>
+                      </>
+                    }
+                  </Box>
+                ))}
+            </Box>
+          </Box>
 
-                </div>
-              })}
-            </div>
-          </div>
-
-          <div className='questions__nextPage-wrapper'>
-            <button className='questions__nextPage-btn btn' onClick={downloadFile}>Скачать отчет</button>
-          </div>
-        </div>
-
-        : <div className='questions__rightSide'>
-          <div className='questions__noData'>
-            <Link className='questions__noData-btn btn' href='/'><p>Начнем</p></Link>
-          </div>
-        </div>}
-
-    </div>
+          <StyledBtnWrapper>
+            <Button sx={{ ...MixinBtn }} onClick={downloadFile}>{t('downloadReport')}</Button>
+          </StyledBtnWrapper>
+        </Report>
+        : <StyledRightSide>
+          <Box
+            sx={{
+              marginTop: '140px',
+              ...MixinFlexCenter,
+              flexDirection: 'column',
+            }}>
+            <Typography sx={{ marginBottom: '45px', fontSize: '18px' }}>
+              {t('selectSpecialization')}
+            </Typography>
+            <StyledLink href='/'>{t('letsGetStarted')}</StyledLink>
+          </Box>
+        </StyledRightSide>}
+    </Box>
   )
 }
