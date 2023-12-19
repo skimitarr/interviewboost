@@ -17,6 +17,10 @@ export type AppDataState = {
     answers: IAnswer[];
     currentIdQuestion: string;
     checkedQuestionDragDrop: CheckedQuestionDragDrop;
+    checkedCategoriesIds: Array<string>;
+    activeCategory: ICategory | null;
+    activeGrade: IGrade | null;
+    categoriesByGrade: ICategory[];
 }
 
 export type StoreState = {

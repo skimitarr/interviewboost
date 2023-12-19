@@ -13,11 +13,7 @@ export function ProfessionCard({ profession }: { profession: IProffesion }) {
   const { t } = useTranslation();
 
   function handleClick() {
-    dispatch({ type: 'actionType/getProfession', payload: profession }); //type и payload из-за саги, чтоб без бесконечного цикла
-    dispatch({ type: 'actionType/getAllGrades' });
-    dispatch({ type: 'actionType/getAllCategories' });
-    dispatch({ type: 'actionType/getAllQuestions' });
-    dispatch({ type: 'actionType/getAllAnswers' });
+    dispatch({ type: 'actionType/getStoreData', payload: profession }); //type и payload из-за саги, чтоб без бесконечного цикла
   }
 
   return (

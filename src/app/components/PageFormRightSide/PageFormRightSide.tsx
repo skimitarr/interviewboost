@@ -1,23 +1,27 @@
 'use client'
-import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { useAppDispatch } from '@/app/hooks';
+import { useCallback, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import applySpec from 'ramda/es/applySpec';
 import fastDeepEqual from 'fast-deep-equal';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 
-import { addCategory, removeCategory } from '@/app/store/slices/app-data.slice';
-import { selectFromAppData } from '@/app/store/selectors/data';
+import {
+  addCategory,
+  removeCategory,
+  setActiveCategory,
+  setCheckedCategoriesIds,
+  setQuestions
+} from '@/app/store/slices/app-data.slice';
+import { selectFromAppData, selectQuestionByCategory } from '@/app/store/selectors/data';
 import { StoreState } from '@/app/store/types';
-import { CategoryRightSide } from '@/app/components/CategoryRightSide/CategoryRghtSide';
-import { InputQuestion } from "../InputQuestion/InputQuestion";
-import { SelectAllQuestions } from "../SelectAllQuestions";
+import { MemoizedCategoryRightSide } from '@/app/components/CategoryRightSide/CategoryRghtSide';
+import { InputQuestion } from '../InputQuestion/InputQuestion';
+import { SelectAllQuestions } from '../SelectAllQuestions';
 import { MixinFlexCenter } from '@/styles/mixins';
 import { StyledCategories, StyledLink, StyledRightSide } from './style';
 import {
-  IGrade,
   ICategory,
   IQuestion,
   IProffesion,
@@ -26,98 +30,69 @@ import {
 
 type Selector = {
   storeProfession: IProffesion | null,
-  storeGrades: IGrade[],
-  storeAllCategories: ICategory[],
   storeCategories: ICategory[],
   storeQuestions: IQuestion[],
   checkedIdQuestionDragDrop: CheckedQuestionDragDrop,
+  checkedCategoriesIds: Array<string>,
+  activeCategory: ICategory,
+  categoriesByGrade: ICategory[],
+  questions: IQuestion[],
 };
 
 const selector = applySpec<Selector>({
   storeProfession: selectFromAppData('profession', null),
-  storeGrades: selectFromAppData('grades', []),
-  storeAllCategories: selectFromAppData('allCategories', []),
   storeCategories: selectFromAppData('categories', []),
-  storeQuestions: selectFromAppData('questions', []),
   checkedIdQuestionDragDrop: selectFromAppData('checkedQuestionDragDrop', { id: '', timestamp: 0 }),
+  checkedCategoriesIds: selectFromAppData('checkedCategoriesIds', []),
+  activeCategory: selectFromAppData('activeCategory', null),
+  categoriesByGrade: selectFromAppData('categoriesByGrade', []),
+  questions: selectQuestionByCategory,
 });
 
 export function PageFormRightSide() {
   const { t } = useTranslation();
-  const dispatch = useAppDispatch()
+  const dispatch = useDispatch();
 
   const {
     storeProfession,
-    storeGrades,
-    storeAllCategories,
     storeCategories,
-    storeQuestions,
     checkedIdQuestionDragDrop,
+    checkedCategoriesIds,
+    activeCategory,
+    categoriesByGrade,
+    questions,
   } = useSelector<StoreState, Selector>(selector, fastDeepEqual);
 
-  const [grades, setGrades] = useState<IGrade[]>([]); // массив (junior middle) с базы данных
-  const [activeGradeName, setActiveGradeName] = useState<string>('Junior'); // определяем активую кнопку (junior middle) для стилизации
-  const [categories, setCategories] = useState<ICategory[]>([]); // массив (html css) с базы данных
   const [categoriesForStore, setCategoriesForStore] = useState<ICategory[]>([]); // тут убираем/добавляем вопросы
-  const [activeCategory, setActiveCategory] = useState<ICategory | null>(null); // определяем активные(раскрытые) категории (html css)
-  const [questions, setQuestions] = useState<IQuestion[]>([]); // массив всех вопросов с базы данных
   const [checkedIdQuestions, setCheckedIdQuestions] = useState<string[]>([]); // массив id вопросов которые checked
-  const [checkedIdAllQuestions, setCheckedIdAllQuestions] = useState<string[]>([]); // массив категорий id выбрать все
-
-  useEffect(() => {
-    setActiveCategory(storeAllCategories[0]);
-    const ids = storeAllCategories.map(item => item.id);
-    setCheckedIdAllQuestions(ids);
-  }, [storeAllCategories])
-
-  useEffect(() => { // получаем grades
-    setGrades(storeGrades);
-  }, [storeGrades])
 
   useEffect(() => { // получаем categories
-    if (grades.length > 0) {
-      const filteredGrade = grades.find(grade => grade.title === activeGradeName);
-      const categoriesData = storeAllCategories
-        .filter((item) => filteredGrade?.categories.includes(item.id))
-        .sort((a: ICategory, b: ICategory) => +a.id - +b.id);
-      setCategories(categoriesData);
-      setCategoriesForStore(categoriesData);
+    if (categoriesByGrade.length > 0) {
+      setCategoriesForStore(categoriesByGrade);
     }
-  }, [grades, activeGradeName])
+  }, [categoriesByGrade])
 
-  useEffect(() => { // получаем questions
-    if (categories.length > 0) {
-      const set = new Set();
-      categories.forEach(category => {
-        category.questions.forEach(item => { set.add(item) })
-      });
-      const arrayOfIds = Array.from(set); // получаем все id вопросов со всех тем
-
-      const questionsData = storeQuestions.filter((item) => arrayOfIds.includes(item.id))
-      setQuestions(questionsData);
-    }
-  }, [categories])
 
   useEffect(() => { // получаем questions из стора с правильно активированными чекбоксами
     if (storeCategories.length > 0) {
       const selectedQuestions = storeCategories.flatMap((category) => category.questions); // получаем questions из стора
-      const missingCategories = categories.filter(category => !storeCategories.some(storeCategory => storeCategory.id === category.id));
+      const missingCategories = categoriesByGrade.filter(category => !storeCategories.some(storeCategory => storeCategory.id === category.id));
       const missingQuestions = missingCategories.flatMap((category) => category.questions); // получаем questions из других катег что нет в сторе
       const allSelectedQuestions = [...selectedQuestions, ...missingQuestions];
       setCheckedIdQuestions(allSelectedQuestions);
     } else {
-      const selectedQuestions = categories.flatMap((category) => category.questions); // если в сторе ничего нет
+      const selectedQuestions = categoriesByGrade.flatMap((category) => category.questions); // если в сторе ничего нет
       setCheckedIdQuestions(selectedQuestions);
     }
-  }, [categories])
+  }, [categoriesByGrade])
 
-  const showQuestions = (category: ICategory) => {
-    setActiveCategory(
-      activeCategory && activeCategory.id === category.id
+  const showQuestions = useCallback((category: ICategory) => {
+    dispatch(setActiveCategory(
+      activeCategory.id === category.id
         ? { id: '', title: '', questions: [] }
         : category
-    )
-  }
+    ))
+  }, [categoriesByGrade]);
 
   const addStoreCategory = (category: ICategory) => {
     const updatedQuestions: string[] = [];
@@ -154,7 +129,7 @@ export function PageFormRightSide() {
   }
 
   const selectQuestionsLogic = (questionCategory: ICategory, checkedIdQuestions: string[]) => {
-    const currentCategoriesForStore = categories.find(item => item.id === questionCategory.id); // нужная категория
+    const currentCategoriesForStore = categoriesByGrade.find(item => item.id === questionCategory.id); // нужная категория
     if (currentCategoriesForStore) {
       const updatedQuestions: string[] = [];
       currentCategoriesForStore.questions.forEach(element => {
@@ -178,16 +153,17 @@ export function PageFormRightSide() {
   }
 
   // TODO: на рефактор selectAllQuestions
-  const selectAllQuestions = (categoryId: string, statebuttonAllQuestions: boolean) => { // добавляем/убираем все вопросы
-    setCheckedIdAllQuestions(checkedIdAllQuestions.includes(categoryId) // меняем состояние самой кнопки
-      ? checkedIdAllQuestions.filter((item) => item !== categoryId)
-      : [...checkedIdAllQuestions, categoryId])
+  const selectAllQuestions = useCallback((categoryId: string, stateButtonAllQuestions: boolean) => { // добавляем/убираем все вопросы
+    const currentCheckedCategoriesIds = checkedCategoriesIds.includes(categoryId) // меняем состояние самой кнопки
+      ? checkedCategoriesIds.filter((item) => item !== categoryId)
+      : [...checkedCategoriesIds, categoryId];
+    dispatch(setCheckedCategoriesIds(currentCheckedCategoriesIds));
 
-    let currentCategoriesForStore = categories.find(item => item.id === categoryId); // нужная категория
+    let currentCategoriesForStore = categoriesByGrade.find(item => item.id === categoryId); // нужная категория
     const restCategoriesForStore = categoriesForStore.filter(item => item.id !== categoryId); // остальные категории
 
     if (currentCategoriesForStore) {
-      if (statebuttonAllQuestions) {
+      if (stateButtonAllQuestions) {
         const temp = checkedIdQuestions;
         currentCategoriesForStore.questions.forEach(item => {
           if (!checkedIdQuestions.includes(item)) {
@@ -219,21 +195,23 @@ export function PageFormRightSide() {
     if (checkedIdQuestions.length === 0) { // чтобы не возникало ошибки при обращении к firestore
       return;
     }
-  }
+  }, [])
 
   const dragDropElement = (sourceId: string, destinationId: string, func: any) => {
-    func((prevState: any) => {
-      const newStateArray = [...prevState];
-
+    func(() => {
+      const newStateArray = [...categoriesByGrade];
+      console.log(sourceId, destinationId);
       const sourceIndex = newStateArray.findIndex((q: any) => q.id === sourceId);
       const destinationIndex = newStateArray.findIndex((q: any) => q.id === destinationId);
-
+      console.log(sourceIndex, sourceIndex);
       const [reorderedItem] = newStateArray.splice(sourceIndex, 1);
       newStateArray.splice(destinationIndex, 0, reorderedItem);
 
       return newStateArray;
     });
   };
+
+  console.log('render')
 
   return (
     storeProfession
@@ -258,24 +236,22 @@ export function PageFormRightSide() {
             textAlign: 'center',
             fontSize: '16px',
           })}
-        >{t('selectATechnologyStack')}</Typography>
-
+        >
+          {t('selectATechnologyStack')}
+        </Typography>
         <StyledCategories>
-          {categories &&
-            categories.map(category =>
-              <CategoryRightSide
-                key={category.id}
-                category={category}
-                activeCategory={activeCategory}
-                showQuestions={showQuestions}
-                removeStoreCategory={removeStoreCategory}
-                addStoreCategory={addStoreCategory}
-                dragDropElement={dragDropElement}
-                setCategories={setCategories}
-              />
-            )}
+          {categoriesByGrade.map(category =>
+            <MemoizedCategoryRightSide
+              key={category.id}
+              category={category}
+              activeCategoryId={activeCategory.id}
+              showQuestions={showQuestions}
+              removeStoreCategory={removeStoreCategory}
+              addStoreCategory={addStoreCategory}
+              dragDropElement={dragDropElement}
+             />
+          )}
         </StyledCategories>
-
         {activeCategory &&
           <Box sx={({ custom }) => ({
             padding: ' 25px 0 0 35px',
@@ -284,10 +260,10 @@ export function PageFormRightSide() {
           >
             <SelectAllQuestions
               category={activeCategory}
-              selectAllQuestions={selectAllQuestions}
-              checkedIdAllQuestions={checkedIdAllQuestions}
+              onSelectAll={selectAllQuestions}
+              checkedIdAllQuestions={checkedCategoriesIds}
             />
-            {questions.filter((item) => activeCategory.questions.includes(item.id))
+            {questions
               .map((item, index) => (
                 <InputQuestion
                   key={item.id}

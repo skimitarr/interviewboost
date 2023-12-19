@@ -4,7 +4,7 @@ import { AppDataState } from '../types';
 
 export const name = 'appData';
 
-const userInitialState: AppDataState = {
+export const appDataInitialState: AppDataState = {
   allProfessions: [],
   profession: null,
   grades: [],
@@ -13,12 +13,16 @@ const userInitialState: AppDataState = {
   questions: [],
   answers: [],
   currentIdQuestion: '',
-  checkedQuestionDragDrop: {id: '', timestamp: 0}
+  checkedQuestionDragDrop: {id: '', timestamp: 0},
+  checkedCategoriesIds: [],
+  activeCategory: null,
+  activeGrade: null,
+  categoriesByGrade: [],
 };
 
 export const appDataSlice = createSlice({
   name,
-  initialState: userInitialState,
+  initialState: appDataInitialState,
   reducers: {
     getAllProfessions(state, action) {
       state.allProfessions = action.payload;
@@ -49,7 +53,7 @@ export const appDataSlice = createSlice({
         state.categories.splice(index, 1);
       }
     },
-    getQuestions(state, action) {
+    setQuestions(state, action) {
       state.questions = action.payload;
     },
     getAnswers(state, action) {
@@ -61,8 +65,20 @@ export const appDataSlice = createSlice({
     getCheckedQuestionDragDrop(state, action) {
       state.checkedQuestionDragDrop = action.payload;
     },
+    setCheckedCategoriesIds(state, action) {
+      state.checkedCategoriesIds = action.payload;
+    },
+    setActiveCategory(state, action) {
+      state.activeCategory = action.payload;
+    },
+    setActiveGrade(state, action) {
+      state.activeGrade = action.payload;
+    },
+    setCategoryByGrade(state, action) {
+      state.categoriesByGrade = action.payload;
+    },
   },
 });
 
 export const { getAllProfessions, getProfession, getGrades, getAllCategories, getCategories, addCategory, removeCategory,
-  getQuestions, getAnswers, getCurrentIdQuestion, getCheckedQuestionDragDrop } = appDataSlice.actions;
+  setQuestions, setCategoryByGrade, setActiveGrade, setActiveCategory, setCheckedCategoriesIds, getAnswers, getCurrentIdQuestion, getCheckedQuestionDragDrop } = appDataSlice.actions;
