@@ -14,7 +14,7 @@ import { Search } from "../components/Search/Search";
 import { DataReport } from "../components/Types";
 import { StyledLink, StyledRightSide } from "../components/PageFormRightSide/style";
 import { StyledLeftContainer as Report, StyledLeftContainer } from "../interview/style";
-import { MixinBtn, MixinFlexCenter, MixinGridContainer } from "@/css/variables";
+import { MixinBtn, MixinFlexCenter, MixinGridContainer } from "@/styles/mixins";
 import {
   StyledNameBtn,
   StyledRow,
@@ -171,7 +171,7 @@ export default function Reports() {
                             el === 'Общий вывод'
                               ? <Box key={nanoid()}>
                                 <StyledTitle data-tilescolor="titlescolor">
-                                  <Typography sx={{ fontSize: '16px' }} data-titles="titles" data-text="text">{el}</Typography>
+                                  <Typography sx={{ fontSize: '16px' }} data-titles="titles" data-text="text">{t('generalFeedback')}</Typography>
                                 </StyledTitle>
                                 <Box
                                   sx={{

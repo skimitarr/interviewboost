@@ -3,7 +3,7 @@ import Box from '@mui/material/Box';
 import { Search } from '../components/Search/Search';
 import { PageFormLeftSide } from '../components/PageFormLeftSide/PageFormLeftSide';
 import { PageFormRightSide } from '../components/PageFormRightSide/PageFormRightSide';
-import { MixinGridContainer } from '@/css/variables';
+import { MixinGridContainer } from '@/styles/mixins';
 
 export default async function Form() {
 

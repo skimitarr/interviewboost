@@ -98,7 +98,9 @@ export function CategoryRightSide({
             transition: 'all 0.3s ease-in-out',
           }}
         >
-          <Button variant="outlined"
+          <Button
+            variant="outlined"
+            onClick={(e) => handleCategoryAction(e, category, hasThisCategory)}
             sx={({ custom }) => ({
               minWidth: '125px',
               height: '30px',
@@ -106,7 +108,6 @@ export function CategoryRightSide({
               borderRadius: '5px',
               color: 'inherit',
             })}
-            onClick={(e) => handleCategoryAction(e, category, hasThisCategory)}
           >
             <Typography sx={{ fontSize: '12px' }}>
               {hasThisCategory ? t('cancel') : t('add')}

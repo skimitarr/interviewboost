@@ -14,7 +14,7 @@ import { StoreState } from '@/app/store/types';
 import { CategoryRightSide } from '@/app/components/CategoryRightSide/CategoryRghtSide';
 import { InputQuestion } from "../InputQuestion/InputQuestion";
 import { SelectAllQuestions } from "../SelectAllQuestions";
-import { MixinFlexCenter } from '@/css/variables';
+import { MixinFlexCenter } from '@/styles/mixins';
 import { StyledCategories, StyledLink, StyledRightSide } from './style';
 import {
   IGrade,

@@ -10,7 +10,7 @@ import Box from '@mui/material/Box';
 import { ProfessionCard } from '../components/ProfessionCard/ProfessionCard';
 import { StoreState } from '@/app/store/types';
 import { IProffesion } from '../components/Types';
-import { MixinFlexCenter, colorBlack1 } from '@/css/variables';
+import { MixinFlexCenter } from '@/styles/mixins';
 
 type Selector = {
   allProfessions: IProffesion[],
@@ -35,11 +35,11 @@ export default function Position() {
 
   return (
     <Box
-      sx={{
+      sx={({ custom }) => ({
         ...MixinFlexCenter,
         minHeight: 'calc(100vh - 80px)',
-        backgroundColor: colorBlack1,
-      }}
+        backgroundColor: custom.colorMidnightCoal,
+      })}
     >
       <Box
         sx={{

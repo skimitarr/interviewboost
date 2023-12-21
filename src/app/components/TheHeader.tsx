@@ -1,6 +1,6 @@
 import { Navigation } from "./Navigation/Navigation"
 
-const navItems = [
+export const navItems = [
   { label: 'home', href: '/' },
   { label: 'position', href: '/position' },
   { label: 'questions', href: '/questions' },
@@ -9,9 +9,8 @@ const navItems = [
   { label: 'feedback', href: '/feedback' },
 ]
 
-const TheHeader = () => {
+export function TheHeader() {
   return (
     <Navigation navLinks={navItems} />
   )
 }
-export { TheHeader }

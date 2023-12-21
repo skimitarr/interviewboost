@@ -16,7 +16,7 @@ import { addCategory, getCheckedQuestionDragDrop, getCurrentIdQuestion } from '.
 import { ICategory, IQuestion } from "../Types";
 import { CategoryLeftSide } from '../CategoryLeftSide/CategoryLeftSide';
 import { StyledBtnWrapper } from './style';
-import { MixinBtn } from '@/css/variables';
+import { MixinBtn } from '@/styles/mixins';
 
 type Selector = {
   storeQuestions: IQuestion[],

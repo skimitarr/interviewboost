@@ -1,5 +1,5 @@
 'use client' //TODO убрать, добавлено из-за  sx={({ custom }) => ({
-import { MixinFlexCenter } from "@/css/variables";
+import { MixinFlexCenter } from "@/styles/mixins";
 import Box from "@mui/material/Box";
 
 export default function LoadingSvg() {
