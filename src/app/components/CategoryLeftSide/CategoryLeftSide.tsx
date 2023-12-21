@@ -1,6 +1,6 @@
 import Box from "@mui/material/Box";
 import { DragDropHooks } from "../Drag&DropHooks";
-import { QuestionLeftSide } from "../QuestionLeftSide";
+import { QuestionLeftSide } from "../QuestionLeftSide/QuestionLeftSide";
 import { ICategory, IQuestion } from "../Types";
 import { StyledLeftSide } from "./styles";
 

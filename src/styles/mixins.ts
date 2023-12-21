@@ -16,11 +16,18 @@ export const MixinBtn = {
   color: THEME_CUSTOMIZATION.colorSnowWhite,
   textTransform: 'none',
   lineHeight: '1.5',
+  transition: 'transform 0.5s ease, box-shadow 0.5s ease',
 
   '&:disabled': {
     color: THEME_CUSTOMIZATION.colorSnowWhite,
     opacity: '0.3',
-  }
+  },
+
+  '&:hover': {
+    background: THEME_CUSTOMIZATION.colorAzureBlue,
+    transform: 'translateY(-4px)',
+    boxShadow: '0 4px 20px -2px rgba(39, 94, 254, 0.5)',
+  },
 };
 
 export const MixinGridContainer = {
