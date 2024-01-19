@@ -14,7 +14,6 @@ export function ProfessionCard({ profession }: { profession: IProffesion }) {
   const router = useRouter();
 
   function handleClick() {
-    console.log(1)
     dispatch({ type: 'actionType/getProfession', payload: profession }); //type и payload из-за саги, чтоб без бесконечного цикла
     dispatch({ type: 'actionType/getAllGrades' });
     dispatch({ type: 'actionType/getAllCategories' });
