@@ -1,7 +1,7 @@
 'use client'
-import Link from 'next/link'
 import { useTranslation } from "react-i18next"
 import { useAppDispatch } from '../../hooks'
+import { useRouter } from "next/navigation";
 import Box from "@mui/material/Box"
 import Typography from "@mui/material/Typography"
 
@@ -11,6 +11,7 @@ import { StyledCard, StyledComingSoon, StyledTitle } from './style'
 export function ProfessionCard({ profession }: { profession: IProffesion }) {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
+  const router = useRouter();
 
   function handleClick() {
     dispatch({ type: 'actionType/getProfession', payload: profession }); //type и payload из-за саги, чтоб без бесконечного цикла
@@ -18,25 +19,17 @@ export function ProfessionCard({ profession }: { profession: IProffesion }) {
     dispatch({ type: 'actionType/getAllCategories' });
     dispatch({ type: 'actionType/getAllQuestions' });
     dispatch({ type: 'actionType/getAllAnswers' });
+    router.push('/questions');
   }
 
   return (
     <>
       {profession.id === '1'
         ?
-        <StyledCard>
-          <Link
-            href={{
-              pathname: '/questions',
-              query: { ProfeesionId: profession.id },
-            }}
-            onClick={() => handleClick()}
-          >
-            <StyledTitle>{profession.title}</StyledTitle>
-            <Typography>{profession.desc}</Typography>
-          </Link>
+        <StyledCard onClick={() => handleClick()}>
+          <StyledTitle>{profession.title}</StyledTitle>
+          <Typography>{profession.desc}</Typography>
         </StyledCard>
-
         :
         <Box
           sx={{

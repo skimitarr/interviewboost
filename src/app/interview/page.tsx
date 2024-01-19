@@ -282,7 +282,7 @@ export default function MyQuestions() {
       id: nanoid(),
       name: form.name,
       ...dataReport,
-      conclusion: [[`Общий вывод`], [conclusion, averageMark]]
+      conclusion: [['Общий вывод'], [conclusion, averageMark]]
     };
     localStorage.setItem('dataReport', JSON.stringify(newDataReport));
 
@@ -485,7 +485,7 @@ export default function MyQuestions() {
                   <StyledTextareaLabel>{t('addComment')}</StyledTextareaLabel>
                   <StyledTextarea
                     name="comment"
-                    placeholder="Комментарий"
+                    placeholder={t('comment')}
                     value={form.comment}
                     onChange={handleChange}
                   />
@@ -500,7 +500,7 @@ export default function MyQuestions() {
                         name="name"
                         value={form.name}
                         onChange={handleChange}
-                        placeholder="Введите имя претендента"
+                        placeholder={t('enterName')}
                         required
                       />
                       <Button sx={{ ...MixinBtn }} type="submit">{t('goToReport')}</Button>
@@ -529,7 +529,7 @@ export default function MyQuestions() {
             <Typography sx={{ marginBottom: '45px', fontSize: '18px' }}>
               {t('selectSpecialization')}
             </Typography>
-            <StyledLink href='/'>{t('letsGetStarted')}</StyledLink>
+            <StyledLink href='/position'>{t('letsGetStarted')}</StyledLink>
           </Box>
         </StyledRightSide>
       }
