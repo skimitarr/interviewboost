@@ -46,6 +46,13 @@ export function Search({ pageName, getCurrentReport }: Props) {
     storeQuestions
   } = useSelector<StoreState, Selector>(selector, fastDeepEqual);
 
+  const translatedQuestions = storeQuestions.map(item => { // для поиска на разных языках
+    return {
+      ...item,
+      text: t(item.text)
+    };
+  });
+
   const [searchText, setSearchText] = useState('');
   const [searchResult, setSearchResult] = useState<IQuestion[]>([]);
   const [searchResultReports, setSearchResultReports] = useState<DataReport[]>([]);
@@ -57,7 +64,7 @@ export function Search({ pageName, getCurrentReport }: Props) {
         category.questions.forEach(item => { set.add(item) })
       });
       const arrayOfIds = Array.from(set); // получаем все id вопросов со всех тем
-      const questionsData = storeQuestions.filter((item) => {
+      const questionsData = translatedQuestions.filter((item) => {
         return arrayOfIds.includes(item.id);
       })
 

@@ -18,7 +18,7 @@ i18n
               translation: ua,
           },
         },
-        lng: 'en',
+        lng: 'ua',
         nsSeparator: false,
         load: 'currentOnly',
         react: {

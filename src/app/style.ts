@@ -178,7 +178,6 @@ export const StyledBlock2__circle2 = styled('div')(() => ({
   width: '350px',
   height: '350px',
   borderRadius: '50%',
-  // border: '2px solid #415EBF',             // TODO
   background: '#252A3A',             // TODO
   animation: `${pulse} 2s ease-in-out infinite`,
 
@@ -186,7 +185,7 @@ export const StyledBlock2__circle2 = styled('div')(() => ({
     content: '""',
     width: '280px',
     height: '280px',
-    background: 'red',
+    background: '#232630',              // TODO
     opacity: '0.5',
     borderRadius: '50%',
   }
@@ -195,20 +194,10 @@ export const StyledBlock2__circle2 = styled('div')(() => ({
 const pulse = keyframes({
   '0%': {
     transform: 'scale(0.8)',
-    // opacity: 0,
-    // boxShadow: '0 0 0 0 rgba(37, 42, 58, 1)',
     boxShadow: '0 0 10px 0 rgba(37, 42, 58, 1), 0 0 10px 0 rgba(37, 42, 58, 1)',
-  },
-  '50%': {
-    // transform: 'scale(1.1)',
-    // opacity: 1,
-    // boxShadow: '0 0 0 30px rgba(37, 42, 58, 1)',
   },
   '100%': {
     transform: 'scale(1.1)',
-    // opacity: 0,
-    // boxShadow: '0 0 0 30px rgba(37, 42, 58, 1)',
-    // boxShadow: '0 0 10px 0 rgba(37, 42, 58, 0), 0 0 4px 30px rgba(37, 42, 58, 0)',
     boxShadow: '0 0 10px 0 rgba(255, 48, 26, 0), 0 0 4px 30px rgba(255, 48, 26, 0)',
   },
 });
@@ -219,7 +208,6 @@ export const StyledBlock2__img = styled(Image)(() => ({
   left: '50%',
   transform: 'translate(-50%, -50%)',
   borderRadius: '50%',
-  // border: '2px solid #415EBF',             // TODO
   background: '#4F72E2',             // TODO
 }))
 

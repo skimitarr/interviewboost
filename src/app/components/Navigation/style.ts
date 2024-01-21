@@ -3,7 +3,7 @@ import { MixinFlexCenter } from '@/styles/mixins';
 
 export const StyledHeader = styled('header')(({  theme: { custom } }) => ({
   ...MixinFlexCenter,
-  justifyContent: 'space-between',
+  justifyContent: 'space-around',
   height: '80px',
   background: custom.colorGraphiteGray,
 }))
@@ -17,6 +17,11 @@ export const StyledLinkNavigation = styled('a')<{isPathname: boolean}>(({isPathn
   background: isPathname ? custom.colorMainGradient : 'none',
   '&:not(:last-child)': {
     marginRight: '38px',
+  },
+  '@media (max-width: 1200px)': {
+    '&:not(:last-child)': {
+      marginRight: '20px',
+    },
   },
 
   '&::before': { // потому что transition не работает с градиентами для hover
