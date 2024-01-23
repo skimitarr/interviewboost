@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { IQuestion } from "../Types";
 import { DragDropHooks } from "../Drag&DropHooks";
 import { StyledQuestion } from "./style";
@@ -23,6 +24,7 @@ export function QuestionLeftSide({
   handleQuestion,
   setQuestions
 }: Props) {
+  const { t } = useTranslation();
 
   const { ref, isDragging } = DragDropHooks({
     type: 'questionLeftSide',
@@ -39,7 +41,7 @@ export function QuestionLeftSide({
       needCursor={pageName === 'interview'}
       isDragging={isDragging}
     >
-      {index + 1}. {item.text}
+      {`${index + 1}. ${t(item.text)}`}
     </StyledQuestion>
   )
 }

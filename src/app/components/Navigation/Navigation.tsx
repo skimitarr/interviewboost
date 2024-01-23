@@ -13,6 +13,7 @@ import {
   StyledLinkSignIn,
   StyledLinkSignOut
 } from "./style"
+import { ChooseLanguage } from '../ChooseLanguage/ChooseLanguage'
 
 export function Navigation({ navLinks }: {
   navLinks: {
@@ -50,7 +51,6 @@ export function Navigation({ navLinks }: {
         sx={{
           display: 'flex',
           alignItems: 'center',
-          marginLeft: 'calc(100vw / 3)',
           marginRight: '50px',
         }}
       >
@@ -65,6 +65,7 @@ export function Navigation({ navLinks }: {
             </Typography>
           </StyledLinkNavigation>
         ))}
+
       </Box>
       <Box
         sx={{
@@ -73,6 +74,7 @@ export function Navigation({ navLinks }: {
           alignItems: 'center',
           marginRight: '20px',
         }}>
+        <ChooseLanguage />
         {session?.data
           ? <>
             <Typography sx={{ marginRight: '23px' }}>

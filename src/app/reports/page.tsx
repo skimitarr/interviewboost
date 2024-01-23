@@ -211,7 +211,7 @@ export default function Reports() {
                                       data-text="text"
                                       sx={{ textAlign: 'left', marginLeft: '20px' }}
                                     >
-                                      {el !== 'Итого' && index === 0 ? `${index1 + 1}. ${el}` : el}
+                                      {el !== 'Итого' && index === 0 ? `${index1 + 1}. ${t(el)}` : el == 'Итого' ? t('total') : t(el)}
                                     </StyledRowItem>
                                     : <StyledRowItem key={nanoid()} data-text="text">
                                       {el}

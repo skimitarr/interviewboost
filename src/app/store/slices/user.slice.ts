@@ -7,7 +7,7 @@ import {
 export const name = 'user';
 
 const userInitialState: UserState = {
-    locale: Locales.English
+    locale: Locales.Ukrainian
 };
 
 export const userSlice = createSlice({
