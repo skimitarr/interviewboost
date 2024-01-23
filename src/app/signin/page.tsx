@@ -6,7 +6,7 @@ import { GitHubButton } from "../components/GitHubButton";
 import { GoogleButton } from "../components/GoogleButton";
 import { MixinFlexCenter } from "@/styles/mixins";
 
-export default async function Signin() {
+export default function Signin() {
   const { t } = useTranslation();
 
   return (
