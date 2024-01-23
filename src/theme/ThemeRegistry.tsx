@@ -31,14 +31,14 @@ const themeOptions = {
         '@font-face': [
           {
             fontFamily: 'Lato',
-            src: `url('../../public/fonts/Lato-Regular.woff2') format('woff2')`,
+            src: `url('/fonts/Lato-Regular.woff2') format('woff2')`,
             fontStyle: 'normal',
             fontWeight: 'normal',
             fontDisplay: 'swap',
           },
           {
             fontFamily: 'Lato',
-            src: `url('../../public/fonts/Lato-Semibold.woff2') format('woff2')`,
+            src: `url('/fonts/Lato-Semibold.woff2') format('woff2')`,
             fontStyle: 'normal',
             fontWeight: 600,
             fontDisplay: 'swap',
@@ -50,6 +50,9 @@ const themeOptions = {
         },
         a: {
           textDecoration: 'none',
+        },
+        p: {
+          margin: '0',
         },
       },
     },

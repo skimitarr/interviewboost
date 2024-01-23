@@ -1,4 +1,5 @@
 import { useSelector } from "react-redux";
+import { useTranslation } from 'react-i18next';
 import applySpec from 'ramda/es/applySpec';
 import fastDeepEqual from "fast-deep-equal";
 import Checkbox from '@mui/material/Checkbox';
@@ -38,6 +39,7 @@ export function InputQuestion({
   setQuestions
 }: Props) {
   const { categoriesFromStore } = useSelector<StoreState, Selector>(selector, fastDeepEqual);
+  const { t } = useTranslation();
 
   const isChecked = checkedIdQuestions.includes(item.id); // useMemo будет неправильно передавать данные в род. компонент
 
@@ -60,7 +62,7 @@ export function InputQuestion({
       <FormControlLabel
         ref={ref}
         control={<Checkbox />}
-        label={`${index + 1}. ${item.text}`}
+        label={`${index + 1}. ${t(item.text)}`}
         checked={isChecked}
         onChange={() => selectQuestions(item.id, category)}
       />

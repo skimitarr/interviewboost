@@ -171,7 +171,7 @@ export default function Reports() {
                             el === 'Общий вывод'
                               ? <Box key={nanoid()}>
                                 <StyledTitle data-tilescolor="titlescolor">
-                                  <Typography sx={{ fontSize: '16px' }} data-titles="titles" data-text="text">{el}</Typography>
+                                  <Typography sx={{ fontSize: '16px' }} data-titles="titles" data-text="text">{t('generalFeedback')}</Typography>
                                 </StyledTitle>
                                 <Box
                                   sx={{
@@ -211,7 +211,7 @@ export default function Reports() {
                                       data-text="text"
                                       sx={{ textAlign: 'left', marginLeft: '20px' }}
                                     >
-                                      {el !== 'Итого' && index === 0 ? `${index1 + 1}. ${el}` : el}
+                                      {el !== 'Итого' && index === 0 ? `${index1 + 1}. ${t(el)}` : el == 'Итого' ? t('total') : t(el)}
                                     </StyledRowItem>
                                     : <StyledRowItem key={nanoid()} data-text="text">
                                       {el}
@@ -242,7 +242,7 @@ export default function Reports() {
             <Typography sx={{ marginBottom: '45px', fontSize: '18px' }}>
               {t('selectSpecialization')}
             </Typography>
-            <StyledLink href='/'>{t('letsGetStarted')}</StyledLink>
+            <StyledLink href='/position'>{t('letsGetStarted')}</StyledLink>
           </Box>
         </StyledRightSide>}
     </Box>

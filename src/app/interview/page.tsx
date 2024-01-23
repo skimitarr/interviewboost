@@ -48,6 +48,8 @@ import {
   ICategory,
   IProffesion
 } from "../components/Types";
+import { selectFromUser } from "../store/selectors/user";
+import { Locales } from "../store/enumes/locales.enum";
 
 const arrMarks = ['0', '5', '10', '15', '20', '25', '30', '35', '40', '45', '50', '55',
   '60', '65', '70', '75', '80', '85', '90', '95', '100',]
@@ -57,6 +59,7 @@ type Selector = {
   storeQuestions: IQuestion[],
   storeAnswers: IAnswer[],
   storeCurrentIdQuestion: string,
+  locale: Locales.Ukrainian
 };
 
 const selector = applySpec<Selector>({
@@ -64,6 +67,7 @@ const selector = applySpec<Selector>({
   storeAnswers: selectFromAppData('answers', []),
   storeQuestions: selectFromAppData('questions', []),
   storeCurrentIdQuestion: selectFromAppData('currentIdQuestion', []),
+  locale: selectFromUser('locale', Locales.Ukrainian)
 });
 
 export default function MyQuestions() {
@@ -76,7 +80,8 @@ export default function MyQuestions() {
     storeProfession,
     storeAnswers,
     storeQuestions,
-    storeCurrentIdQuestion
+    storeCurrentIdQuestion,
+    locale
   } = useSelector<StoreState, Selector>(selector, fastDeepEqual);
 
   const [localData, setLocalData] = useState<ICategory[]>([]); // категории из localStorage
@@ -237,7 +242,9 @@ export default function MyQuestions() {
     Если в отчете есть комментарии по ответам на вопросы, в таком случае вы можете описать более детализированный отчет
     Вы не используете предположительные слова вроде "возможно", "вероятно", "скорее всего", "наверное".
     Если общая средняя оценка кандидата после собеседования ниже 60 баллов, вы не рекомендуете его принимать на работу. Если средняя оценка кандидата в любой категории ниже 60 баллов, вы не рекомендуете его принимать на работу. В остальных случаях вы подробно описываете сильные и слабые стороны кандидата исходя только из оценок и комментариев к вопросам если они есть, чтобы помочь принять взвешенное решение о приеме на работу.
-    Ваша цель - проанализировать данные и дать развернутый, обоснованный вывод об  уровне знаний кандидата, а также рекомендации к приему на работу(рекомендовал или не рекомендовал)`];
+    Ваша цель - проанализировать данные и дать развернутый, обоснованный вывод об  уровне знаний кандидата, а также рекомендации к приему на работу(рекомендовал или не рекомендовал).
+    Вывод свой сделай на украинском язык`];
+    // TODO Вывод свой сделай на ${locale} языке, где ua - украинский язык, en - английский, ru - русский.`];
     const questionsAndAnswers = Object.keys(copy).map((key) => {
       const data = copy[key];
       return {
@@ -282,7 +289,7 @@ export default function MyQuestions() {
       id: nanoid(),
       name: form.name,
       ...dataReport,
-      conclusion: [[`Общий вывод`], [conclusion, averageMark]]
+      conclusion: [['Общий вывод'], [conclusion, averageMark]]
     };
     localStorage.setItem('dataReport', JSON.stringify(newDataReport));
 
@@ -485,7 +492,7 @@ export default function MyQuestions() {
                   <StyledTextareaLabel>{t('addComment')}</StyledTextareaLabel>
                   <StyledTextarea
                     name="comment"
-                    placeholder="Комментарий"
+                    placeholder={t('comment')}
                     value={form.comment}
                     onChange={handleChange}
                   />
@@ -500,7 +507,7 @@ export default function MyQuestions() {
                         name="name"
                         value={form.name}
                         onChange={handleChange}
-                        placeholder="Введите имя претендента"
+                        placeholder={t('enterName')}
                         required
                       />
                       <Button sx={{ ...MixinBtn }} type="submit">{t('goToReport')}</Button>
@@ -529,7 +536,7 @@ export default function MyQuestions() {
             <Typography sx={{ marginBottom: '45px', fontSize: '18px' }}>
               {t('selectSpecialization')}
             </Typography>
-            <StyledLink href='/'>{t('letsGetStarted')}</StyledLink>
+            <StyledLink href='/position'>{t('letsGetStarted')}</StyledLink>
           </Box>
         </StyledRightSide>
       }

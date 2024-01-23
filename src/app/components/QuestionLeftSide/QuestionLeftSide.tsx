@@ -1,6 +1,7 @@
-import Typography from "@mui/material/Typography"
-import { IQuestion } from "./Types";
-import { DragDropHooks } from "./Drag&DropHooks";
+import { useTranslation } from 'react-i18next';
+import { IQuestion } from "../Types";
+import { DragDropHooks } from "../Drag&DropHooks";
+import { StyledQuestion } from "./style";
 
 type Props = {
   item: IQuestion
@@ -23,6 +24,7 @@ export function QuestionLeftSide({
   handleQuestion,
   setQuestions
 }: Props) {
+  const { t } = useTranslation();
 
   const { ref, isDragging } = DragDropHooks({
     type: 'questionLeftSide',
@@ -32,20 +34,14 @@ export function QuestionLeftSide({
   })
 
   return (
-    <Typography
+    <StyledQuestion
       ref={ref}
       onClick={() => handleQuestion(item.text, item.id)}
-      sx={({ custom }) => ({
-        marginBottom: '10px',
-        paddingLeft: item.id === currentIdQuestion && showHighliting ? '40px' : '20px',
-        color: item.id === currentIdQuestion && showHighliting ? custom.colorAzureBlue : custom.colorSnowWhite,
-        letterSpacing: '0.5px',
-        fontSize: '14px',
-        cursor: pageName === 'interview' ? 'pointer' : 'grab',
-        opacity: isDragging ? '0' : '1',
-      })}
+      isActive={item.id === currentIdQuestion && showHighliting}
+      needCursor={pageName === 'interview'}
+      isDragging={isDragging}
     >
-      {index + 1}. {item.text}
-    </Typography>
+      {`${index + 1}. ${t(item.text)}`}
+    </StyledQuestion>
   )
 }
