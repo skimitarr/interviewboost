@@ -51,7 +51,6 @@ export function Navigation({ navLinks }: {
         sx={{
           display: 'flex',
           alignItems: 'center',
-          // marginLeft: 'calc(100vw / 3)',
           marginRight: '50px',
         }}
       >

@@ -344,7 +344,7 @@
   "optionalChainingOperator": "Розкажіть про оператор Optional Chaining (?.)?",
   "replaceAll": "Для чого використовується метод .replaceAll()?",
   "assignmentOperator": "Що таке оператор логічного присвоєння?",
-  "improveReadabilityLargeNumbers": "Як покращити читабельність великих чисел?",
+  "mproveReadabilityLargeNumbers": "Як покращити читабельність великих чисел?",
   "privateAccessors": "Що таке приватні аксесори?",
   "ES6ClassesAndConstructor": "Різниця між класами ES6 та конструкторами функцій?",
   "nullishCoalescing": "Що таке оператор нульового об'єднання (??)?",
