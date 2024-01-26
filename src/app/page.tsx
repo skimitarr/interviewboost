@@ -56,31 +56,14 @@ import {
   StyledTitle2__blue,
   StyledTitle3,
   StyledTitle3__blue,
-  StyledCard1,
-  StyledCard1__text1,
-  StyledCard1__text2,
-  StyledCard1__text3,
-  StyledCard3,
+  StyledCard__text1,
+  StyledCard__text2,
+  StyledCard__text3,
   StyledBlock2__img,
   StyledBlock2__circle2,
-  StyledLine1__part1,
-  StyledLine1__part2,
-  StyledLine1__part3,
-  StyledDot1,
-  StyledLine2,
-  StyledDot2,
-  StyledLine3__part1,
-  StyledLine3__part2,
-  StyledLine3__part3,
-  StyledDot3,
-  StyledLine5__part1,
-  StyledLine5__part2,
-  StyledLine5__part3,
-  StyledDot5,
-  StyledLine4__part1,
-  StyledLine4__part2,
-  StyledLine4__part3,
-  StyledDot4,
+  StyledLine,
+  StyledDot,
+  StyledCard,
 } from "./style";
 
 export default function Home() {
@@ -163,23 +146,23 @@ export default function Home() {
 
         <StyledSection2__wrapper>
           <StyledBlock1>
-            <StyledCard1 isActive={activeNumber === 1}>
-              <StyledCard1__text1 isActive={activeNumber === 1}>1</StyledCard1__text1>
-              <StyledCard1__text2>{t('startProfession')}</StyledCard1__text2>
-              <StyledCard1__text3>{t('selectCandidate')}</StyledCard1__text3>
-            </StyledCard1>
+            <StyledCard active={activeNumber === 1}>
+              <StyledCard__text1 active={activeNumber === 1}>1</StyledCard__text1>
+              <StyledCard__text2>{t('startProfession')}</StyledCard__text2>
+              <StyledCard__text3>{t('selectCandidate')}</StyledCard__text3>
+            </StyledCard>
 
-            <StyledCard1 isActive={activeNumber === 2}>
-              <StyledCard1__text1 isActive={activeNumber === 2}>2</StyledCard1__text1>
-              <StyledCard1__text2>{t('selectList')}</StyledCard1__text2>
-              <StyledCard1__text3>{t('thenSelectList')}</StyledCard1__text3>
-            </StyledCard1>
+            <StyledCard active={activeNumber === 2}>
+              <StyledCard__text1 active={activeNumber === 2}>2</StyledCard__text1>
+              <StyledCard__text2>{t('selectList')}</StyledCard__text2>
+              <StyledCard__text3>{t('thenSelectList')}</StyledCard__text3>
+            </StyledCard>
 
-            <StyledCard1 isActive={activeNumber === 3}>
-              <StyledCard1__text1 isActive={activeNumber === 3}>3</StyledCard1__text1>
-              <StyledCard1__text2>{t('addQuestions')}</StyledCard1__text2>
-              <StyledCard1__text3>{t('addInterview')}</StyledCard1__text3>
-            </StyledCard1>
+            <StyledCard active={activeNumber === 3}>
+              <StyledCard__text1 active={activeNumber === 3}>3</StyledCard__text1>
+              <StyledCard__text2>{t('addQuestions')}</StyledCard__text2>
+              <StyledCard__text3>{t('addInterview')}</StyledCard__text3>
+            </StyledCard>
           </StyledBlock1>
 
           <StyledBlock2>
@@ -190,43 +173,43 @@ export default function Home() {
               width={230}
               height={230}
             />
-            <StyledLine1__part1 isActive={activeNumber === 1} />
-            <StyledLine1__part2 isActive={activeNumber === 1} />
-            <StyledLine1__part3 isActive={activeNumber === 1} />
-            <StyledDot1 isActive={activeNumber === 1} />
 
-            <StyledLine2 isActive={activeNumber === 2} />
-            <StyledDot2 isActive={activeNumber === 2} />
+            <StyledLine active={activeNumber === 1} $width='100px' $top='75px' />
+            <StyledLine active={activeNumber === 1} $left='100px' $height='150px' $top='75px' />
+            <StyledLine active={activeNumber === 1} $top='225px' $left='100px' $width='95px' />
+            <StyledDot active={activeNumber === 1} $animationType='moveDot1' />
 
-            <StyledLine3__part1 isActive={activeNumber === 3} />
-            <StyledLine3__part2 isActive={activeNumber === 3} />
-            <StyledLine3__part3 isActive={activeNumber === 3} />
-            <StyledDot3 isActive={activeNumber === 3} />
+            <StyledLine active={activeNumber === 2} $top='240px' $width='195px' />
+            <StyledDot active={activeNumber === 2} $animationType='moveDot2' />
 
-            <StyledLine4__part1 isActive={activeNumber === 4} />
-            <StyledLine4__part2 isActive={activeNumber === 4} />
-            <StyledLine4__part3 isActive={activeNumber === 4} />
-            <StyledDot4 isActive={activeNumber === 4} />
+            <StyledLine active={activeNumber === 3} $top='405px' $width='100px' />
+            <StyledLine active={activeNumber === 3} $top='255px' $left='100px' $height='150px' />
+            <StyledLine active={activeNumber === 3} $top='255px' $left='100px' $width='95px' />
+            <StyledDot active={activeNumber === 3} $animationType='moveDot3' />
 
-            <StyledLine5__part1 isActive={activeNumber === 5} />
-            <StyledLine5__part2 isActive={activeNumber === 5} />
-            <StyledLine5__part3 isActive={activeNumber === 5} />
-            <StyledDot5 isActive={activeNumber === 5} />
+            <StyledLine active={activeNumber === 4} $top='140px' $width='100px' $left='initial' />
+            <StyledLine active={activeNumber === 4} $top='140px' $height='85px' $left='initial' $right='100px' />
+            <StyledLine active={activeNumber === 4} $top='225px' $width='95px' $left='initial' $right='100px' />
+            <StyledDot active={activeNumber === 4} $animationType='moveDot4' />
 
+            <StyledLine active={activeNumber === 5} $top='340px' $width='100px' $left='initial' />
+            <StyledLine active={activeNumber === 5} $top='255px' $left='initial' $right='100px' $height='85px' />
+            <StyledLine active={activeNumber === 5} $top='255px' $width='95px' $left='initial' $right='100px' />
+            <StyledDot active={activeNumber === 5} $animationType='moveDot5' />
           </StyledBlock2>
 
           <StyledBlock3>
-            <StyledCard3 isActive={activeNumber === 4}>
-              <StyledCard1__text1 isActive={activeNumber === 4}>4</StyledCard1__text1>
-              <StyledCard1__text2>{t('evaluateAnswers')}</StyledCard1__text2>
-              <StyledCard1__text3>{t('evaluateResponses')}</StyledCard1__text3>
-            </StyledCard3>
+            <StyledCard active={activeNumber === 4} $height='176px'>
+              <StyledCard__text1 active={activeNumber === 4}>4</StyledCard__text1>
+              <StyledCard__text2>{t('evaluateAnswers')}</StyledCard__text2>
+              <StyledCard__text3>{t('evaluateResponses')}</StyledCard__text3>
+            </StyledCard>
 
-            <StyledCard3 isActive={activeNumber === 5}>
-              <StyledCard1__text1 isActive={activeNumber === 5}>5</StyledCard1__text1>
-              <StyledCard1__text2>{t('detailedReport')}</StyledCard1__text2>
-              <StyledCard1__text3>{t('conclude')}</StyledCard1__text3>
-            </StyledCard3>
+            <StyledCard active={activeNumber === 5} $height='176px'>
+              <StyledCard__text1 active={activeNumber === 5}>5</StyledCard__text1>
+              <StyledCard__text2>{t('detailedReport')}</StyledCard__text2>
+              <StyledCard__text3>{t('conclude')}</StyledCard__text3>
+            </StyledCard>
           </StyledBlock3>
 
         </StyledSection2__wrapper>

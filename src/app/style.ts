@@ -128,40 +128,40 @@ export const StyledBlock1 = styled('div')(() => ({
   flexDirection: 'column',
 }))
 
-export const StyledCard1 = styled('div')<{isActive: boolean}>(({isActive}) => ({
-  height: '152px',
+export const StyledCard = styled('div')<{active: boolean, $height?: string}>(({active, $height}) => ({
+  height: $height || '152px',
   padding: '20px 24px',
   borderRadius: '8px',
-  border: isActive ? '2px solid #415EBF' : 'none',
+  border: active ? '2px solid #415EBF' : 'none',
   borderTop: '2px solid #415EBF',
-  background: isActive ? '#262C3D' : 'transparent',            // TODO
-  boxShadow: isActive ? '0px 8px 16px 2px rgba(0, 0, 0, 0.08)' : '0px 8px 16px 2px rgba(0, 0, 0, 0.08), 0px 0px 0px 2px rgba(255, 255, 255, 0.04) inset, 0px -4px 12px 0px rgba(65, 94, 191, 0.16)',
+  background: active ? '#262C3D' : 'transparent',            // TODO
+  boxShadow: active ? '0px 8px 16px 2px rgba(0, 0, 0, 0.08)' : '0px 8px 16px 2px rgba(0, 0, 0, 0.08), 0px 0px 0px 2px rgba(255, 255, 255, 0.04) inset, 0px -4px 12px 0px rgba(65, 94, 191, 0.16)',
   transition: 'all 0.3s ease-in-out',
   '&:not(:last-child)': {
     marginBottom: '12px',
   }
 }))
 
-export const StyledCard1__text1 = styled('div')<{isActive: boolean}>(({isActive, theme: { custom }}) => ({
+export const StyledCard__text1 = styled('div')<{active: boolean}>(({active, theme: { custom }}) => ({
   width: '36px',
   height: '36px',
   marginBottom: '20px',
   padding: '5px 13px 5px 13px',
   borderRadius: '100px',
-  border: isActive ? 'none' : `1px solid ${custom.colorAzureBlue}`,
-  backgroundColor: isActive ? '#415EBF' : 'transparent',            // TODO
+  border: active ? 'none' : `1px solid ${custom.colorAzureBlue}`,
+  backgroundColor: active ? '#415EBF' : 'transparent',            // TODO
   fontWeight: '900',
   lineHeight: '24px',
   letterSpacing: '-0.176px',
   transition: 'all 0.3s ease-in-out',
 }))
 
-export const StyledCard1__text2 = styled('p')(() => ({
+export const StyledCard__text2 = styled('p')(() => ({
   marginBottom: '6px',
   ...text1,
 }))
 
-export const StyledCard1__text3 = styled('p')(() => ({
+export const StyledCard__text3 = styled('p')(() => ({
   color: '#D8D8D8',             // TODO
   fontSize: '14px',
   lineHeight: '24px',
@@ -211,36 +211,52 @@ export const StyledBlock2__img = styled(Image)(() => ({
   background: '#4F72E2',             // TODO
 }))
 
-export const StyledLine1__part1 = styled('div')<{isActive: boolean}>(({isActive, theme: { custom }}) => ({
+type StyledLineProp = {
+  active: boolean
+  $width?: string
+  $height?: string
+  $left?: string
+  $right?: string
+  $top?: string
+};
+
+export const StyledLine = styled('div')<StyledLineProp>(({active, $left, $right, $width, $height, $top, theme: { custom }}) => ({
   position: 'absolute',
-  top: '75px',
-  left: '0',
-  width: '100px',
-  border: isActive ? `2px dashed ${custom.colorAzureBlue}` : `2px dashed ${custom.colorTwilightSlate}`,             // TODO
+  width: $width || '0',
+  height: $height || '0',
+  left: $left || '0',
+  right: $right || '0',
+  top: $top || '0',
+  border: active ? `2px dashed ${custom.colorAzureBlue}` : `2px dashed ${custom.colorTwilightSlate}`,             // TODO
   transition: 'border 0.3s ease-in-out',
 }))
 
-export const StyledLine1__part2 = styled(StyledLine1__part1)(() => ({
-  left: '100px',
-  width: '0',
-  height: '150px',
-}))
+const getAnimation = (animationType?: string): any => {
+  switch (animationType) {
+    case 'moveDot2':
+      return moveDot2;
+    case 'moveDot3':
+      return moveDot3;
+    case 'moveDot4':
+      return moveDot4;
+    case 'moveDot5':
+      return moveDot5;
+    default:
+      return moveDot1;
+  }
+};
 
-export const StyledLine1__part3 = styled(StyledLine1__part1)(() => ({
-  top: '225px',
-  left: '100px',
-  width: '95px',
-}))
-
-export const StyledDot1 = styled('div')<{isActive: boolean}>(({isActive}) => ({
-  position: 'absolute',
-  width: isActive ? '15px' : '0',
-  height: isActive ? '15px' : '0',
-  borderRadius: '50%',
-  backgroundColor: '#557CFC',
-  filter: 'blur(2px)',
-  animation: isActive ? `${moveDot1} 3s linear infinite` : 'none',
-}))
+export const StyledDot = styled('div')<{ active: boolean; $animationType?: string }>(
+  ({ active, $animationType }) => ({
+    position: 'absolute',
+    width: active ? '15px' : '0',
+    height: active ? '15px' : '0',
+    borderRadius: '50%',
+    backgroundColor: '#557CFC',
+    filter: 'blur(2px)',
+    animation: active ? `${getAnimation($animationType)} 3s linear infinite` : 'none',
+  })
+);
 
 const moveDot1 = keyframes ({
   '0%': {
@@ -261,15 +277,6 @@ const moveDot1 = keyframes ({
   },
 })
 
-export const StyledLine2 = styled(StyledLine1__part1)(() => ({
-  top: '240px',
-  width: '195px',
-}))
-
-export const StyledDot2 = styled(StyledDot1)<{isActive: boolean}>(({isActive}) => ({
-  animation: isActive ? `${moveDot2} 3s linear infinite` : 'none',
-}))
-
 const moveDot2 = keyframes ({
   '0%': {
     top: '235px',
@@ -280,28 +287,6 @@ const moveDot2 = keyframes ({
     left: '0px',
   },
 })
-
-export const StyledLine3__part1 = styled(StyledLine1__part1)(() => ({
-  top: '405px',
-  left: '0',
-  width: '100px',
-}))
-
-export const StyledLine3__part3 = styled(StyledLine3__part1)(() => ({
-  top: '255px',
-  left: '100px',
-  width: '95px',
-}))
-
-export const StyledLine3__part2 = styled(StyledLine3__part3)(() => ({
-  left: '100px',
-  width: '0',
-  height: '150px',
-}))
-
-export const StyledDot3 = styled(StyledDot1)<{isActive: boolean}>(({isActive}) => ({
-  animation: isActive ? `${moveDot3} 3s linear infinite` : 'none',
-}))
 
 const moveDot3 = keyframes ({
   '0%': {
@@ -322,28 +307,6 @@ const moveDot3 = keyframes ({
   },
 })
 
-export const StyledLine4__part1 = styled(StyledLine1__part1)(() => ({
-  top: '140px',
-  left: 'initial',
-  right: 0,
-}))
-
-export const StyledLine4__part2 = styled(StyledLine1__part2)(() => ({
-  top: '140px',
-  height: '85px',
-  left: 'initial',
-  right: '100px',
-}))
-
-export const StyledLine4__part3 = styled(StyledLine1__part3)(() => ({
-  left: 'initial',
-  right: '100px',
-}))
-
-export const StyledDot4 = styled(StyledDot1)<{isActive: boolean}>(({isActive}) => ({
-  animation: isActive ? `${moveDot4} 3s linear infinite` : 'none',
-}))
-
 const moveDot4 = keyframes ({
   '0%': {
     top: '220px',
@@ -362,26 +325,6 @@ const moveDot4 = keyframes ({
     right: '0px',
   },
 })
-
-export const StyledLine5__part1 = styled(StyledLine3__part1)(() => ({
-  left: 'initial',
-  right: 0,
-  top: '340px',
-}))
-
-export const StyledLine5__part3 = styled(StyledLine3__part3)(() => ({
-  left: 'initial',
-  right: '100px',
-}))
-
-export const StyledLine5__part2 = styled(StyledLine5__part3)(() => ({
-  width: '0',
-  height: '84px',
-}))
-
-export const StyledDot5 = styled(StyledDot3)<{isActive: boolean}>(({isActive}) => ({
-  animation: isActive ? `${moveDot5} 3s linear infinite` : 'none',
-}))
 
 const moveDot5 = keyframes ({
   '0%': {
@@ -402,18 +345,8 @@ const moveDot5 = keyframes ({
   },
 })
 
-
-
-
-
-
-
 export const StyledBlock3 = styled(StyledBlock1)(() => ({
   margin: 'auto 0'
-}))
-
-export const StyledCard3 = styled(StyledCard1)(() => ({
-  height: '176px',
 }))
 
 export const StyledSection3 = styled('section')(() => ({
