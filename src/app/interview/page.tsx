@@ -422,7 +422,7 @@ export default function MyQuestions() {
 
       {storeProfession || localData
         ? <StyledRightContainer>
-          <Box sx={{ position: 'relative', padding: '25px 90px 10px 90px' }}>
+          <Box sx={{ position: 'relative', padding: '25px 90px', marginBottom: '20px' }}>
 
             {currentIdQuestion
               ? filteredAnswers.filter((item: IAnswer) => item.id === currentIdQuestion) // фильтруем Answers, берем только те что есть в currentIdQuestion
