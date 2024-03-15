@@ -44,6 +44,7 @@ export function DragDropHooks({
       isOver: !!monitor.isOver(),
     }),
     hover({ id: draggedId }) {
+      console.log('jojo', draggedId, item.id)
       if (draggedId !== item.id) { // item.id это элемент на котором ховер
         dragDropElement(draggedId, item.id, func); // для стилизации перетаскивания элементов
       }

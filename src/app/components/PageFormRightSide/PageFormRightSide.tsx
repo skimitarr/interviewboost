@@ -200,10 +200,8 @@ export function PageFormRightSide() {
   const dragDropElement = (sourceId: string, destinationId: string, func: any) => {
     func(() => {
       const newStateArray = [...categoriesByGrade];
-      console.log(sourceId, destinationId);
       const sourceIndex = newStateArray.findIndex((q: any) => q.id === sourceId);
       const destinationIndex = newStateArray.findIndex((q: any) => q.id === destinationId);
-      console.log(sourceIndex, sourceIndex);
       const [reorderedItem] = newStateArray.splice(sourceIndex, 1);
       newStateArray.splice(destinationIndex, 0, reorderedItem);
 
