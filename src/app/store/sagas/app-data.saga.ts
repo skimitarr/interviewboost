@@ -1,10 +1,5 @@
-import { db } from '@/firebase'
-import {
-  QuerySnapshot,
-  DocumentData,
-  collection,
-  getDocs,
-} from "firebase/firestore";
+import api from '@/app/api/config';
+
 import { call, put, takeLatest } from 'redux-saga/effects';
 import { PayloadAction } from '@reduxjs/toolkit';
 
@@ -18,47 +13,47 @@ import {
 } from '../slices/app-data.slice';
 import {
   IProffesion,
-  IGrade,
   ICategory,
   IQuestion,
-  IAnswer,
 } from '@/app/components/Types';
 
 function* handleGetAllProfessions() {
   try {
-    const querySnapshot: QuerySnapshot<DocumentData> = yield call(getDocs,collection(db, 'professions'));
-    const professions: IProffesion[] = [];
-    querySnapshot.forEach((item) => {
-      professions.push({
-        title: item.data().title,
-        id: item.data().id,
-        desc: item.data().desc,
-        grades: item.data().grades,
-      });
-    });
+    const response = yield call([api.appData, api.appData.getAllProfessions]);
+
+    const professions = response.data.map((profession) => ({
+        title: profession.title,
+        id: profession.professionId,
+        desc: profession.desc,
+        grades: profession.grades,
+      })
+    );
+
     yield put(getAllProfessions(professions));
+
   } catch (error) {
     console.error('Error getting documents:', error);
   }
 }
 
 function* handleGetProfession(action: PayloadAction<IProffesion>) {
-  const { payload } = action;
+  const {payload} = action;
   yield put(getProfession(payload));
 }
 
 function* handleGetAllGrades() {
   try {
-    const querySnapshot: QuerySnapshot<DocumentData> = yield call(getDocs, collection(db, 'grades'));
-    const grades: IGrade[] = [];
-    querySnapshot.forEach((item) => {
-      grades.push({
-        title: item.data().title,
-        id: item.data().id,
-        categories: item.data().categories,
-      });
-    });
+    const response = yield call([api.appData, api.appData.getAllGrades]);
+
+    const grades = response.data.map((grade) => ({
+        title: grade.title,
+        id: grade.gradeId,
+        categories: grade.categories,
+      })
+    );
+
     yield put(getGrades(grades));
+
   } catch (error) {
     console.error('Error getting selected documents:', error);
   }
@@ -66,16 +61,17 @@ function* handleGetAllGrades() {
 
 function* handleGetAllCategories() {
   try {
-    const querySnapshot: QuerySnapshot<DocumentData> = yield call(getDocs, collection(db, 'categories'));
-    const categories: ICategory[] = [];
-    querySnapshot.forEach((item) => {
-      categories.push({
-        title: item.data().title,
-        id: item.data().id,
-        questions: item.data().questions,
-      });
-    });
+    const response = yield call([api.appData, api.appData.getAllCategories]);
+
+    const categories = response.data.map((category) => ({
+        title: category.title,
+        id: category.categoryId,
+        questions: category.questions,
+      })
+    );
+
     const sortedCategories = categories.sort((a: ICategory, b: ICategory) => +a.id - +b.id)
+
     yield put(getAllCategories(sortedCategories));
   } catch (error) {
     console.error('Error getting selected documents:', error);
@@ -84,16 +80,17 @@ function* handleGetAllCategories() {
 
 function* handleGetAllQuestions() {
   try {
-    const querySnapshot: QuerySnapshot<DocumentData> = yield call(getDocs,collection(db, 'questions'));
-    const questions: IQuestion[] = [];
-    querySnapshot.forEach((item) => {
-      questions.push({
-        text: item.data().text,
-        id: item.data().id,
-        answers: item.data().answers,
-      });
-    });
+    const response = yield call([api.appData, api.appData.getAllQuestions]);
+
+    const questions = response.data.map((question) => ({
+        text: question.text,
+        id: question.questionId,
+        answers: question.answers,
+      })
+    );
+
     const sortedQuestions = questions.sort((a: IQuestion, b: IQuestion) => +a.id - +b.id)
+    console.log('sortedQuestions', questions, sortedQuestions);
     yield put(getQuestions(sortedQuestions));
   } catch (error) {
     console.error('Error getting selected documents:', error);
@@ -102,14 +99,13 @@ function* handleGetAllQuestions() {
 
 function* handleGetAllAnswers() {
   try {
-    const querySnapshot: QuerySnapshot<DocumentData> = yield call(getDocs, collection(db, 'answers'));
-    const answers: IAnswer[] = [];
-    querySnapshot.forEach((item) => {
-      answers.push({
-        text: item.data().text,
-        id: item.data().id,
-      });
-    });
+    const response = yield call([api.appData, api.appData.getAllAnswers]);
+
+    const answers = response.data.map((answer) => ({
+        text: answer.text,
+        id: answer.answerId,
+      })
+    );
 
     yield put(getAnswers(answers));
   } catch (error) {
@@ -118,7 +114,7 @@ function* handleGetAllAnswers() {
 }
 
 export function* appDataSaga() { // these are watchers
-  // TODO: add action creators
+                                 // TODO: add action creators
   yield takeLatest('actionType/getAllQuestions', handleGetAllQuestions);
   yield takeLatest('actionType/getAllCategories', handleGetAllCategories);
   yield takeLatest('actionType/getAllGrades', handleGetAllGrades);

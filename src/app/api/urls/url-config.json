@@ -1,0 +1,28 @@
+{
+  "production": {
+    "apiPrefix": "https://interviewboost-api.vercel.app/"
+  },
+  "staging": {
+    "apiPrefix": "https://interviewboost-api.vercel.app/"
+  },
+  "development": {
+    "apiPrefix": "https://interviewboost-api.vercel.app/"
+  },
+  "authorization": {
+    "signIn": "auth/sign-in",
+    "signOut": "auth/sign-out",
+    "refreshToken": "auth/refresh-token",
+    "forgotPassword": "auth/forgot-password"
+  },
+  "appData": {
+    "professions": "professions",
+    "grades": "grades",
+    "categories": "categories",
+    "questions": "questions",
+    "answers": "answers",
+    "reports": "reports"
+  },
+  "test": {
+    "apiPrefix": "http://localhost:3001/"
+  }
+}
